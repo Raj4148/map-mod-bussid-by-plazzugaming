@@ -1,5 +1,4 @@
 import { PageShell } from '../components/Layout';
-import { NativeBannerAd } from '../components/NativeBannerAd';
 import { useTheme } from '../lib/theme-context';
 import { Info, Globe, Shield, Mail, Moon, Sun } from 'lucide-react';
 
@@ -83,7 +82,7 @@ export default function Settings() {
             <div>
               <p className="text-foreground font-bold text-sm">Privacy</p>
               <p className="text-muted-foreground text-xs mt-0.5 leading-relaxed">
-                This app displays ads to support free access to all map mods. We do not collect personal data.
+                We do not collect personal data.
               </p>
             </div>
           </div>
@@ -102,11 +101,7 @@ export default function Settings() {
           </div>
         </div>
 
-        <div className="mt-6">
-          <NativeBannerAd idSuffix="settings-1" />
-        </div>
-
-        <p className="text-center text-muted-foreground/40 text-xs mt-4">
+        <p className="text-center text-muted-foreground/40 text-xs mt-6">
           © 2026 Plazzugaming. All rights reserved.
         </p>
       </div>

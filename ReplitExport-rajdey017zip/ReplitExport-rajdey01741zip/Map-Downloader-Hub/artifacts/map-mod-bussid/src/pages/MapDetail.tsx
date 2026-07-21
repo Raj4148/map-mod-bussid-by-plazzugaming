@@ -1,11 +1,9 @@
 import { useRoute, Link } from 'wouter';
 import { useMap, incrementDownloadCount } from '../hooks/useMaps';
-import { triggerSmartLinks } from '../lib/adsterra';
-import { NativeBannerAd } from '../components/NativeBannerAd';
 import { PageShell } from '../components/Layout';
 import {
   ChevronLeft, Download, DownloadCloud, Calendar, Tag,
-  AlertTriangle, ImageOff, CheckCircle, Clock,
+  AlertTriangle, ImageOff,
 } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 
@@ -34,27 +32,6 @@ function SafeImage({ src, alt, className }: { src: string; alt: string; classNam
   );
 }
 
-/* ── split description into 3 chunks for native banner injection ── */
-function splitDescription(text: string): [string, string, string] {
-  if (!text) return ['', '', ''];
-  const sentences = text.split(/[.!?]+\s+/).filter(Boolean);
-  if (sentences.length <= 1) {
-    const words = text.split(' ');
-    const third = Math.max(1, Math.ceil(words.length / 3));
-    return [
-      words.slice(0, third).join(' '),
-      words.slice(third, third * 2).join(' '),
-      words.slice(third * 2).join(' '),
-    ];
-  }
-  const third = Math.max(1, Math.ceil(sentences.length / 3));
-  return [
-    sentences.slice(0, third).join('. '),
-    sentences.slice(third, third * 2).join('. '),
-    sentences.slice(third * 2).join('. '),
-  ];
-}
-
 /* ── shared sticky header ── */
 function StickyHeader({ onBack, title, isLink }: {
   onBack?: () => void;
@@ -72,23 +49,10 @@ function StickyHeader({ onBack, title, isLink }: {
   );
 }
 
-/* ── countdown / download gateway ── */
-type Phase = 'idle' | 'waiting' | 'ready' | 'final';
-const WAIT_SECONDS = 15;
-const FINAL_WAIT_SECONDS = 10;
-const SMARTLINK_URL = 'https://pl30380326.effectivecpmnetwork.com/1c/8e/a8/1c8ea84455f7f2907cd1f65920c6395b.js';
-
 export default function MapDetail() {
   const [, params] = useRoute('/map/:id');
   const id = params?.id || '';
   const { map, loading } = useMap(id);
-
-  const [phase, setPhase]       = useState<Phase>('idle');
-  const [countdown, setCountdown] = useState(WAIT_SECONDS);
-  const [finalCountdown, setFinalCountdown] = useState(FINAL_WAIT_SECONDS);
-  const [showFinalButton, setShowFinalButton] = useState(false);
-  const [isFinalCountdownRunning, setIsFinalCountdownRunning] = useState(false);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   type GmPhase = 'idle' | 'counting' | 'revealed';
   const [gmPhase, setGmPhase]         = useState<GmPhase>('idle');
@@ -101,39 +65,9 @@ export default function MapDetail() {
     if (gmTimerRef.current) clearInterval(gmTimerRef.current);
   }, [id]);
 
-  useEffect(() => { triggerSmartLinks(); }, [id]);
-
   useEffect(() => () => {
-    if (timerRef.current)   clearInterval(timerRef.current);
     if (gmTimerRef.current) clearInterval(gmTimerRef.current);
   }, []);
-
-  useEffect(() => {
-    if (phase !== 'waiting') return;
-    timerRef.current = setInterval(() => {
-      setCountdown((c) => {
-        if (c <= 1) { clearInterval(timerRef.current!); setPhase('ready'); return 0; }
-        return c - 1;
-      });
-    }, 1000);
-    return () => { if (timerRef.current) clearInterval(timerRef.current); };
-  }, [phase]);
-
-  useEffect(() => {
-    if (phase !== 'final' || !isFinalCountdownRunning) return;
-    timerRef.current = setInterval(() => {
-      setFinalCountdown((c) => {
-        if (c <= 1) {
-          clearInterval(timerRef.current!);
-          setIsFinalCountdownRunning(false);
-          setShowFinalButton(true);
-          return 0;
-        }
-        return c - 1;
-      });
-    }, 1000);
-    return () => { if (timerRef.current) clearInterval(timerRef.current); };
-  }, [phase, isFinalCountdownRunning]);
 
   useEffect(() => {
     if (gmPhase !== 'counting') return;
@@ -147,34 +81,9 @@ export default function MapDetail() {
   }, [gmPhase]);
 
   const handleDownload = () => {
-    if (!map) return;
-    triggerSmartLinks();
-    incrementDownloadCount(map.id);
-    setCountdown(WAIT_SECONDS);
-    setPhase('waiting');
-  };
-
-  const handleContinue = () => {
-    window.open(SMARTLINK_URL, '_blank');
-    setPhase('final');
-    setFinalCountdown(FINAL_WAIT_SECONDS);
-    setShowFinalButton(false);
-    setIsFinalCountdownRunning(false);
-  };
-
-  const handleFinalDownloadClick = () => {
     if (!map || !map.downloadUrl || map.downloadUrl === '#') return;
     incrementDownloadCount(map.id);
     window.open(map.downloadUrl, '_blank');
-  };
-
-  const handleBack = () => {
-    if (timerRef.current) clearInterval(timerRef.current);
-    setPhase('idle');
-    setCountdown(WAIT_SECONDS);
-    setFinalCountdown(FINAL_WAIT_SECONDS);
-    setShowFinalButton(false);
-    setIsFinalCountdownRunning(false);
   };
 
   /* ── loading skeleton ── */
@@ -208,146 +117,8 @@ export default function MapDetail() {
     );
   }
 
-  const [desc1, desc2, desc3] = splitDescription(map.description);
-  const progress = ((WAIT_SECONDS - countdown) / WAIT_SECONDS) * 100;
-
   /* ══════════════════════════════════════════════════════════════
-     PAGE 2a — WAITING / READY overlay
-  ══════════════════════════════════════════════════════════════ */
-  if (phase === 'waiting' || phase === 'ready') {
-    return (
-      <PageShell>
-        <StickyHeader onBack={handleBack} title={map.name} />
-
-        <div className="px-4 pt-8 pb-4 flex flex-col items-center text-center">
-          {phase === 'waiting' ? (
-            <>
-              {/* Countdown ring */}
-              <div className="relative w-36 h-36 mb-6">
-                <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
-                  <circle cx="50" cy="50" r="44" fill="none" stroke="hsl(var(--muted))" strokeWidth="8" />
-                  <circle
-                    cx="50" cy="50" r="44" fill="none"
-                    stroke="hsl(var(--primary))" strokeWidth="8" strokeLinecap="round"
-                    strokeDasharray={`${2 * Math.PI * 44}`}
-                    strokeDashoffset={`${2 * Math.PI * 44 * (1 - progress / 100)}`}
-                    style={{ transition: 'stroke-dashoffset 1s linear' }}
-                  />
-                </svg>
-                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <Clock className="w-5 h-5 text-primary mb-1" />
-                  <span className="text-4xl font-black text-foreground">{countdown}</span>
-                </div>
-              </div>
-
-              <h2 className="text-foreground font-black text-xl mb-1">Preparing Download</h2>
-              <p className="text-muted-foreground text-sm mb-2">
-                Please wait <span className="text-primary font-bold">{countdown} second{countdown !== 1 ? 's' : ''}</span>
-              </p>
-              <p className="text-muted-foreground/50 text-xs mb-8">Do not close this page</p>
-
-              <div className="w-full mb-4">
-                <NativeBannerAd idSuffix="detail-wait" />
-              </div>
-
-              <button onClick={handleBack} className="text-muted-foreground text-sm underline underline-offset-2">
-                ← Go back
-              </button>
-            </>
-          ) : (
-            <>
-              {/* Ready state */}
-              <div className="w-24 h-24 rounded-full bg-green-500/10 border-2 border-green-500 flex items-center justify-center mb-6">
-                <CheckCircle className="w-12 h-12 text-green-400" />
-              </div>
-
-              <h2 className="text-foreground font-black text-2xl mb-2">Ready!</h2>
-              <p className="text-muted-foreground text-sm mb-8">Your download link is ready. Tap Continue.</p>
-
-              <button
-                onClick={handleContinue}
-                className="w-full py-5 rounded-2xl bg-green-500 hover:bg-green-400 active:scale-95 transition-all text-white font-black text-lg flex items-center justify-center gap-2 mb-4"
-                style={{ boxShadow: '0 0 24px rgba(34,197,94,0.4)' }}
-              >
-                <Download className="w-6 h-6" />
-                Continue Download
-              </button>
-
-              <p className="text-muted-foreground/50 text-xs mb-8">2 sponsor links will open to support this site</p>
-
-              <button onClick={handleBack} className="text-muted-foreground text-sm underline underline-offset-2">
-                ← Go back
-              </button>
-            </>
-          )}
-        </div>
-      </PageShell>
-    );
-  }
-
-  /* ══════════════════════════════════════════════════════════════
-     PAGE 3 — FINAL DESTINATION
-  ══════════════════════════════════════════════════════════════ */
-  if (phase === 'final') {
-    return (
-      <PageShell>
-        <StickyHeader onBack={handleBack} title={map.name} />
-
-        <div className="px-4 mt-4 space-y-4 pb-8">
-          <div className="rounded-2xl border border-border bg-card p-4 text-center">
-            {!showFinalButton ? (
-              <>
-                <button
-                  onClick={() => {
-                    setFinalCountdown(FINAL_WAIT_SECONDS);
-                    setShowFinalButton(false);
-                    setIsFinalCountdownRunning(true);
-                  }}
-                  className="w-full py-4 rounded-2xl bg-primary text-white font-black text-lg active:scale-95 transition-all"
-                >
-                  Continue
-                </button>
-                <p className="text-muted-foreground text-xs mt-3">Click here and wait 10 seconds</p>
-                {isFinalCountdownRunning && (
-                  <p className="text-muted-foreground text-xs mt-2">
-                    Countdown: <span className="font-bold text-primary">{finalCountdown}s</span>
-                  </p>
-                )}
-              </>
-            ) : (
-              <p className="text-foreground font-black text-lg">Scroll down and click Download</p>
-            )}
-          </div>
-
-          <NativeBannerAd idSuffix="final-banner" />
-          <NativeBannerAd idSuffix="final-banner-2" />
-
-          {!showFinalButton ? null : (
-            <button
-              onClick={handleFinalDownloadClick}
-              className="w-full py-5 rounded-2xl text-white font-black text-lg flex flex-col items-center justify-center gap-1 active:scale-95 transition-all"
-              style={{
-                background: 'linear-gradient(135deg, #7c3aed 0%, #2563eb 100%)',
-                boxShadow: '0 0 32px rgba(124,58,237,0.5)',
-              }}
-            >
-              <span className="flex items-center gap-2">
-                <Download className="w-6 h-6" />
-                Download Map
-              </span>
-            </button>
-          )}
-
-          <p className="text-xs text-muted-foreground/50 text-center leading-relaxed">
-            By downloading you agree this mod is for BUSSID entertainment purposes only.
-          </p>
-        </div>
-      </PageShell>
-    );
-  }
-
-  /* ══════════════════════════════════════════════════════════════
-     PAGE 1 — MAIN DETAIL VIEW (phase: idle)
+     MAIN DETAIL VIEW
   ══════════════════════════════════════════════════════════════ */
   return (
     <PageShell>
@@ -378,7 +149,7 @@ export default function MapDetail() {
       <div className="mx-4 mt-4">
         {gmPhase === 'idle' && (
           <button
-            onClick={() => { triggerSmartLinks(); setGmPhase('counting'); }}
+            onClick={() => setGmPhase('counting')}
             className="w-full py-4 rounded-2xl font-black text-base text-white flex items-center justify-center gap-2 active:scale-95 transition-all"
             style={{ background: 'linear-gradient(135deg, #16a34a 0%, #15803d 100%)', boxShadow: '0 0 24px rgba(22,163,74,0.45)' }}
           >
@@ -440,28 +211,9 @@ export default function MapDetail() {
         {map.description && (
           <div className="bg-card border border-border rounded-xl p-4">
             <h3 className="text-foreground font-bold text-sm mb-3">Description</h3>
-
-            {desc1 && <p className="text-muted-foreground text-sm leading-relaxed">{desc1}</p>}
-
-            {(desc2 || desc3) && (
-              <div className="-mx-4">
-                <NativeBannerAd idSuffix="detail-desc-1" />
-              </div>
-            )}
-
-            {desc2 && <p className="text-muted-foreground text-sm leading-relaxed">{desc2}</p>}
-
-            {desc3 && (
-              <div className="-mx-4">
-                <NativeBannerAd idSuffix="detail-desc-2" />
-              </div>
-            )}
-
-            {desc3 && <p className="text-muted-foreground text-sm leading-relaxed">{desc3}</p>}
+            <p className="text-muted-foreground text-sm leading-relaxed">{map.description}</p>
           </div>
         )}
-
-        <NativeBannerAd idSuffix="detail-bottom" />
 
         {/* Download Now — revealed after Get Map timer */}
         {gmPhase === 'revealed' && (

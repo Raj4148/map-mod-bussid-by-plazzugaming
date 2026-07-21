@@ -1,6 +1,5 @@
 import { Link, useLocation } from 'wouter';
 import { useMaps, useFeaturedMaps, useTopMaps, fmtCount, getMapBadge, isMapNew } from '../hooks/useMaps';
-import { triggerSmartLinks } from '../lib/adsterra';
 import { MapCardSkeleton } from '../components/MapCard';
 import { MapGrid } from '../components/MapGrid';
 import { PageShell } from '../components/Layout';
@@ -30,7 +29,6 @@ function FeaturedCard({ map }: { map: Parameters<typeof getMapBadge>[0] }) {
   return (
     <Link
       href={`/map/${map.id}`}
-      onClick={() => triggerSmartLinks()}
       className="flex-shrink-0 relative rounded-xl overflow-hidden block bg-muted"
       style={{ width: 148, aspectRatio: '4/3' }}
     >
@@ -64,7 +62,6 @@ export default function Home() {
   const [, setLocation] = useLocation();
 
   const handleCategoryClick = (id: string) => {
-    triggerSmartLinks();
     setLocation(id === 'all' ? '/maps' : `/maps?category=${id}`);
   };
 
@@ -85,7 +82,6 @@ export default function Home() {
           </h2>
           <Link
             href="/maps"
-            onClick={() => triggerSmartLinks()}
             className="flex items-center gap-1 text-purple-400 text-xs font-semibold"
           >
             See all <ChevronRight className="w-3 h-3" />
@@ -133,7 +129,6 @@ export default function Home() {
           <h2 className="text-foreground font-bold text-lg">Latest Maps</h2>
           <Link
             href="/maps"
-            onClick={() => triggerSmartLinks()}
             className="flex items-center gap-1 text-purple-400 text-xs font-semibold"
           >
             See all <ChevronRight className="w-3 h-3" />
@@ -149,12 +144,10 @@ export default function Home() {
             </p>
           </div>
         ) : (
-          /* MapGrid injects a NativeBannerAd after every 6 cards automatically */
           <MapGrid
             maps={allMaps}
             loading={allLoading}
             skeletonCount={6}
-            adPrefix="home"
           />
         )}
       </section>
