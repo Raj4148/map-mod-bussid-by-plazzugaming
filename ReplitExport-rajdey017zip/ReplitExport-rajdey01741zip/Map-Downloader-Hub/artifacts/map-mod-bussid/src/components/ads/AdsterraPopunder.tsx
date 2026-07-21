@@ -1,12 +1,11 @@
 /**
- * AdsterraPopunder
- * Fires the Adsterra Popunder script on the first user interaction with the page.
- * Uses a one-shot click listener so it only triggers once per mount.
- *
- * To activate: replace the `// TODO` comment inside the handler with
- * the Adsterra Popunder script injection provided for your zone.
+ * AdsterraPopunder — fires the Adsterra smartlink as a popunder
+ * on the first user click on the page. One-shot per mount.
  */
 import { useEffect, useRef } from 'react';
+
+const SMART_LINK_URL =
+  'https://pl30380326.effectivecpmnetwork.com/1c/8e/a8/1c8ea84455f7f2907cd1f65920c6395b.js';
 
 export function AdsterraPopunder() {
   const firedRef = useRef(false);
@@ -15,12 +14,11 @@ export function AdsterraPopunder() {
     const handleFirstClick = () => {
       if (firedRef.current) return;
       firedRef.current = true;
-
-      // TODO: inject your Adsterra Popunder script here, e.g.:
-      // const s = document.createElement('script');
-      // s.src = 'https://pl....effectivecpmnetwork.com/...popunder.js';
-      // s.async = true;
-      // document.head.appendChild(s);
+      try {
+        window.open(SMART_LINK_URL, '_blank', 'noopener');
+      } catch {
+        // silently ignore popup-blocker rejections
+      }
     };
 
     document.addEventListener('click', handleFirstClick, { once: true });
