@@ -1,13 +1,12 @@
 /**
- * AdsterraBanner
- * Drop-in display banner slot for Adsterra.
+ * AdsterraBanner — display banner slot for Adsterra.
  *
  * Usage:
- *   <AdsterraBanner type="320x50" />   ← mobile leaderboard
- *   <AdsterraBanner type="728x90" />   ← desktop leaderboard
+ *   <AdsterraBanner type="320x50" />
+ *   <AdsterraBanner type="728x90" />
  *
- * To activate: replace the `// TODO` comment inside useEffect with
- * the <script> snippet provided by Adsterra for this banner slot.
+ * To activate: replace the TODO comment inside useEffect with the
+ * <script> snippet from your Adsterra dashboard for this banner zone.
  */
 import { useEffect, useRef } from 'react';
 
@@ -44,14 +43,9 @@ export function AdsterraBanner({ type = '320x50', className = '' }: AdsterraBann
     <div className={`my-4 flex justify-center ${className}`}>
       <div
         ref={containerRef}
-        style={{ width: w, maxWidth: '100%', height: h, minHeight: h }}
-        className="bg-muted/40 border border-dashed border-border rounded flex items-center justify-center overflow-hidden"
+        style={{ width: w, maxWidth: '100%', minHeight: h }}
         aria-label="Advertisement"
-      >
-        <span className="text-muted-foreground/40 text-[10px] uppercase tracking-widest select-none">
-          Ad {type}
-        </span>
-      </div>
+      />
     </div>
   );
 }

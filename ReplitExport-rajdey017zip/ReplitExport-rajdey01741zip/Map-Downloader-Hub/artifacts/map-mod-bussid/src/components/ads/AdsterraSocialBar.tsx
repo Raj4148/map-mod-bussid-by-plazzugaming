@@ -1,10 +1,8 @@
 /**
- * AdsterraSocialBar
- * Sticky social-bar ad fixed at the bottom of the viewport.
- * Renders a fixed container and injects the Adsterra Social Bar script once.
+ * AdsterraSocialBar — sticky social-bar ad fixed at the bottom of the viewport.
  *
- * To activate: replace the `// TODO` comment inside useEffect with
- * the <script> snippet provided by Adsterra for the Social Bar format.
+ * To activate: replace the TODO comment inside useEffect with the
+ * <script> snippet from your Adsterra dashboard for the Social Bar format.
  */
 import { useEffect, useRef } from 'react';
 
@@ -26,10 +24,8 @@ export function AdsterraSocialBar() {
   return (
     <div
       ref={containerRef}
-      className="fixed bottom-0 left-0 right-0 z-50 flex justify-center pointer-events-none"
+      className="fixed bottom-0 left-0 right-0 z-50"
       aria-label="Advertisement"
-    >
-      {/* Social bar script renders its own UI; placeholder shown until activated */}
-    </div>
+    />
   );
 }

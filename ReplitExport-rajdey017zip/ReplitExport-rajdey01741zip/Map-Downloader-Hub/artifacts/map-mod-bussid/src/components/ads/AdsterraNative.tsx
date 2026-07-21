@@ -1,9 +1,8 @@
 /**
- * AdsterraNative
- * Native banner slot for Adsterra (blends with content).
+ * AdsterraNative — native banner slot for Adsterra.
  *
- * To activate: replace the `// TODO` comment inside useEffect with
- * the <script> snippet provided by Adsterra for this native slot.
+ * To activate: replace the TODO comment inside useEffect with the
+ * <script> snippet from your Adsterra dashboard for this native zone.
  */
 import { useEffect, useRef } from 'react';
 
@@ -27,16 +26,12 @@ export function AdsterraNative({ className = '' }: AdsterraNativeProps) {
   }, []);
 
   return (
-    <div className={`my-4 p-2 ${className}`}>
+    <div className={`my-4 ${className}`}>
       <div
         ref={containerRef}
-        className="w-full min-h-[100px] bg-muted/40 border border-dashed border-border rounded flex items-center justify-center overflow-hidden"
+        style={{ minHeight: 90 }}
         aria-label="Advertisement"
-      >
-        <span className="text-muted-foreground/40 text-[10px] uppercase tracking-widest select-none">
-          Native Ad
-        </span>
-      </div>
+      />
     </div>
   );
 }

@@ -123,8 +123,14 @@ export default function MapDetail() {
 
   const handleFinalDownload = () => {
     if (!map || !map.downloadUrl || map.downloadUrl === '#') return;
+    // 1) Open smartlink in a new tab immediately (inside the click handler to avoid popup blockers)
     triggerSmartLinks();
-    window.open(map.downloadUrl, '_blank');
+    // 2) Redirect the current window to the actual file after a short delay
+    //    so both actions originate from the same user gesture
+    const fileUrl = map.downloadUrl;
+    setTimeout(() => {
+      window.location.href = fileUrl;
+    }, 300);
   };
 
   const handleBackFromDownload = () => {
