@@ -1,6 +1,11 @@
 import { useRoute, Link } from 'wouter';
 import { useMap, incrementDownloadCount } from '../hooks/useMaps';
+import { triggerSmartLinks } from '../lib/adsterra';
 import { PageShell } from '../components/Layout';
+import { AdsterraBanner } from '../components/ads/AdsterraBanner';
+import { AdsterraNative } from '../components/ads/AdsterraNative';
+import { AdsterraSocialBar } from '../components/ads/AdsterraSocialBar';
+import { AdsterraPopunder } from '../components/ads/AdsterraPopunder';
 import {
   ChevronLeft, Download, DownloadCloud, Calendar, Tag,
   AlertTriangle, ImageOff,
@@ -49,26 +54,42 @@ function StickyHeader({ onBack, title, isLink }: {
   );
 }
 
+/* ── countdown duration for the download screen ── */
+const COUNTDOWN_SECONDS = 10;
+
 export default function MapDetail() {
   const [, params] = useRoute('/map/:id');
   const id = params?.id || '';
   const { map, loading } = useMap(id);
 
+  /* Get Map unlock phase */
   type GmPhase = 'idle' | 'counting' | 'revealed';
   const [gmPhase, setGmPhase]         = useState<GmPhase>('idle');
   const [gmCountdown, setGmCountdown] = useState(5);
   const gmTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
+  /* Download countdown (shown after "Download Now" is tapped) */
+  type DlPhase = 'idle' | 'counting' | 'ready';
+  const [dlPhase, setDlPhase]         = useState<DlPhase>('idle');
+  const [dlCountdown, setDlCountdown] = useState(COUNTDOWN_SECONDS);
+  const dlTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  /* Reset state when navigating to a different map */
   useEffect(() => {
     setGmPhase('idle');
     setGmCountdown(5);
+    setDlPhase('idle');
+    setDlCountdown(COUNTDOWN_SECONDS);
     if (gmTimerRef.current) clearInterval(gmTimerRef.current);
+    if (dlTimerRef.current) clearInterval(dlTimerRef.current);
   }, [id]);
 
   useEffect(() => () => {
     if (gmTimerRef.current) clearInterval(gmTimerRef.current);
+    if (dlTimerRef.current) clearInterval(dlTimerRef.current);
   }, []);
 
+  /* Get Map 5-second reveal timer */
   useEffect(() => {
     if (gmPhase !== 'counting') return;
     gmTimerRef.current = setInterval(() => {
@@ -80,10 +101,36 @@ export default function MapDetail() {
     return () => { if (gmTimerRef.current) clearInterval(gmTimerRef.current); };
   }, [gmPhase]);
 
-  const handleDownload = () => {
-    if (!map || !map.downloadUrl || map.downloadUrl === '#') return;
+  /* Download 10-second countdown timer */
+  useEffect(() => {
+    if (dlPhase !== 'counting') return;
+    dlTimerRef.current = setInterval(() => {
+      setDlCountdown((c) => {
+        if (c <= 1) { clearInterval(dlTimerRef.current!); setDlPhase('ready'); return 0; }
+        return c - 1;
+      });
+    }, 1000);
+    return () => { if (dlTimerRef.current) clearInterval(dlTimerRef.current); };
+  }, [dlPhase]);
+
+  const handleDownloadNow = () => {
+    if (!map) return;
+    triggerSmartLinks();
     incrementDownloadCount(map.id);
+    setDlCountdown(COUNTDOWN_SECONDS);
+    setDlPhase('counting');
+  };
+
+  const handleFinalDownload = () => {
+    if (!map || !map.downloadUrl || map.downloadUrl === '#') return;
+    triggerSmartLinks();
     window.open(map.downloadUrl, '_blank');
+  };
+
+  const handleBackFromDownload = () => {
+    if (dlTimerRef.current) clearInterval(dlTimerRef.current);
+    setDlPhase('idle');
+    setDlCountdown(COUNTDOWN_SECONDS);
   };
 
   /* ── loading skeleton ── */
@@ -118,14 +165,101 @@ export default function MapDetail() {
   }
 
   /* ══════════════════════════════════════════════════════════════
-     MAIN DETAIL VIEW
+     DOWNLOAD COUNTDOWN SCREEN
+  ══════════════════════════════════════════════════════════════ */
+  if (dlPhase === 'counting' || dlPhase === 'ready') {
+    return (
+      <PageShell>
+        {/* Popunder fires on first click of this screen */}
+        <AdsterraPopunder />
+
+        <StickyHeader onBack={handleBackFromDownload} title={map.name} />
+
+        <div className="px-4 pt-6 pb-4 flex flex-col items-center text-center">
+          {/* Banner above the countdown block */}
+          <AdsterraBanner type="320x50" />
+
+          {/* Countdown block */}
+          <div className="w-full rounded-2xl border border-border bg-card p-6 flex flex-col items-center gap-4 my-2">
+            {dlPhase === 'counting' ? (
+              <>
+                <div className="relative w-28 h-28">
+                  <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="44" fill="none" stroke="hsl(var(--muted))" strokeWidth="8" />
+                    <circle
+                      cx="50" cy="50" r="44" fill="none"
+                      stroke="hsl(var(--primary))" strokeWidth="8" strokeLinecap="round"
+                      strokeDasharray={`${2 * Math.PI * 44}`}
+                      strokeDashoffset={`${2 * Math.PI * 44 * (1 - (COUNTDOWN_SECONDS - dlCountdown) / COUNTDOWN_SECONDS)}`}
+                      style={{ transition: 'stroke-dashoffset 1s linear' }}
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <span className="text-4xl font-black text-foreground">{dlCountdown}</span>
+                  </div>
+                </div>
+                <p className="text-muted-foreground text-sm font-medium">
+                  Your download link is generating in{' '}
+                  <span className="text-primary font-bold">{dlCountdown}s</span>…
+                </p>
+                <p className="text-muted-foreground/40 text-xs">Do not close this page</p>
+              </>
+            ) : (
+              <p className="text-foreground font-black text-lg">✅ Link ready! Tap Download below.</p>
+            )}
+          </div>
+
+          {/* Native banner below the countdown block */}
+          <div className="w-full">
+            <AdsterraNative />
+          </div>
+
+          {/* Download button — shown only when ready */}
+          {dlPhase === 'ready' && (
+            <button
+              onClick={handleFinalDownload}
+              className="w-full mt-4 py-5 rounded-2xl text-white font-black text-lg flex items-center justify-center gap-2 active:scale-95 transition-all"
+              style={{
+                background: 'linear-gradient(135deg, #7c3aed 0%, #2563eb 100%)',
+                boxShadow: '0 0 32px rgba(124,58,237,0.5)',
+              }}
+            >
+              <Download className="w-6 h-6" />
+              Download File
+            </button>
+          )}
+
+          <button
+            onClick={handleBackFromDownload}
+            className="text-muted-foreground text-sm underline underline-offset-2 mt-6"
+          >
+            ← Go back
+          </button>
+        </div>
+
+        <div className="h-16" />
+        <AdsterraSocialBar />
+      </PageShell>
+    );
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     MAIN DETAIL VIEW (idle / get-map flow)
   ══════════════════════════════════════════════════════════════ */
   return (
     <PageShell>
+      {/* Popunder fires on first click anywhere on this page */}
+      <AdsterraPopunder />
+
       <StickyHeader title={map.name} isLink />
 
+      {/* Top banner ad — above the hero image */}
+      <div className="px-4">
+        <AdsterraBanner type="320x50" />
+      </div>
+
       {/* Hero image */}
-      <div className="relative mx-4 mt-4 rounded-2xl overflow-hidden bg-muted" style={{ aspectRatio: '16/9' }}>
+      <div className="relative mx-4 rounded-2xl overflow-hidden bg-muted" style={{ aspectRatio: '16/9' }}>
         <SafeImage src={map.thumbnail} alt={map.name} className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent pointer-events-none" />
         <div className="absolute top-3 left-3 px-2 py-1 bg-black/60 rounded text-[10px] font-black text-yellow-400 uppercase tracking-widest border border-yellow-500/30">
@@ -207,7 +341,7 @@ export default function MapDetail() {
           </div>
         </div>
 
-        {/* Description */}
+        {/* Description + mid-content native ad */}
         {map.description && (
           <div className="bg-card border border-border rounded-xl p-4">
             <h3 className="text-foreground font-bold text-sm mb-3">Description</h3>
@@ -215,11 +349,17 @@ export default function MapDetail() {
           </div>
         )}
 
+        {/* Mid-content native banner */}
+        <AdsterraNative />
+
         {/* Download Now — revealed after Get Map timer */}
         {gmPhase === 'revealed' && (
           <>
+            {/* Bottom banner ad — above the primary download button */}
+            <AdsterraBanner type="320x50" />
+
             <button
-              onClick={handleDownload}
+              onClick={handleDownloadNow}
               className="w-full py-5 rounded-2xl bg-primary hover:bg-purple-500 active:scale-95 transition-all text-white font-black text-lg flex flex-col items-center justify-center gap-1"
               style={{ boxShadow: '0 0 24px rgba(139,92,246,0.4)' }}
             >
@@ -236,6 +376,12 @@ export default function MapDetail() {
           </>
         )}
       </div>
+
+      {/* bottom padding so content isn't hidden behind social bar */}
+      <div className="h-16" />
+
+      {/* ── Sticky Social Bar ── */}
+      <AdsterraSocialBar />
     </PageShell>
   );
 }

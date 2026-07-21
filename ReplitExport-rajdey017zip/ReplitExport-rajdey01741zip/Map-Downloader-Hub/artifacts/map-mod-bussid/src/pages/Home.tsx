@@ -1,8 +1,11 @@
 import { Link, useLocation } from 'wouter';
-import { useMaps, useFeaturedMaps, useTopMaps, fmtCount, getMapBadge, isMapNew } from '../hooks/useMaps';
+import { useMaps, useTopMaps, fmtCount, getMapBadge, isMapNew } from '../hooks/useMaps';
+import { triggerSmartLinks } from '../lib/adsterra';
 import { MapCardSkeleton } from '../components/MapCard';
 import { MapGrid } from '../components/MapGrid';
 import { PageShell } from '../components/Layout';
+import { AdsterraBanner } from '../components/ads/AdsterraBanner';
+import { AdsterraSocialBar } from '../components/ads/AdsterraSocialBar';
 import { DownloadCloud, ChevronRight, MapPin, Trophy } from 'lucide-react';
 import { useState } from 'react';
 
@@ -29,6 +32,7 @@ function FeaturedCard({ map }: { map: Parameters<typeof getMapBadge>[0] }) {
   return (
     <Link
       href={`/map/${map.id}`}
+      onClick={() => triggerSmartLinks()}
       className="flex-shrink-0 relative rounded-xl overflow-hidden block bg-muted"
       style={{ width: 148, aspectRatio: '4/3' }}
     >
@@ -62,6 +66,7 @@ export default function Home() {
   const [, setLocation] = useLocation();
 
   const handleCategoryClick = (id: string) => {
+    triggerSmartLinks();
     setLocation(id === 'all' ? '/maps' : `/maps?category=${id}`);
   };
 
@@ -73,8 +78,13 @@ export default function Home() {
         <p className="text-xs font-bold truncate">Notice: Daily 8:00 PM new map mod uploaded!</p>
       </div>
 
+      {/* ── Top Banner Ad ── */}
+      <div className="px-4">
+        <AdsterraBanner type="320x50" />
+      </div>
+
       {/* ── Featured Maps (top 6 by download count) ── */}
-      <section className="mt-4">
+      <section className="mt-2">
         <div className="px-4 flex items-center justify-between mb-3">
           <h2 className="text-foreground font-bold text-lg flex items-center gap-2">
             <Trophy className="w-5 h-5 text-yellow-500" />
@@ -82,6 +92,7 @@ export default function Home() {
           </h2>
           <Link
             href="/maps"
+            onClick={() => triggerSmartLinks()}
             className="flex items-center gap-1 text-purple-400 text-xs font-semibold"
           >
             See all <ChevronRight className="w-3 h-3" />
@@ -123,12 +134,13 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Latest Maps ── */}
+      {/* ── Latest Maps (native ad injected after every 3rd card by MapGrid) ── */}
       <section className="mt-6 px-4">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-foreground font-bold text-lg">Latest Maps</h2>
           <Link
             href="/maps"
+            onClick={() => triggerSmartLinks()}
             className="flex items-center gap-1 text-purple-400 text-xs font-semibold"
           >
             See all <ChevronRight className="w-3 h-3" />
@@ -148,11 +160,16 @@ export default function Home() {
             maps={allMaps}
             loading={allLoading}
             skeletonCount={6}
+            adPrefix="home"
           />
         )}
       </section>
 
-      <div className="h-4" />
+      {/* bottom padding so last card isn't hidden behind social bar */}
+      <div className="h-16" />
+
+      {/* ── Sticky Social Bar ── */}
+      <AdsterraSocialBar />
     </PageShell>
   );
 }

@@ -1,0 +1,44 @@
+Create a clean, highly optimized, and responsive 3-screen mobile-first web app for downloading BUSSID Map Mods using React, Vite, and Tailwind CSS. 
+
+Ensure the layout accommodates Adsterra advertisement scripts smoothly without crashing or violating ad network policies.
+
+---
+
+### PAGE STRUCTURE & EXACT AD PLACEMENTS:
+
+#### 1. Home Screen ('/')
+- **Header:** Title and dynamic grid/list of available map mods.
+- **Top Ad:** 1 Display Banner slot (728x90 / 320x50 placeholder) placed inside the top header section.
+- **Content Ad:** 1 Native Banner slot embedded inside the mod card list after every 3rd card.
+- **Card Actions:** Each mod card has a "View Details" button. Clicking this triggers a Smartlink function (opens target link in a new tab) while simultaneously navigating the app to the Details page.
+- **Sticky Ad:** 1 Social Bar container fixed at the bottom of the viewport.
+
+#### 2. Details Screen ('/details/:id')
+- **Content:** Showcase image slider/gallery, mod features list, and full description.
+- **Popunder Trigger:** Include a global click event handler on the page root that triggers a Popunder script function on the first user tap/click.
+- **Top Ad:** 1 Display Banner slot placed immediately above the main showcase image.
+- **Mid-Content Ad:** 1 Native Banner smoothly integrated inside the mod features list.
+- **Bottom Ad:** 1 Display Banner placed above the primary navigation button with proper padding (preventing accidental clicks).
+- **Sticky Ad:** 1 Social Bar container fixed at the bottom.
+- **Navigation:** A prominent "Go to Download Page" button at the bottom.
+
+#### 3. Download Screen ('/download/:id')
+- **Countdown Block:** A 10-second countdown timer ("Your download link is generating in X seconds...").
+- **Popunder Trigger:** Include a dedicated Popunder script trigger for the download screen with frequency control logic.
+- **Timer Ads:** 
+  - 1 Display Banner directly above the countdown timer block.
+  - 1 Native Banner directly below the countdown timer block.
+- **Download Action:** Once the countdown hits zero, display the "Download File" button. Clicking this button opens a Smartlink in a new tab and redirects the main window to the final download URL (MediaFire / Google Drive placeholder).
+- **Sticky Ad:** 1 Social Bar container fixed at the bottom.
+
+---
+
+### TECHNICAL REQUIREMENTS FOR ADSTERRA INTEGRATION:
+
+1. Create modular React placeholder components for each ad type:
+   - `<AdsterraBanner type="728x90" />`
+   - `<AdsterraNative />`
+   - `<AdsterraSocialBar />`
+   - `<AdsterraPopunder />`
+2. Structure these components using `useEffect` and `useRef` so external `<script>` tags provided by Adsterra can be dynamically injected into the DOM safely without breaking React hydration.
+3. Apply standard Tailwind margins and padding (`my-4`, `p-2`) around all ad slots to maintain strict visual separation between interactive UI buttons and advertisements.
