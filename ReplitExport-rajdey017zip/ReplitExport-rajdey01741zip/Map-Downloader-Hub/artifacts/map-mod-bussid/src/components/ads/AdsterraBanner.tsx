@@ -2,8 +2,8 @@
  * AdsterraBanner — display banner slot for Adsterra.
  *
  * Usage:
- *   <AdsterraBanner type="320x50" />
- *   <AdsterraBanner type="728x90" />
+ *   <AdsterraBanner type="320x50" />   ← mobile leaderboard (default)
+ *   <AdsterraBanner type="728x90" />   ← desktop leaderboard
  *
  * To activate: replace the TODO comment inside useEffect with the
  * <script> snippet from your Adsterra dashboard for this banner zone.
@@ -32,8 +32,9 @@ export function AdsterraBanner({ type = '320x50', className = '' }: AdsterraBann
 
     // TODO: inject your Adsterra banner script here, e.g.:
     // const s = document.createElement('script');
-    // s.src = 'https://pl....effectivecpmnetwork.com/...invoke.js';
     // s.async = true;
+    // s.dataset.cfasync = 'false';
+    // s.src = 'https://pl....effectivecpmnetwork.com/...invoke.js';
     // el.appendChild(s);
   }, []);
 

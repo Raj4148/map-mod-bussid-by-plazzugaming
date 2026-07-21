@@ -1,6 +1,9 @@
 /**
  * AdsterraSocialBar — sticky social-bar ad fixed at the bottom of the viewport.
  *
+ * Reserves a min-h-[60px] block so the bar has space to render without
+ * collapsing. The script renders its own UI inside the container.
+ *
  * To activate: replace the TODO comment inside useEffect with the
  * <script> snippet from your Adsterra dashboard for the Social Bar format.
  */
@@ -16,15 +19,16 @@ export function AdsterraSocialBar() {
 
     // TODO: inject your Adsterra Social Bar script here, e.g.:
     // const s = document.createElement('script');
-    // s.src = 'https://pl....effectivecpmnetwork.com/...socialbar.js';
     // s.async = true;
+    // s.dataset.cfasync = 'false';
+    // s.src = 'https://pl....effectivecpmnetwork.com/...socialbar.js';
     // el.appendChild(s);
   }, []);
 
   return (
     <div
       ref={containerRef}
-      className="fixed bottom-0 left-0 right-0 z-50"
+      className="fixed bottom-0 left-0 right-0 z-50 min-h-[60px]"
       aria-label="Advertisement"
     />
   );

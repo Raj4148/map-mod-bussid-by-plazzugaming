@@ -1,0 +1,35 @@
+Please structure and implement the remaining Adsterra advertisement placements across the 3 screens in this React/Vite app. The Smartlink implementation is already done, so focus strictly on Banner, Native, Social Bar, and Popunder ad units.
+
+---
+
+### PAGE-BY-PAGE AD PLACEMENTS:
+
+1. Home Screen ('/'):
+   - Top Header Area: 1 Display Banner slot (728x90 desktop / 320x50 mobile container).
+   - Mod Content List: 1 Native Banner slot embedded inside the mod grid/list after every 3rd mod item.
+   - Fixed Bottom: 1 Sticky Social Bar container at the bottom of the screen.
+
+2. Details Screen ('/details/:id'):
+   - Above Showcase: 1 Display Banner slot placed immediately above the main mod image/gallery.
+   - Inside Features List: 1 Native Banner smoothly integrated into the features/specifications list section.
+   - Above Action Area: 1 Display Banner placed above the "Go to Download Page" button with proper margins (`my-4`) to prevent accidental misclicks.
+   - Fixed Bottom: 1 Sticky Social Bar container at the bottom.
+   - Global Event: Include a Popunder trigger script setup on the first user interaction on this page.
+
+3. Download Screen ('/download/:id'):
+   - Above Timer: 1 Display Banner slot directly above the 10-second countdown timer block.
+   - Below Timer: 1 Native Banner slot directly below the countdown timer block.
+   - Fixed Bottom: 1 Sticky Social Bar container at the bottom.
+   - Global Event: Include Popunder trigger script logic dedicated to the download page.
+
+---
+
+### TECHNICAL INTEGRATION REQUIREMENTS:
+
+1. Ad Components Structure:
+   - Create reusable React placeholder components (`<AdsterraBanner />`, `<AdsterraNative />`, `<AdsterraSocialBar />`, `<AdsterraPopunder />`).
+   - Use `useEffect` and `useRef` to safely inject external Adsterra `<script>` tags into the DOM without causing React re-render or hydration issues.
+
+2. UI & Spacing Guidelines:
+   - Provide clean layout containers with predefined minimum dimensions (`min-h-[90px]`, `min-h-[250px]`) so the UI does not collapse before scripts load.
+   - Ensure proper padding and margins around all ad containers to comply with ad network safety policies and prevent accidental clicks on nearby buttons.

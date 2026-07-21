@@ -3,7 +3,10 @@
  * Zone: 80f7fa7719c57e33ec30ee642c6c9d39
  *
  * Pass a unique `idSuffix` for every instance on the same page
- * so the container IDs don't collide.
+ * so container IDs don't collide.
+ *
+ * Min-height of 250px is reserved so the layout does not collapse
+ * before the ad script renders.
  */
 import { useEffect, useRef } from 'react';
 
@@ -40,7 +43,7 @@ export function AdsterraNative({ idSuffix, className = '' }: AdsterraNativeProps
     <div className={`my-4 ${className}`}>
       <div
         id={containerId}
-        style={{ minHeight: 90 }}
+        className="min-h-[250px]"
         aria-label="Advertisement"
       />
     </div>
