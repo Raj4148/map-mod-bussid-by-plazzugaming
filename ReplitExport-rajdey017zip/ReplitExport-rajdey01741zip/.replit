@@ -1,0 +1,12 @@
+modules = ["nodejs-20"]
+[nix]
+channel = "stable-25_05"
+
+[[ports]]
+localPort = 23508
+externalPort = 80
+
+[deployment]
+deploymentTarget = "static"
+build = ["pnpm", "--filter", "@workspace/map-mod-bussid", "run", "build"]
+publicDir = "Map-Downloader-Hub/artifacts/map-mod-bussid/dist/public"
