@@ -5,6 +5,7 @@ import { MapCardSkeleton } from '../components/MapCard';
 import { MapGrid } from '../components/MapGrid';
 import { PageShell } from '../components/Layout';
 import { AdsterraBanner } from '../components/ads/AdsterraBanner';
+import { AdsterraNative } from '../components/ads/AdsterraNative';
 import { DownloadCloud, ChevronRight, MapPin, Trophy } from 'lucide-react';
 import { useState } from 'react';
 
@@ -76,6 +77,7 @@ export default function Home() {
       </div>
 
       <AdsterraBanner type="320x50" />
+      <AdsterraNative />
 
       {/* ── Featured Maps (top 6 by download count) ── */}
       <section className="mt-2">

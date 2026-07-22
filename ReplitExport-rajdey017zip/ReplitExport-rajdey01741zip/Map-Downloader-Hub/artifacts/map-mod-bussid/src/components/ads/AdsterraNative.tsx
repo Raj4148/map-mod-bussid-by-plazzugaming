@@ -1,40 +1,61 @@
 /**
  * AdsterraNative — Adsterra native banner (zone 6e8f0caecc9db716d4b3e637e3185a2d).
  *
- * Injected directly into the DOM using a script tag to ensure Adsterra can
- * verify the domain and render the complex native layout correctly.
+ * Uses a non-sandboxed iframe to ensure the Adsterra script can verify
+ * the parent domain while allowing multiple instances on one page.
  */
-import { useEffect, useRef } from 'react';
+import { useEffect, useState } from 'react';
 
 interface AdsterraNativeProps {
   className?: string;
 }
 
+const NATIVE_HTML = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <style>body { margin: 0; padding: 0; background: transparent; overflow: hidden; display: flex; justify-content: center; }</style>
+</head>
+<body>
+  <script async="async" data-cfasync="false" src="//www.effectivecpmnetwork.com/6e8f0caecc9db716d4b3e637e3185a2d/invoke.js"></script>
+  <div id="container-6e8f0caecc9db716d4b3e637e3185a2d"></div>
+  <script>
+    var observer = new MutationObserver(function() {
+      var h = document.body.scrollHeight;
+      if (h > 0) window.parent.postMessage({ adNativeHeight: h }, '*');
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+  </script>
+</body>
+</html>`;
+
 export function AdsterraNative({ className = '' }: AdsterraNativeProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const [height, setHeight] = useState(120); // Default placeholder height
 
   useEffect(() => {
-    if (!containerRef.current) return;
-
-    // Clear previous content
-    containerRef.current.innerHTML = '';
-
-    const script = document.createElement('script');
-    script.async = true;
-    script.dataset.cfasync = 'false';
-    script.src = '//www.effectivecpmnetwork.com/6e8f0caecc9db716d4b3e637e3185a2d/invoke.js';
-
-    const container = document.createElement('div');
-    container.id = 'container-6e8f0caecc9db716d4b3e637e3185a2d';
-
-    containerRef.current.appendChild(script);
-    containerRef.current.appendChild(container);
+    const handleMessage = (e: MessageEvent) => {
+      if (e.data && typeof e.data.adNativeHeight === 'number' && e.data.adNativeHeight > 0) {
+        setHeight(e.data.adNativeHeight);
+      }
+    };
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
   }, []);
 
   return (
-    <div
-      ref={containerRef}
-      className={`my-4 w-full min-h-[100px] flex flex-col items-center justify-center ${className}`}
-    />
+    <div className={`my-6 flex justify-center w-full overflow-hidden ${className}`}>
+      <iframe
+        srcDoc={NATIVE_HTML}
+        scrolling="no"
+        style={{
+          width: '100%',
+          maxWidth: 728,
+          height: height,
+          border: 'none',
+          display: 'block'
+        }}
+        aria-label="Advertisement"
+      />
+    </div>
   );
 }
