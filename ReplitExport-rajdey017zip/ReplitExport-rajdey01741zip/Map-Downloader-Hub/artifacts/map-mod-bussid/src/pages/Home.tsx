@@ -76,8 +76,11 @@ export default function Home() {
         <p className="text-xs font-bold truncate">Notice: Daily 8:00 PM new map mod uploaded!</p>
       </div>
 
+      <AdsterraBanner type="320x50" />
+
       {/* ── Featured Maps (top 6 by download count) ── */}
       <section className="mt-2">
+        <AdsterraBanner type="320x50" />
         <div className="px-4 flex items-center justify-between mb-3">
           <h2 className="text-foreground font-bold text-lg flex items-center gap-2">
             <Trophy className="w-5 h-5 text-yellow-500" />
@@ -128,6 +131,7 @@ export default function Home() {
 
       {/* ── Latest Maps (native ad injected after every 3rd card by MapGrid) ── */}
       <section className="mt-6 px-4">
+        <AdsterraBanner type="320x50" />
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-foreground font-bold text-lg">Latest Maps</h2>
           <Link

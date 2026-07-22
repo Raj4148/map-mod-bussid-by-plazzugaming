@@ -217,6 +217,7 @@ export default function MapDetail() {
           {/* Native banner below the countdown block */}
           <div className="w-full">
             <AdsterraNative />
+            <AdsterraBanner type="320x50" />
           </div>
 
           {/* Download button — shown only when ready */}
@@ -258,6 +259,8 @@ export default function MapDetail() {
 
       <StickyHeader title={map.name} isLink />
 
+      <AdsterraBanner type="320x50" />
+
       {/* Hero image */}
       <div className="relative mx-4 rounded-2xl overflow-hidden bg-muted" style={{ aspectRatio: '16/9' }}>
         <SafeImage src={map.thumbnail} alt={map.name} className="w-full h-full object-cover" />
@@ -281,6 +284,7 @@ export default function MapDetail() {
 
       {/* ── Get Map / unlock area ── */}
       <div className="mx-4 mt-4">
+        <AdsterraBanner type="320x50" />
         {gmPhase === 'idle' && (
           <button
             onClick={() => setGmPhase('counting')}

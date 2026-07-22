@@ -1,62 +1,61 @@
 /**
- * AdsterraBanner — display banner slot.
- * Zone: 6e8f0caecc9db716d4b3e637e3185a2d (same invoke.js as native banner)
- *
- * Rendered inside an isolated <iframe srcDoc> so the container ID
- * never clashes with AdsterraNative instances on the same page.
- * The iframe starts at 0px height and expands once the ad renders.
+ * AdsterraBanner — display fixed-size banner slots.
+ * Supports 728x90, 468x60, and 320x50.
  */
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
+
+type BannerType = '728x90' | '468x60' | '320x50';
 
 interface AdsterraBannerProps {
+  type: BannerType;
   className?: string;
 }
 
-const AD_HTML = `<!DOCTYPE html>
+const BANNER_CONFIG: Record<BannerType, { key: string; width: number; height: number }> = {
+  '468x60': { key: '8c91b676759152319fca5b025f528826', width: 468, height: 60 },
+  '320x50': { key: '788a67c50c0daa4caa50fd5da1ec1598', width: 320, height: 50 },
+  '728x90': { key: '942ba123281ef93232e40c5a82e994e2', width: 728, height: 90 },
+};
+
+function getAdHtml(type: BannerType) {
+  const conf = BANNER_CONFIG[type];
+  return `<!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { background: transparent; overflow: hidden; }
-</style>
+  <meta charset="utf-8"/>
+  <style>body { margin: 0; padding: 0; background: transparent; overflow: hidden; display: flex; justify-content: center; }</style>
 </head>
 <body>
-<div id="container-6e8f0caecc9db716d4b3e637e3185a2d"></div>
-<script async data-cfasync="false"
-  src="https://www.effectivecpmnetwork.com/6e8f0caecc9db716d4b3e637e3185a2d/invoke.js">
-</script>
-<script>
-  var observer = new MutationObserver(function() {
-    var h = document.body.scrollHeight;
-    if (h > 0) parent.postMessage({ adBannerHeight: h }, '*');
-  });
-  observer.observe(document.body, { childList: true, subtree: true, attributes: true });
-</script>
+  <script type="text/javascript">
+    atOptions = {
+      'key' : '${conf.key}',
+      'format' : 'iframe',
+      'height' : ${conf.height},
+      'width' : ${conf.width},
+      'params' : {}
+    };
+  </script>
+  <script type="text/javascript" src="//www.highperformanceformat.com/${conf.key}/invoke.js"></script>
 </body>
 </html>`;
+}
 
-export function AdsterraBanner({ className = '' }: AdsterraBannerProps) {
-  const [height, setHeight] = useState(0);
-
-  useEffect(() => {
-    const handleMessage = (e: MessageEvent) => {
-      if (e.data && typeof e.data.adBannerHeight === 'number' && e.data.adBannerHeight > 0) {
-        setHeight(e.data.adBannerHeight);
-      }
-    };
-    window.addEventListener('message', handleMessage);
-    return () => window.removeEventListener('message', handleMessage);
-  }, []);
+export function AdsterraBanner({ type, className = '' }: AdsterraBannerProps) {
+  const conf = BANNER_CONFIG[type];
 
   return (
     <div className={`my-4 flex justify-center w-full overflow-hidden ${className}`}>
       <iframe
-        srcDoc={AD_HTML}
+        srcDoc={getAdHtml(type)}
         sandbox="allow-scripts allow-popups allow-same-origin"
         scrolling="no"
-        style={{ width: '100%', maxWidth: 728, height, border: 'none', display: 'block' }}
+        style={{
+          width: '100%',
+          maxWidth: conf.width,
+          height: conf.height,
+          border: 'none',
+          display: 'block'
+        }}
         aria-label="Advertisement"
       />
     </div>
