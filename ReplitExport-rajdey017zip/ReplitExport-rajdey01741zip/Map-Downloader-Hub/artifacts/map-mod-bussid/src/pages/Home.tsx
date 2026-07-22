@@ -32,7 +32,6 @@ function FeaturedCard({ map }: { map: Parameters<typeof getMapBadge>[0] }) {
   return (
     <Link
       href={`/map/${map.id}`}
-      onClick={() => triggerSmartLinks()}
       className="flex-shrink-0 relative rounded-xl overflow-hidden block bg-muted"
       style={{ width: 148, aspectRatio: '4/3' }}
     >

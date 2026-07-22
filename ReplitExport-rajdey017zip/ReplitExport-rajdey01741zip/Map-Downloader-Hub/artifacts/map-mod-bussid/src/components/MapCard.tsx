@@ -1,5 +1,5 @@
 import { Link } from 'wouter';
-import { triggerSmartLinks } from '../lib/adsterra';
+
 import { MapMod, fmtCount, getMapBadge, isMapNew } from '../hooks/useMaps';
 import { useState } from 'react';
 
@@ -32,7 +32,6 @@ export function MapCard({ map, showNew = true }: MapCardProps) {
   return (
     <Link
       href={`/map/${map.id}`}
-      onClick={() => triggerSmartLinks()}
       className="block relative rounded-xl overflow-hidden bg-muted"
       style={{ aspectRatio: '4/3' }}
     >
