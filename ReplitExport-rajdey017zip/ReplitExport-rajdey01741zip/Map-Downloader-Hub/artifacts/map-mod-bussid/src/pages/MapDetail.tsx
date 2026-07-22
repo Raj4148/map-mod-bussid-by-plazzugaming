@@ -1,6 +1,6 @@
 import { useRoute, Link } from 'wouter';
 import { useMap, incrementDownloadCount } from '../hooks/useMaps';
-import { triggerSmartLinks } from '../lib/adsterra';
+
 import { PageShell } from '../components/Layout';
 import { AdsterraBanner } from '../components/ads/AdsterraBanner';
 import { AdsterraNative } from '../components/ads/AdsterraNative';
@@ -115,7 +115,6 @@ export default function MapDetail() {
 
   const handleDownloadNow = () => {
     if (!map) return;
-    triggerSmartLinks();
     incrementDownloadCount(map.id);
     setDlCountdown(COUNTDOWN_SECONDS);
     setDlPhase('counting');
@@ -123,10 +122,6 @@ export default function MapDetail() {
 
   const handleFinalDownload = () => {
     if (!map || !map.downloadUrl || map.downloadUrl === '#') return;
-    // 1) Open smartlink in a new tab immediately (inside the click handler to avoid popup blockers)
-    triggerSmartLinks();
-    // 2) Redirect the current window to the actual file after a short delay
-    //    so both actions originate from the same user gesture
     const fileUrl = map.downloadUrl;
     setTimeout(() => {
       window.location.href = fileUrl;
