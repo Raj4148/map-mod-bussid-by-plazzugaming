@@ -1,69 +1,40 @@
 /**
  * AdsterraNative — Adsterra native banner (zone 6e8f0caecc9db716d4b3e637e3185a2d).
  *
- * Each instance renders inside its own <iframe srcDoc> so the Adsterra
- * script always finds the exact container ID it expects without clashing
- * when multiple ads appear on the same page.
- *
- * The iframe height auto-expands via a postMessage from within once the
- * ad renders; it starts at 0 so it collapses cleanly when blocked.
+ * Injected directly into the DOM using a script tag to ensure Adsterra can
+ * verify the domain and render the complex native layout correctly.
  */
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 interface AdsterraNativeProps {
   className?: string;
 }
 
-const AD_HTML = `<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { background: transparent; overflow: hidden; }
-</style>
-</head>
-<body>
-<div id="container-6e8f0caecc9db716d4b3e637e3185a2d"></div>
-<script async data-cfasync="false"
-  src="https://www.effectivecpmnetwork.com/6e8f0caecc9db716d4b3e637e3185a2d/invoke.js">
-</script>
-<script>
-  // Notify the parent of our rendered height so the iframe can resize
-  var observer = new MutationObserver(function() {
-    var h = document.body.scrollHeight;
-    if (h > 0) parent.postMessage({ adHeight: h }, '*');
-  });
-  observer.observe(document.body, { childList: true, subtree: true, attributes: true });
-</script>
-</body>
-</html>`;
-
 export function AdsterraNative({ className = '' }: AdsterraNativeProps) {
-  const iframeRef = useRef<HTMLIFrameElement>(null);
-  const [height, setHeight] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handleMessage = (e: MessageEvent) => {
-      if (e.data && typeof e.data.adHeight === 'number' && e.data.adHeight > 0) {
-        setHeight(e.data.adHeight);
-      }
-    };
-    window.addEventListener('message', handleMessage);
-    return () => window.removeEventListener('message', handleMessage);
+    if (!containerRef.current) return;
+
+    // Clear previous content
+    containerRef.current.innerHTML = '';
+
+    const script = document.createElement('script');
+    script.async = true;
+    script.dataset.cfasync = 'false';
+    script.src = '//www.effectivecpmnetwork.com/6e8f0caecc9db716d4b3e637e3185a2d/invoke.js';
+
+    const container = document.createElement('div');
+    container.id = 'container-6e8f0caecc9db716d4b3e637e3185a2d';
+
+    containerRef.current.appendChild(script);
+    containerRef.current.appendChild(container);
   }, []);
 
   return (
-    <div className={`my-4 w-full overflow-hidden ${className}`}>
-      <iframe
-        ref={iframeRef}
-        srcDoc={AD_HTML}
-        sandbox="allow-scripts allow-popups allow-same-origin"
-        scrolling="no"
-        style={{ width: '100%', height, border: 'none', display: 'block' }}
-        aria-label="Advertisement"
-      />
-    </div>
+    <div
+      ref={containerRef}
+      className={`my-4 w-full min-h-[100px] flex flex-col items-center justify-center ${className}`}
+    />
   );
 }
