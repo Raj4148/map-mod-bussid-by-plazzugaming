@@ -1,35 +1,24 @@
 /**
  * AdsterraSocialBar — sticky social-bar ad fixed at the bottom of the viewport.
+ * Script: https://pl30380326.effectivecpmnetwork.com/1c/8e/a8/1c8ea84455f7f2907cd1f65920c6395b.js
  *
- * Reserves a min-h-[60px] block so the bar has space to render without
- * collapsing. The script renders its own UI inside the container.
- *
- * To activate: replace the TODO comment inside useEffect with the
- * <script> snippet from your Adsterra dashboard for the Social Bar format.
+ * The script self-renders its own UI; this component just injects it once.
  */
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
+
+let injected = false;
 
 export function AdsterraSocialBar() {
-  const containerRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
-    const el = containerRef.current;
-    if (!el || el.dataset.adLoaded) return;
-    el.dataset.adLoaded = '1';
+    if (injected) return;
+    injected = true;
 
-    // TODO: inject your Adsterra Social Bar script here, e.g.:
-    // const s = document.createElement('script');
-    // s.async = true;
-    // s.dataset.cfasync = 'false';
-    // s.src = 'https://pl....effectivecpmnetwork.com/...socialbar.js';
-    // el.appendChild(s);
+    const script = document.createElement('script');
+    script.src =
+      'https://pl30380326.effectivecpmnetwork.com/1c/8e/a8/1c8ea84455f7f2907cd1f65920c6395b.js';
+    script.async = true;
+    document.body.appendChild(script);
   }, []);
 
-  return (
-    <div
-      ref={containerRef}
-      className="fixed bottom-0 left-0 right-0 z-50 min-h-[60px]"
-      aria-label="Advertisement"
-    />
-  );
+  return null;
 }
