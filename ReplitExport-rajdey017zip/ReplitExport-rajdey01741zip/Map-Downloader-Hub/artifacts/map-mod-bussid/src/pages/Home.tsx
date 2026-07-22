@@ -5,7 +5,6 @@ import { MapCardSkeleton } from '../components/MapCard';
 import { MapGrid } from '../components/MapGrid';
 import { PageShell } from '../components/Layout';
 import { AdsterraBanner } from '../components/ads/AdsterraBanner';
-import { AdsterraSocialBar } from '../components/ads/AdsterraSocialBar';
 import { DownloadCloud, ChevronRight, MapPin, Trophy } from 'lucide-react';
 import { useState } from 'react';
 
@@ -175,9 +174,6 @@ export default function Home() {
 
       {/* bottom padding so last card isn't hidden behind social bar */}
       <div className="h-16" />
-
-      {/* ── Sticky Social Bar ── */}
-      <AdsterraSocialBar />
     </PageShell>
   );
 }

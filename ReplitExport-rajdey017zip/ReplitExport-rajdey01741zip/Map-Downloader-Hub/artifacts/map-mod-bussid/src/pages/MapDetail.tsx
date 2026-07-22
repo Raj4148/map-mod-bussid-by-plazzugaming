@@ -4,7 +4,6 @@ import { useMap, incrementDownloadCount } from '../hooks/useMaps';
 import { PageShell } from '../components/Layout';
 import { AdsterraBanner } from '../components/ads/AdsterraBanner';
 import { AdsterraNative } from '../components/ads/AdsterraNative';
-import { AdsterraSocialBar } from '../components/ads/AdsterraSocialBar';
 import { AdsterraPopunder } from '../components/ads/AdsterraPopunder';
 import {
   ChevronLeft, Download, DownloadCloud, Calendar, Tag,
@@ -244,7 +243,6 @@ export default function MapDetail() {
         </div>
 
         <div className="h-16" />
-        <AdsterraSocialBar />
       </PageShell>
     );
   }
@@ -383,9 +381,6 @@ export default function MapDetail() {
 
       {/* bottom padding so content isn't hidden behind social bar */}
       <div className="h-16" />
-
-      {/* ── Sticky Social Bar ── */}
-      <AdsterraSocialBar />
     </PageShell>
   );
 }
