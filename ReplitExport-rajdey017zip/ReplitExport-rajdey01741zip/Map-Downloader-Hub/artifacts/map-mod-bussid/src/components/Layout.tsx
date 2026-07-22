@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'wouter';
 import { Home, Star, Settings } from 'lucide-react';
-import { triggerSmartLinks } from '../lib/adsterra';
+
 import { useTheme } from '../lib/theme-context';
 
 /* ─── Bottom Navigation Bar ─── */
@@ -26,7 +26,6 @@ export function BottomNav() {
           <Link
             key={href}
             href={href}
-            onClick={() => { if (href !== '/settings') triggerSmartLinks(); }}
             className="flex flex-col items-center gap-1 min-w-[60px]"
           >
             <div className={`w-12 h-8 flex items-center justify-center rounded-full transition-all ${

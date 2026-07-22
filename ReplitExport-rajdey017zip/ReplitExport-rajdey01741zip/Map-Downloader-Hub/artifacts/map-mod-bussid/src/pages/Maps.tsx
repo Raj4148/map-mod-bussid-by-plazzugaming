@@ -1,6 +1,6 @@
 import { useLocation } from 'wouter';
 import { useMaps } from '../hooks/useMaps';
-import { triggerSmartLinks } from '../lib/adsterra';
+
 import { MapGrid } from '../components/MapGrid';
 import { PageShell } from '../components/Layout';
 import { ChevronLeft, MapPin } from 'lucide-react';
@@ -20,7 +20,6 @@ export default function Maps() {
   const { maps, loading } = useMaps(categoryFilter === 'all' ? undefined : categoryFilter);
 
   const handleTab = (id: string) => {
-    triggerSmartLinks();
     setLocation(id === 'all' ? '/maps' : `/maps?category=${id}`);
   };
 
