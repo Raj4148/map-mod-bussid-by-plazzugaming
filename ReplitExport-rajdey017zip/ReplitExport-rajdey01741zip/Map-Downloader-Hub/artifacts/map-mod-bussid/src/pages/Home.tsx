@@ -156,6 +156,19 @@ export default function Home() {
         )}
       </section>
 
+      {/* ── SEO Description Section ── */}
+      <section className="mt-12 px-4 pb-8 border-t border-border/30 pt-8">
+        <h3 className="text-foreground/80 font-bold text-sm mb-2">About BUSSID Map Mod Hub</h3>
+        <p className="text-muted-foreground text-[11px] leading-relaxed">
+          Welcome to the ultimate destination for <strong>BUSSID Map Mod downloads</strong>.
+          Our platform specializes in high-quality terrain for Bus Simulator Indonesia,
+          including the highly searched <strong>Indian Map Mod</strong>, <strong>Nepali hilly roads</strong>,
+          and authentic Indonesian city maps. Every mod is tested for compatibility and performance.
+          Check back every day at 8:00 PM for new map releases and unlock the best driving experience
+          on your mobile device.
+        </p>
+      </section>
+
       {/* bottom padding so last card isn't hidden behind social bar */}
       <div className="h-16" />
 
