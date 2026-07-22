@@ -1,6 +1,6 @@
 /**
  * AdsterraBanner — display banner slot.
- * Zone: 80f7fa7719c57e33ec30ee642c6c9d39 (same invoke.js as native banner)
+ * Zone: 6e8f0caecc9db716d4b3e637e3185a2d (same invoke.js as native banner)
  *
  * Rendered inside an isolated <iframe srcDoc> so the container ID
  * never clashes with AdsterraNative instances on the same page.
@@ -23,9 +23,9 @@ const AD_HTML = `<!DOCTYPE html>
 </style>
 </head>
 <body>
-<div id="container-80f7fa7719c57e33ec30ee642c6c9d39"></div>
+<div id="container-6e8f0caecc9db716d4b3e637e3185a2d"></div>
 <script async data-cfasync="false"
-  src="https://pl30380328.effectivecpmnetwork.com/80f7fa7719c57e33ec30ee642c6c9d39/invoke.js">
+  src="https://www.effectivecpmnetwork.com/6e8f0caecc9db716d4b3e637e3185a2d/invoke.js">
 </script>
 <script>
   var observer = new MutationObserver(function() {

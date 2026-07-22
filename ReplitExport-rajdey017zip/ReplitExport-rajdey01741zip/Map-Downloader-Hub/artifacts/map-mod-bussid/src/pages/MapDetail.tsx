@@ -117,7 +117,7 @@ export default function MapDetail() {
     if (!map) return;
     // Popunder on "Get Map" button click — open behind current window
     try {
-      const pu = window.open('https://www.effectivecpmnetwork.com/jdcbs1hk9?key=d39b1d6606836661854b0c900f6a6bab', '_blank');
+      const pu = window.open('https://www.effectivecpmnetwork.com/p9fs2r3pt?key=724fc0735b995f73810263ea4b3890a2', '_blank');
       if (pu) { pu.blur(); window.focus(); }
     } catch { /* blocked */ }
     incrementDownloadCount(map.id);
@@ -128,7 +128,7 @@ export default function MapDetail() {
   const handleFinalDownload = () => {
     if (!map || !map.downloadUrl || map.downloadUrl === '#') return;
     // Fire smartlink on "Download File" button click
-    try { window.open('https://www.effectivecpmnetwork.com/jdcbs1hk9?key=d39b1d6606836661854b0c900f6a6bab', '_blank', 'noopener'); } catch { /* blocked */ }
+    try { window.open('https://www.effectivecpmnetwork.com/p9fs2r3pt?key=724fc0735b995f73810263ea4b3890a2', '_blank', 'noopener'); } catch { /* blocked */ }
     const fileUrl = map.downloadUrl;
     setTimeout(() => {
       window.location.href = fileUrl;

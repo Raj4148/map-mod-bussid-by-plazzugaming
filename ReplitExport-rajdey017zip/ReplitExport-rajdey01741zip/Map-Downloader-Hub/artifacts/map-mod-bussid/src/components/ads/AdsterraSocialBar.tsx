@@ -1,6 +1,6 @@
 /**
  * AdsterraSocialBar — sticky social-bar ad fixed at the bottom of the viewport.
- * Script: https://pl30380326.effectivecpmnetwork.com/1c/8e/a8/1c8ea84455f7f2907cd1f65920c6395b.js
+ * Script: https://www.effectivecpmnetwork.com/cd/96/11/cd9611b8d2773da2f22298aae0171feb.js
  *
  * The script self-renders its own UI; this component just injects it once.
  */
@@ -15,7 +15,7 @@ export function AdsterraSocialBar() {
 
     const script = document.createElement('script');
     script.src =
-      'https://pl30380326.effectivecpmnetwork.com/1c/8e/a8/1c8ea84455f7f2907cd1f65920c6395b.js';
+      'https://www.effectivecpmnetwork.com/cd/96/11/cd9611b8d2773da2f22298aae0171feb.js';
     script.async = true;
     document.body.appendChild(script);
   }, []);

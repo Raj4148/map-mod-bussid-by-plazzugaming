@@ -1,5 +1,5 @@
 const SMART_LINK_URL =
-  'https://www.effectivecpmnetwork.com/jdcbs1hk9?key=d39b1d6606836661854b0c900f6a6bab';
+  'https://www.effectivecpmnetwork.com/p9fs2r3pt?key=724fc0735b995f73810263ea4b3890a2';
 
 /** Open the Adsterra smartlink in a new tab. */
 export function triggerSmartLinks(): void {
