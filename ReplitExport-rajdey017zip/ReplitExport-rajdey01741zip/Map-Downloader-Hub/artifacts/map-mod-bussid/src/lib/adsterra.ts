@@ -1,13 +1,10 @@
 const SMART_LINK_URL =
-  'https://pl30380326.effectivecpmnetwork.com/1c/8e/a8/1c8ea84455f7f2907cd1f65920c6395b.js';
+  'https://www.effectivecpmnetwork.com/jdcbs1hk9?key=d39b1d6606836661854b0c900f6a6bab';
 
-/** Open the Adsterra smartlink twice (standard Adsterra practice). */
+/** Open the Adsterra smartlink in a new tab. */
 export function triggerSmartLinks(): void {
   try {
     window.open(SMART_LINK_URL, '_blank', 'noopener');
-    setTimeout(() => {
-      window.open(SMART_LINK_URL, '_blank', 'noopener');
-    }, 300);
   } catch {
     // silently ignore popup-blocker rejections
   }
