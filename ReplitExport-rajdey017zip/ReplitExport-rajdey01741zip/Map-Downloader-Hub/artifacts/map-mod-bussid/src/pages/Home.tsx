@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'wouter';
 import { useMaps, useTopMaps, fmtCount, getMapBadge, isMapNew } from '../hooks/useMaps';
-import { triggerSmartLinks } from '../lib/adsterra';
+
 import { MapCardSkeleton } from '../components/MapCard';
 import { MapGrid } from '../components/MapGrid';
 import { PageShell } from '../components/Layout';
@@ -66,7 +66,6 @@ export default function Home() {
   const [, setLocation] = useLocation();
 
   const handleCategoryClick = (id: string) => {
-    triggerSmartLinks();
     setLocation(id === 'all' ? '/maps' : `/maps?category=${id}`);
   };
 
@@ -92,7 +91,6 @@ export default function Home() {
           </h2>
           <Link
             href="/maps"
-            onClick={() => triggerSmartLinks()}
             className="flex items-center gap-1 text-purple-400 text-xs font-semibold"
           >
             See all <ChevronRight className="w-3 h-3" />
@@ -140,7 +138,6 @@ export default function Home() {
           <h2 className="text-foreground font-bold text-lg">Latest Maps</h2>
           <Link
             href="/maps"
-            onClick={() => triggerSmartLinks()}
             className="flex items-center gap-1 text-purple-400 text-xs font-semibold"
           >
             See all <ChevronRight className="w-3 h-3" />
