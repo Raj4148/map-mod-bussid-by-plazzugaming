@@ -215,7 +215,6 @@ export default function MapDetail() {
 
           {/* Native banner below the countdown block */}
           <div className="w-full">
-            <AdsterraNative />
             <AdsterraBanner type="320x50" />
           </div>
 
@@ -351,9 +350,6 @@ export default function MapDetail() {
           </div>
         )}
 
-        {/* Mid-content native banner */}
-        <AdsterraNative />
-
         {/* Download Now — revealed after Get Map timer */}
         {gmPhase === 'revealed' && (
           <>
@@ -375,6 +371,7 @@ export default function MapDetail() {
             <p className="text-xs text-muted-foreground/50 text-center leading-relaxed pb-2">
               By downloading you agree this mod is for BUSSID entertainment purposes only.
             </p>
+            <AdsterraNative />
           </>
         )}
       </div>

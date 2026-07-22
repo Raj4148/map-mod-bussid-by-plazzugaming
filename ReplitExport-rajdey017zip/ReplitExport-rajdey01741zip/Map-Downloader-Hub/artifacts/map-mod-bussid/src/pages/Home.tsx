@@ -77,7 +77,6 @@ export default function Home() {
       </div>
 
       <AdsterraBanner type="320x50" />
-      <AdsterraNative />
 
       {/* ── Featured Maps (top 6 by download count) ── */}
       <section className="mt-2">
@@ -156,9 +155,10 @@ export default function Home() {
             maps={allMaps}
             loading={allLoading}
             skeletonCount={6}
-            adPrefix="home"
           />
         )}
+
+        <AdsterraNative />
       </section>
 
       {/* ── SEO Description Section ── */}

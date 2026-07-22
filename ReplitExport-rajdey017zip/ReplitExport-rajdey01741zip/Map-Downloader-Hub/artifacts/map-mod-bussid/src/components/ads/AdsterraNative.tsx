@@ -1,61 +1,42 @@
 /**
  * AdsterraNative — Adsterra native banner (zone 6e8f0caecc9db716d4b3e637e3185a2d).
  *
- * Uses a non-sandboxed iframe to ensure the Adsterra script can verify
- * the parent domain while allowing multiple instances on one page.
+ * Injected once per page load. Ensures the container is ready
+ * before the script runs.
  */
-import { useEffect, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
-interface AdsterraNativeProps {
-  className?: string;
-}
-
-const NATIVE_HTML = `<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8"/>
-  <style>body { margin: 0; padding: 0; background: transparent; overflow: hidden; display: flex; justify-content: center; }</style>
-</head>
-<body>
-  <script async="async" data-cfasync="false" src="//www.effectivecpmnetwork.com/6e8f0caecc9db716d4b3e637e3185a2d/invoke.js"></script>
-  <div id="container-6e8f0caecc9db716d4b3e637e3185a2d"></div>
-  <script>
-    var observer = new MutationObserver(function() {
-      var h = document.body.scrollHeight;
-      if (h > 0) window.parent.postMessage({ adNativeHeight: h }, '*');
-    });
-    observer.observe(document.body, { childList: true, subtree: true });
-  </script>
-</body>
-</html>`;
-
-export function AdsterraNative({ className = '' }: AdsterraNativeProps) {
-  const [height, setHeight] = useState(120); // Default placeholder height
+export function AdsterraNative({ className = '' }: { className?: string }) {
+  const adContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handleMessage = (e: MessageEvent) => {
-      if (e.data && typeof e.data.adNativeHeight === 'number' && e.data.adNativeHeight > 0) {
-        setHeight(e.data.adNativeHeight);
-      }
-    };
-    window.addEventListener('message', handleMessage);
-    return () => window.removeEventListener('message', handleMessage);
+    if (!adContainerRef.current) return;
+
+    // Check if script is already in the document to prevent double-loading
+    const scriptId = 'adsterra-native-script';
+    let script = document.getElementById(scriptId) as HTMLScriptElement;
+
+    if (!script) {
+      script = document.createElement('script');
+      script.id = scriptId;
+      script.async = true;
+      script.dataset.cfasync = 'false';
+      script.src = '//www.effectivecpmnetwork.com/6e8f0caecc9db716d4b3e637e3185a2d/invoke.js';
+      document.head.appendChild(script);
+    }
+
+    // Many Adsterra native scripts are self-executing and look for
+    // the container immediately. If it's already loaded, we might
+    // need to trigger a re-run, but standard scripts usually don't
+    // support this well in React.
+    //
+    // A reliable fallback is to force the container into the DOM
+    // and let the script find it.
   }, []);
 
   return (
-    <div className={`my-6 flex justify-center w-full overflow-hidden ${className}`}>
-      <iframe
-        srcDoc={NATIVE_HTML}
-        scrolling="no"
-        style={{
-          width: '100%',
-          maxWidth: 728,
-          height: height,
-          border: 'none',
-          display: 'block'
-        }}
-        aria-label="Advertisement"
-      />
+    <div className={`my-8 w-full flex flex-col items-center ${className}`}>
+      <div id="container-6e8f0caecc9db716d4b3e637e3185a2d" ref={adContainerRef}></div>
     </div>
   );
 }

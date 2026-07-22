@@ -4,6 +4,7 @@ import { useMaps } from '../hooks/useMaps';
 import { MapGrid } from '../components/MapGrid';
 import { PageShell } from '../components/Layout';
 import { AdsterraBanner } from '../components/ads/AdsterraBanner';
+import { AdsterraNative } from '../components/ads/AdsterraNative';
 import { ChevronLeft, MapPin } from 'lucide-react';
 
 const TABS = [
@@ -71,14 +72,13 @@ export default function Maps() {
             <AdsterraBanner type="320x50" />
           </div>
         ) : (
-          /* MapGrid injects a NativeBannerAd after every 6 cards automatically */
           <MapGrid
             maps={maps}
             loading={loading}
             skeletonCount={8}
-            adPrefix={`maps-${categoryFilter}`}
           />
         )}
+        <AdsterraNative />
       </div>
     </PageShell>
   );
