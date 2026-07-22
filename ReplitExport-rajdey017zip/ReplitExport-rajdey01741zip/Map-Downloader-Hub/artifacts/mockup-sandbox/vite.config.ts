@@ -5,6 +5,7 @@ import path from "path";
 import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
 import { mockupPreviewPlugin } from "./mockupPreviewPlugin";
 
+// Force build refresh 1.
 // PORT and BASE_PATH are only needed for the dev server — not for `vite build`.
 // Use safe defaults so the production build doesn't crash when they're absent.
 const rawPort = process.env.PORT;
