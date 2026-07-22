@@ -155,10 +155,9 @@ export default function Home() {
             maps={allMaps}
             loading={allLoading}
             skeletonCount={6}
+            adInterval={4}
           />
         )}
-
-        <AdsterraNative />
       </section>
 
       {/* ── SEO Description Section ── */}

@@ -76,9 +76,9 @@ export default function Maps() {
             maps={maps}
             loading={loading}
             skeletonCount={8}
+            adInterval={6}
           />
         )}
-        <AdsterraNative />
       </div>
     </PageShell>
   );
