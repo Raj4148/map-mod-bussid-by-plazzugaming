@@ -115,8 +115,11 @@ export default function MapDetail() {
 
   const handleDownloadNow = () => {
     if (!map) return;
-    // Fire smartlink on "Get Map" button click
-    try { window.open('https://www.effectivecpmnetwork.com/jdcbs1hk9?key=d39b1d6606836661854b0c900f6a6bab', '_blank', 'noopener'); } catch { /* blocked */ }
+    // Popunder on "Get Map" button click — open behind current window
+    try {
+      const pu = window.open('https://www.effectivecpmnetwork.com/jdcbs1hk9?key=d39b1d6606836661854b0c900f6a6bab', '_blank');
+      if (pu) { pu.blur(); window.focus(); }
+    } catch { /* blocked */ }
     incrementDownloadCount(map.id);
     setDlCountdown(COUNTDOWN_SECONDS);
     setDlPhase('counting');
