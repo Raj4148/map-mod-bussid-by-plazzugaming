@@ -177,9 +177,6 @@ export default function MapDetail() {
         <StickyHeader onBack={handleBackFromDownload} title={map.name} />
 
         <div className="px-4 pt-6 pb-4 flex flex-col items-center text-center">
-          {/* Banner above the countdown block */}
-          <AdsterraBanner type="320x50" />
-
           {/* Countdown block */}
           <div className="w-full rounded-2xl border border-border bg-card p-6 flex flex-col items-center gap-4 my-2">
             {dlPhase === 'counting' ? (
@@ -253,11 +250,6 @@ export default function MapDetail() {
       <AdsterraPopunder />
 
       <StickyHeader title={map.name} isLink />
-
-      {/* Top banner ad — above the hero image */}
-      <div className="px-4">
-        <AdsterraBanner type="320x50" />
-      </div>
 
       {/* Hero image */}
       <div className="relative mx-4 rounded-2xl overflow-hidden bg-muted" style={{ aspectRatio: '16/9' }}>

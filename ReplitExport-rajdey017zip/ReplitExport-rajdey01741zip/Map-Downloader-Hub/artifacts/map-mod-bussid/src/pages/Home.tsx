@@ -76,11 +76,6 @@ export default function Home() {
         <p className="text-xs font-bold truncate">Notice: Daily 8:00 PM new map mod uploaded!</p>
       </div>
 
-      {/* ── Top Banner Ad ── */}
-      <div className="px-4">
-        <AdsterraBanner type="320x50" />
-      </div>
-
       {/* ── Featured Maps (top 6 by download count) ── */}
       <section className="mt-2">
         <div className="px-4 flex items-center justify-between mb-3">
