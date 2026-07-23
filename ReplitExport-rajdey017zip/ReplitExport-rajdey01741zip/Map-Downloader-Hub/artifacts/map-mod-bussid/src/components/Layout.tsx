@@ -3,6 +3,7 @@ import { Home, Star, Settings } from 'lucide-react';
 
 import { useTheme } from '../lib/theme-context';
 import { AdsterraSocialBar } from './ads/AdsterraSocialBar';
+import { AdsterraPopunder } from './ads/AdsterraPopunder';
 
 /* ─── Bottom Navigation Bar ─── */
 export function BottomNav() {
@@ -52,6 +53,7 @@ export function BottomNav() {
 export function PageShell({ children }: { children: React.ReactNode }) {
   return (
     <>
+      <AdsterraPopunder />
       <div className="min-h-screen bg-background pb-20 transition-colors">
         {children}
       </div>

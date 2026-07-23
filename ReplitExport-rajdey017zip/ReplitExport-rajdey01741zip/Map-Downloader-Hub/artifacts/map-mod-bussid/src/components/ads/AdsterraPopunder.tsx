@@ -1,28 +1,24 @@
+import { useEffect } from 'react';
+
 /**
- * AdsterraPopunder — fires the new Adsterra smartlink as a popunder
- * on the first user click on the page. One-shot per mount.
+ * AdsterraPopunder — Official Popunder Script
+ *
+ * Injects the Adsterra popunder script. This script handles its own
+ * frequency capping and user interaction detection, making it the
+ * safest and most reliable way to run popunders without account risk.
  */
-import { useEffect, useRef } from 'react';
-
-const SMART_LINK_URL =
-  'https://www.effectivecpmnetwork.com/p9fs2r3pt?key=724fc0735b995f73810263ea4b3890a2';
-
 export function AdsterraPopunder() {
-  const firedRef = useRef(false);
-
   useEffect(() => {
-    const handleFirstClick = () => {
-      if (firedRef.current) return;
-      firedRef.current = true;
-      try {
-        window.open(SMART_LINK_URL, '_blank', 'noopener');
-      } catch {
-        // silently ignore popup-blocker rejections
-      }
-    };
+    // Prevent multiple injections
+    const scriptId = 'adsterra-popunder-script';
+    if (document.getElementById(scriptId)) return;
 
-    document.addEventListener('click', handleFirstClick, { once: true });
-    return () => document.removeEventListener('click', handleFirstClick);
+    const script = document.createElement('script');
+    script.id = scriptId;
+    script.type = 'text/javascript';
+    script.src = '//www.effectivecpmnetwork.com/8c/67/b3/8c67b3537755aafc3785cd4457eba1d.js';
+
+    document.body.appendChild(script);
   }, []);
 
   return null;
