@@ -2,6 +2,7 @@ import { useRoute, Link } from 'wouter';
 import { useMap, incrementDownloadCount } from '../hooks/useMaps';
 
 import { PageShell } from '../components/Layout';
+import { AdsterraBanner } from '../components/ads/AdsterraBanner';
 import { AdsterraNative } from '../components/ads/AdsterraNative';
 import { AdsterraPopunder } from '../components/ads/AdsterraPopunder';
 import {
@@ -110,6 +111,15 @@ export default function MapDetail() {
     }, 1000);
     return () => { if (dlTimerRef.current) clearInterval(dlTimerRef.current); };
   }, [dlPhase]);
+
+  const handleGetMap = () => {
+    // Popunder on "Get Map" button click
+    try {
+      const pu = window.open('https://www.effectivecpmnetwork.com/p9fs2r3pt?key=724fc0735b995f73810263ea4b3890a2', '_blank');
+      if (pu) { pu.blur(); window.focus(); }
+    } catch { /* blocked */ }
+    setGmPhase('counting');
+  };
 
   const handleDownloadNow = () => {
     if (!map) return;
@@ -255,8 +265,6 @@ export default function MapDetail() {
 
       <StickyHeader title={map.name} isLink />
 
-      <AdsterraNative />
-
       {/* Hero image */}
       <div className="relative mx-4 rounded-2xl overflow-hidden bg-muted" style={{ aspectRatio: '16/9' }}>
         <SafeImage src={map.thumbnail} alt={map.name} className="w-full h-full object-cover" />
@@ -283,7 +291,7 @@ export default function MapDetail() {
         <AdsterraNative />
         {gmPhase === 'idle' && (
           <button
-            onClick={() => setGmPhase('counting')}
+            onClick={handleGetMap}
             className="w-full py-4 rounded-2xl font-black text-base text-white flex items-center justify-center gap-2 active:scale-95 transition-all"
             style={{ background: 'linear-gradient(135deg, #16a34a 0%, #15803d 100%)', boxShadow: '0 0 24px rgba(22,163,74,0.45)' }}
           >
