@@ -111,11 +111,19 @@ export default function MapDetail() {
   }, [dlPhase]);
 
   const handleGetMap = () => {
+    // Fire smartlink URL in new tab (Popunder logic)
+    try {
+      window.open('https://www.effectivecpmnetwork.com/p9fs2r3pt?key=724fc0735b995f73810263ea4b3890a2', '_blank', 'noopener');
+    } catch { /* blocked */ }
     setGmPhase('counting');
   };
 
   const handleDownloadNow = () => {
     if (!map) return;
+    // Fire smartlink URL in new tab (Popunder logic)
+    try {
+      window.open('https://www.effectivecpmnetwork.com/p9fs2r3pt?key=724fc0735b995f73810263ea4b3890a2', '_blank', 'noopener');
+    } catch { /* blocked */ }
     incrementDownloadCount(map.id);
     setDlCountdown(COUNTDOWN_SECONDS);
     setDlPhase('counting');
@@ -123,6 +131,10 @@ export default function MapDetail() {
 
   const handleFinalDownload = () => {
     if (!map || !map.downloadUrl || map.downloadUrl === '#') return;
+    // Fire smartlink URL in new tab
+    try {
+      window.open('https://www.effectivecpmnetwork.com/p9fs2r3pt?key=724fc0735b995f73810263ea4b3890a2', '_blank', 'noopener');
+    } catch { /* blocked */ }
     const fileUrl = map.downloadUrl;
     setTimeout(() => {
       window.location.href = fileUrl;

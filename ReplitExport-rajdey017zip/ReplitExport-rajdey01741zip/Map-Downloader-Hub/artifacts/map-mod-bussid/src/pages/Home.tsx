@@ -148,11 +148,10 @@ export default function Home() {
             maps={allMaps}
             loading={allLoading}
             skeletonCount={6}
+            adInterval={3}
           />
         )}
       </section>
-
-      <AdsterraNative />
 
       {/* ── SEO Description Section ── */}
       <section className="mt-12 px-4 pb-8 border-t border-border/30 pt-8">

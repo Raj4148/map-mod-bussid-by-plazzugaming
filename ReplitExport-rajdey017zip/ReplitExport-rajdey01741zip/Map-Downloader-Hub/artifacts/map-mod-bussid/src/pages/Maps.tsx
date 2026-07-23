@@ -4,6 +4,7 @@ import { useMaps } from '../hooks/useMaps';
 import { MapGrid } from '../components/MapGrid';
 import { PageShell } from '../components/Layout';
 import { AdsterraNative } from '../components/ads/AdsterraNative';
+import { AdsterraPopunder } from '../components/ads/AdsterraPopunder';
 import { ChevronLeft, MapPin } from 'lucide-react';
 
 const TABS = [
@@ -26,6 +27,7 @@ export default function Maps() {
 
   return (
     <PageShell>
+      <AdsterraPopunder />
       {/* ── Header ── */}
       <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-md border-b border-border px-4 py-3 flex items-center gap-3">
         <button
@@ -72,10 +74,9 @@ export default function Maps() {
             maps={maps}
             loading={loading}
             skeletonCount={8}
+            adInterval={3}
           />
         )}
-
-        <AdsterraNative />
       </div>
     </PageShell>
   );
