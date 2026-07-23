@@ -1,35 +1,31 @@
 import { useEffect, useRef } from 'react';
 
-/**
- * AdsterraNative — Dedicated Native Ad component.
- *
- * Manually handles script re-injection to ensure ads render dynamically
- * on React route changes and mount/unmount cycles.
- */
-export function AdsterraNative() {
+interface AdsterraNativeProps {
+  className?: string;
+}
+
+export function AdsterraNative({ className = '' }: AdsterraNativeProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!containerRef.current) return;
 
-    // 1. Clear any existing elements inside container to prevent duplication
+    // Clear container on mount
     containerRef.current.innerHTML = '';
 
-    // 2. Create target div with the specific ID Adsterra expects
+    // 1. Create Adsterra Target Container
     const adDiv = document.createElement('div');
     adDiv.id = 'container-6e8f0caecc9db716d4b3e637e3185a2d';
     containerRef.current.appendChild(adDiv);
 
-    // 3. Inject Adsterra Invoke Script manually
+    // 2. Create and Inject Adsterra Script
     const script = document.createElement('script');
     script.src = 'https://pl30489267.effectivecpmnetwork.com/6e8f0caecc9db716d4b3e637e3185a2d/invoke.js';
     script.async = true;
     script.dataset.cfasync = 'false';
-
-    // 4. Append script to the container so it executes relative to the target div
     containerRef.current.appendChild(script);
 
-    // Cleanup logic: Clear container on unmount to prevent memory leaks
+    // Cleanup function
     return () => {
       if (containerRef.current) {
         containerRef.current.innerHTML = '';
@@ -40,7 +36,7 @@ export function AdsterraNative() {
   return (
     <div
       ref={containerRef}
-      className="my-4 text-center min-h-[100px] w-full flex flex-col items-center overflow-hidden"
+      className={`w-full flex justify-center items-center my-4 min-h-[100px] ${className}`}
     />
   );
 }
