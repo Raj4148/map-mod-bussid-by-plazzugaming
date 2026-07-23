@@ -1,10 +1,8 @@
 import { Link, useLocation } from 'wouter';
 import { useMaps, useTopMaps, fmtCount, getMapBadge, isMapNew } from '../hooks/useMaps';
 
-import { MapCardSkeleton } from '../components/MapCard';
 import { MapGrid } from '../components/MapGrid';
 import { PageShell } from '../components/Layout';
-import { AdsterraBanner } from '../components/ads/AdsterraBanner';
 import { AdsterraNative } from '../components/ads/AdsterraNative';
 import { DownloadCloud, ChevronRight, MapPin, Trophy } from 'lucide-react';
 import { useState } from 'react';
@@ -127,7 +125,6 @@ export default function Home() {
       </section>
 
       <section className="mt-6 px-4">
-        <AdsterraBanner type="320x50" />
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-foreground font-bold text-lg">Latest Maps</h2>
           <Link
@@ -153,9 +150,9 @@ export default function Home() {
             skeletonCount={6}
           />
         )}
-
-        <AdsterraNative />
       </section>
+
+      <AdsterraNative />
 
       {/* ── SEO Description Section ── */}
       <section className="mt-12 px-4 pb-8 border-t border-border/30 pt-8">

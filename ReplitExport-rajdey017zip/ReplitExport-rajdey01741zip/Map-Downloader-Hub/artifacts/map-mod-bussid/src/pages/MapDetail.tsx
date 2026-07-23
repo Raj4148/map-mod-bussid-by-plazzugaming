@@ -2,7 +2,6 @@ import { useRoute, Link } from 'wouter';
 import { useMap, incrementDownloadCount } from '../hooks/useMaps';
 
 import { PageShell } from '../components/Layout';
-import { AdsterraBanner } from '../components/ads/AdsterraBanner';
 import { AdsterraNative } from '../components/ads/AdsterraNative';
 import {
   ChevronLeft, Download, DownloadCloud, Calendar, Tag,

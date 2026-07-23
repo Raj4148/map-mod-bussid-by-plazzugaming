@@ -3,7 +3,6 @@ import { useMaps } from '../hooks/useMaps';
 
 import { MapGrid } from '../components/MapGrid';
 import { PageShell } from '../components/Layout';
-import { AdsterraBanner } from '../components/ads/AdsterraBanner';
 import { AdsterraNative } from '../components/ads/AdsterraNative';
 import { ChevronLeft, MapPin } from 'lucide-react';
 
@@ -67,7 +66,6 @@ export default function Maps() {
             >
               Show All
             </button>
-            <AdsterraBanner type="320x50" />
           </div>
         ) : (
           <MapGrid
@@ -78,7 +76,6 @@ export default function Maps() {
         )}
 
         <AdsterraNative />
-      </div>
       </div>
     </PageShell>
   );
