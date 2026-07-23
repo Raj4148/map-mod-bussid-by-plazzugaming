@@ -283,7 +283,6 @@ export default function MapDetail() {
 
       {/* ── Get Map / unlock area ── */}
       <div className="mx-4 mt-4">
-        <AdsterraNative />
         {gmPhase === 'idle' && (
           <button
             onClick={handleGetMap}
@@ -373,7 +372,6 @@ export default function MapDetail() {
             <p className="text-xs text-muted-foreground/50 text-center leading-relaxed pb-2">
               By downloading you agree this mod is for BUSSID entertainment purposes only.
             </p>
-            <AdsterraNative />
           </>
         )}
       </div>
