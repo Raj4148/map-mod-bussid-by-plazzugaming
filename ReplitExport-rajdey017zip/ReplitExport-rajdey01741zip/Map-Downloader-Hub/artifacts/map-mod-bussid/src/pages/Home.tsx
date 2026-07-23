@@ -80,7 +80,6 @@ export default function Home() {
 
       {/* ── Featured Maps (top 6 by download count) ── */}
       <section className="mt-2">
-        <AdsterraBanner type="320x50" />
         <div className="px-4 flex items-center justify-between mb-3">
           <h2 className="text-foreground font-bold text-lg flex items-center gap-2">
             <Trophy className="w-5 h-5 text-yellow-500" />
@@ -158,6 +157,7 @@ export default function Home() {
             adInterval={4}
           />
         )}
+        <AdsterraNative />
       </section>
 
       {/* ── SEO Description Section ── */}

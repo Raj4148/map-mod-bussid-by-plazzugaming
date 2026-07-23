@@ -1,52 +1,46 @@
 import { useEffect, useRef } from 'react';
 
 /**
- * AdsterraNative — Reusable Native Ad component
+ * AdsterraNative — Dedicated Native Ad component.
  *
- * Safely injects and executes the Adsterra script inside a React component.
- * Uses a unique wrapper to prevent conflicts and ensure script runs on mount.
+ * Manually handles script re-injection to ensure ads render dynamically
+ * on React route changes and mount/unmount cycles.
  */
-export function AdsterraNative({ className = '' }: { className?: string }) {
-  const adContainerRef = useRef<HTMLDivElement>(null);
+export function AdsterraNative() {
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Ensure the container exists
-    if (!adContainerRef.current) return;
+    if (!containerRef.current) return;
 
-    // 1. Clear previous content to handle route changes and re-renders
-    adContainerRef.current.innerHTML = '';
+    // 1. Clear any existing elements inside container to prevent duplication
+    containerRef.current.innerHTML = '';
 
-    // 2. Create the container div with the ID expected by Adsterra
-    // Note: If multiple instances are on one page, they will all share this ID.
-    // Adsterra's invoke.js will typically look for this ID.
+    // 2. Create target div with the specific ID Adsterra expects
     const adDiv = document.createElement('div');
     adDiv.id = 'container-6e8f0caecc9db716d4b3e637e3185a2d';
-    adDiv.style.width = '100%';
-    adDiv.style.minHeight = '50px';
-    adContainerRef.current.appendChild(adDiv);
+    containerRef.current.appendChild(adDiv);
 
-    // 3. Create the script element
+    // 3. Inject Adsterra Invoke Script manually
     const script = document.createElement('script');
+    script.src = 'https://pl30489267.effectivecpmnetwork.com/6e8f0caecc9db716d4b3e637e3185a2d/invoke.js';
     script.async = true;
     script.dataset.cfasync = 'false';
-    // Using the NEW provided script source
-    script.src = 'https://pl30489267.effectivecpmnetwork.com/6e8f0caecc9db716d4b3e637e3185a2d/invoke.js';
 
-    // 4. Append script to the container
-    adContainerRef.current.appendChild(script);
+    // 4. Append script to the container so it executes relative to the target div
+    containerRef.current.appendChild(script);
 
-    // Cleanup logic: Clear container on unmount to prevent ghost elements
+    // Cleanup logic: Clear container on unmount to prevent memory leaks
     return () => {
-      if (adContainerRef.current) {
-        adContainerRef.current.innerHTML = '';
+      if (containerRef.current) {
+        containerRef.current.innerHTML = '';
       }
     };
   }, []);
 
   return (
     <div
-      className={`w-full flex justify-center my-8 ${className}`}
-      ref={adContainerRef}
+      ref={containerRef}
+      className="my-4 text-center min-h-[100px] w-full flex flex-col items-center overflow-hidden"
     />
   );
 }
