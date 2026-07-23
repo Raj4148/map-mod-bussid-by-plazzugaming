@@ -1,37 +1,45 @@
-import React from 'react';
+import { useEffect, useRef } from 'react';
 
 /**
- * AdsterraNative — Native Ad component using an iframe (srcDoc).
+ * AdsterraNative — Advanced Native Ad component.
  *
- * This isolates the ad script in its own HTML environment to bypass
- * React SPA lifecycle limits, ensuring the script executes on every
- * mount and route change.
+ * Uses a unique wrapper and manual DOM injection to bypass React SPA
+ * limitations and allow multiple instances (if Adsterra script supports it).
  */
 export function AdsterraNative({ className = '' }: { className?: string }) {
-  const iframeHtml = `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <style>
-          body { margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; background: transparent; }
-          #container-6e8f0caecc9db716d4b3e637e3185a2d { width: 100%; }
-        </style>
-      </head>
-      <body>
-        <script async="async" data-cfasync="false" src="https://pl30489267.effectivecpmnetwork.com/6e8f0caecc9db716d4b3e637e3185a2d/invoke.js"></script>
-        <div id="container-6e8f0caecc9db716d4b3e637e3185a2d"></div>
-      </body>
-    </html>
-  `;
+  const adContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!adContainerRef.current) return;
+
+    // 1. Clean the specific container for this instance
+    const container = adContainerRef.current;
+    container.innerHTML = '';
+
+    // 2. Create the target div Adsterra looks for
+    const adDiv = document.createElement('div');
+    adDiv.id = 'container-6e8f0caecc9db716d4b3e637e3185a2d';
+    container.appendChild(adDiv);
+
+    // 3. Force create the script
+    const script = document.createElement('script');
+    script.async = true;
+    script.dataset.cfasync = 'false';
+    script.src = `https://pl30489267.effectivecpmnetwork.com/6e8f0caecc9db716d4b3e637e3185a2d/invoke.js`;
+
+    // 4. Append script to the same container
+    container.appendChild(script);
+
+    return () => {
+      // Clean up to prevent duplicate script executions
+      container.innerHTML = '';
+    };
+  }, []);
 
   return (
-    <div className={`my-4 w-full flex justify-center items-center min-h-[200px] overflow-hidden ${className}`}>
-      <iframe
-        title="Adsterra Native Ad"
-        srcDoc={iframeHtml}
-        style={{ width: '100%', height: '260px', border: 'none', overflow: 'hidden' }}
-        scrolling="no"
-      />
-    </div>
+    <div
+      className={`adsterra-native-wrapper w-full flex justify-center my-8 min-h-[150px] ${className}`}
+      ref={adContainerRef}
+    />
   );
 }
