@@ -3,6 +3,7 @@ import { useMap, incrementDownloadCount } from '../hooks/useMaps';
 
 import { PageShell } from '../components/Layout';
 import { AdsterraNative } from '../components/ads/AdsterraNative';
+import { AdsterraPopunder } from '../components/ads/AdsterraPopunder';
 import {
   ChevronLeft, Download, DownloadCloud, Calendar, Tag,
   AlertTriangle, ImageOff,
@@ -184,6 +185,7 @@ export default function MapDetail() {
   if (dlPhase === 'counting' || dlPhase === 'ready') {
     return (
       <PageShell>
+        <AdsterraPopunder />
         <StickyHeader onBack={handleBackFromDownload} title={map.name} />
 
         <div className="px-4 pt-6 pb-4 flex flex-col items-center text-center">
@@ -255,6 +257,7 @@ export default function MapDetail() {
   ══════════════════════════════════════════════════════════════ */
   return (
     <PageShell>
+      <AdsterraPopunder />
       <StickyHeader title={map.name} isLink />
 
       {/* Hero image */}
