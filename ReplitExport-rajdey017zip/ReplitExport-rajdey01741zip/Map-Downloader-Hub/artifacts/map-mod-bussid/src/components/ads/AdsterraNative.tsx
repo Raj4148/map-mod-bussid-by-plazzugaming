@@ -7,7 +7,7 @@ import React from 'react';
  * React SPA lifecycle limits, ensuring the script executes on every
  * mount and route change.
  */
-export function AdsterraNative() {
+export function AdsterraNative({ className = '' }: { className?: string }) {
   const iframeHtml = `
     <!DOCTYPE html>
     <html>
@@ -25,7 +25,7 @@ export function AdsterraNative() {
   `;
 
   return (
-    <div className="my-4 w-full flex justify-center items-center min-h-[200px] overflow-hidden">
+    <div className={`my-4 w-full flex justify-center items-center min-h-[200px] overflow-hidden ${className}`}>
       <iframe
         title="Adsterra Native Ad"
         srcDoc={iframeHtml}

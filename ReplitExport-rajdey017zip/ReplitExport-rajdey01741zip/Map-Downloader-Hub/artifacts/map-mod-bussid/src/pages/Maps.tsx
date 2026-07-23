@@ -79,8 +79,6 @@ export default function Maps() {
             adInterval={6}
           />
         )}
-
-        <AdsterraNative />
       </div>
     </PageShell>
   );

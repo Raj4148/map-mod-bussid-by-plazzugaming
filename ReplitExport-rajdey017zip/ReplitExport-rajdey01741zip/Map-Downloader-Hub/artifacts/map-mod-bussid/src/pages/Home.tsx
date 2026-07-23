@@ -77,7 +77,6 @@ export default function Home() {
       </div>
 
       <AdsterraBanner type="320x50" />
-      <AdsterraNative />
 
       {/* ── Featured Maps (top 6 by download count) ── */}
       <section className="mt-2">
@@ -129,9 +128,6 @@ export default function Home() {
         </div>
       </section>
 
-      <AdsterraNative />
-
-      {/* ── Latest Maps (native ad injected after every 3rd card by MapGrid) ── */}
       <section className="mt-6 px-4">
         <AdsterraBanner type="320x50" />
         <div className="flex items-center justify-between mb-3">
@@ -160,7 +156,6 @@ export default function Home() {
             adInterval={4}
           />
         )}
-        <AdsterraNative />
       </section>
 
       {/* ── SEO Description Section ── */}
