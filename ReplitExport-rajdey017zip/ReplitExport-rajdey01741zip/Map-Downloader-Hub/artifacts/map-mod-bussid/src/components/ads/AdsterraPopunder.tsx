@@ -16,7 +16,7 @@ export function AdsterraPopunder() {
     const script = document.createElement('script');
     script.id = scriptId;
     script.type = 'text/javascript';
-    script.src = '//www.effectivecpmnetwork.com/8c/67/b3/8c67b3537755aafc3785cd4457eba1d.js';
+    script.src = 'https://pl30489264.effectivecpmnetwork.com/8c/67/b3/8c67b3537755aafc3785cd4457eba1d.js';
 
     document.body.appendChild(script);
   }, []);
