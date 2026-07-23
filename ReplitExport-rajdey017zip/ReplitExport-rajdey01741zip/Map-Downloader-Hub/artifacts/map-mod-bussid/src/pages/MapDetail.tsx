@@ -4,7 +4,6 @@ import { useMap, incrementDownloadCount } from '../hooks/useMaps';
 import { PageShell } from '../components/Layout';
 import { AdsterraBanner } from '../components/ads/AdsterraBanner';
 import { AdsterraNative } from '../components/ads/AdsterraNative';
-import { AdsterraPopunder } from '../components/ads/AdsterraPopunder';
 import {
   ChevronLeft, Download, DownloadCloud, Calendar, Tag,
   AlertTriangle, ImageOff,
@@ -113,21 +112,11 @@ export default function MapDetail() {
   }, [dlPhase]);
 
   const handleGetMap = () => {
-    // Popunder on "Get Map" button click
-    try {
-      const pu = window.open('https://www.effectivecpmnetwork.com/p9fs2r3pt?key=724fc0735b995f73810263ea4b3890a2', '_blank');
-      if (pu) { pu.blur(); window.focus(); }
-    } catch { /* blocked */ }
     setGmPhase('counting');
   };
 
   const handleDownloadNow = () => {
     if (!map) return;
-    // Popunder on "Get Map" button click — open behind current window
-    try {
-      const pu = window.open('https://www.effectivecpmnetwork.com/p9fs2r3pt?key=724fc0735b995f73810263ea4b3890a2', '_blank');
-      if (pu) { pu.blur(); window.focus(); }
-    } catch { /* blocked */ }
     incrementDownloadCount(map.id);
     setDlCountdown(COUNTDOWN_SECONDS);
     setDlPhase('counting');
@@ -135,8 +124,6 @@ export default function MapDetail() {
 
   const handleFinalDownload = () => {
     if (!map || !map.downloadUrl || map.downloadUrl === '#') return;
-    // Fire smartlink on "Download File" button click
-    try { window.open('https://www.effectivecpmnetwork.com/p9fs2r3pt?key=724fc0735b995f73810263ea4b3890a2', '_blank', 'noopener'); } catch { /* blocked */ }
     const fileUrl = map.downloadUrl;
     setTimeout(() => {
       window.location.href = fileUrl;
@@ -186,9 +173,6 @@ export default function MapDetail() {
   if (dlPhase === 'counting' || dlPhase === 'ready') {
     return (
       <PageShell>
-        {/* Popunder fires on first click of this screen */}
-        <AdsterraPopunder />
-
         <StickyHeader onBack={handleBackFromDownload} title={map.name} />
 
         <div className="px-4 pt-6 pb-4 flex flex-col items-center text-center">
@@ -260,9 +244,6 @@ export default function MapDetail() {
   ══════════════════════════════════════════════════════════════ */
   return (
     <PageShell>
-      {/* Popunder fires on first click anywhere on this page */}
-      <AdsterraPopunder />
-
       <StickyHeader title={map.name} isLink />
 
       {/* Hero image */}
