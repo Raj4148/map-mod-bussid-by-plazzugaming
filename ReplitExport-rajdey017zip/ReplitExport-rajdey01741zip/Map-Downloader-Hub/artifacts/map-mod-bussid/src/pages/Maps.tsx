@@ -3,7 +3,6 @@ import { useMaps } from '../hooks/useMaps';
 
 import { MapGrid } from '../components/MapGrid';
 import { PageShell } from '../components/Layout';
-import { AdsterraBanner } from '../components/ads/AdsterraBanner';
 import { AdsterraNative } from '../components/ads/AdsterraNative';
 import { ChevronLeft, MapPin } from 'lucide-react';
 
@@ -38,7 +37,7 @@ export default function Maps() {
         <h1 className="text-foreground font-bold text-base">Map Directory</h1>
       </div>
 
-      <AdsterraBanner type="320x50" />
+      <AdsterraNative />
 
       {/* ── Category tabs ── */}
       <div className="flex gap-2 px-4 pt-4 pb-2 overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
@@ -69,7 +68,7 @@ export default function Maps() {
             >
               Show All
             </button>
-            <AdsterraBanner type="320x50" />
+            <AdsterraNative />
           </div>
         ) : (
           <MapGrid

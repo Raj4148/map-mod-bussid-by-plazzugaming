@@ -4,7 +4,6 @@ import { useMaps, useTopMaps, fmtCount, getMapBadge, isMapNew } from '../hooks/u
 import { MapCardSkeleton } from '../components/MapCard';
 import { MapGrid } from '../components/MapGrid';
 import { PageShell } from '../components/Layout';
-import { AdsterraBanner } from '../components/ads/AdsterraBanner';
 import { AdsterraNative } from '../components/ads/AdsterraNative';
 import { DownloadCloud, ChevronRight, MapPin, Trophy } from 'lucide-react';
 import { useState } from 'react';
@@ -76,7 +75,7 @@ export default function Home() {
         <p className="text-xs font-bold truncate">Notice: Daily 8:00 PM new map mod uploaded!</p>
       </div>
 
-      <AdsterraBanner type="320x50" />
+      <AdsterraNative />
 
       {/* ── Featured Maps (top 6 by download count) ── */}
       <section className="mt-2">
@@ -129,7 +128,7 @@ export default function Home() {
       </section>
 
       <section className="mt-6 px-4">
-        <AdsterraBanner type="320x50" />
+        <AdsterraNative />
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-foreground font-bold text-lg">Latest Maps</h2>
           <Link
