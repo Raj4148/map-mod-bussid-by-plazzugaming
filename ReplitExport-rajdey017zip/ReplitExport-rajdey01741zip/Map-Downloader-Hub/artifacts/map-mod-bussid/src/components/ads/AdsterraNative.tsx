@@ -1,80 +1,52 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 /**
- * AdsterraNative — Native Banner Placement
+ * AdsterraNative — Reusable Native Ad component
  *
- * Injects the Adsterra code exactly as provided, using an iframe to support
- * multiple instances on the same page (e.g. grid spacing) without ID conflicts.
+ * Safely injects and executes the Adsterra script inside a React component.
+ * Uses a unique wrapper to prevent conflicts and ensure script runs on mount.
  */
 export function AdsterraNative({ className = '' }: { className?: string }) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [height, setHeight] = useState(160); // Default fallback height
+  const adContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!containerRef.current) return;
+    // Ensure the container exists
+    if (!adContainerRef.current) return;
 
-    // Create a unique iframe to isolate this ad instance
-    const iframe = document.createElement('iframe');
-    iframe.style.width = '100%';
-    iframe.style.border = 'none';
-    iframe.style.display = 'block';
-    iframe.style.margin = '0 auto';
-    iframe.scrolling = 'no';
-    iframe.height = height.toString();
+    // 1. Clear previous content to handle route changes and re-renders
+    adContainerRef.current.innerHTML = '';
 
-    // Clear and append
-    containerRef.current.innerHTML = '';
-    containerRef.current.appendChild(iframe);
+    // 2. Create the container div with the ID expected by Adsterra
+    // Note: If multiple instances are on one page, they will all share this ID.
+    // Adsterra's invoke.js will typically look for this ID.
+    const adDiv = document.createElement('div');
+    adDiv.id = 'container-6e8f0caecc9db716d4b3e637e3185a2d';
+    adDiv.style.width = '100%';
+    adDiv.style.minHeight = '50px';
+    adContainerRef.current.appendChild(adDiv);
 
-    const doc = iframe.contentWindow?.document || iframe.contentDocument;
-    if (doc) {
-      doc.open();
-      // Inject the provided codes exactly as requested
-      doc.write(`
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <meta charset="utf-8">
-            <style>
-              body { margin: 0; padding: 0; overflow: hidden; background: transparent; display: flex; justify-content: center; }
-              #container-6e8f0caecc9db716d4b3e637e3185a2d { width: 100%; min-height: 50px; }
-            </style>
-          </head>
-          <body>
-            <!-- Native Banner Placement -->
-            <div id="container-6e8f0caecc9db716d4b3e637e3185a2d"></div>
-            <script async="async" data-cfasync="false" src="https://www.effectivecpmnetwork.com/6e8f0caecc9db716d4b3e637e3185a2d/invoke.js"></script>
+    // 3. Create the script element
+    const script = document.createElement('script');
+    script.async = true;
+    script.dataset.cfasync = 'false';
+    // Using the NEW provided script source
+    script.src = 'https://pl30489267.effectivecpmnetwork.com/6e8f0caecc9db716d4b3e637e3185a2d/invoke.js';
 
-            <script>
-              function notify() {
-                var h = document.body.scrollHeight;
-                if (h > 0) window.parent.postMessage({ type: 'ad-resize', h: h }, '*');
-              }
-              window.onload = notify;
-              var obs = new MutationObserver(notify);
-              obs.observe(document.body, { childList: true, subtree: true });
-              setInterval(notify, 1000); // Periodic check for dynamic loading
-            </script>
-          </body>
-        </html>
-      `);
-      doc.close();
-    }
+    // 4. Append script to the container
+    adContainerRef.current.appendChild(script);
 
-    const handleMessage = (e: MessageEvent) => {
-      if (e.data.type === 'ad-resize' && e.source === iframe.contentWindow) {
-        setHeight(e.data.h);
+    // Cleanup logic: Clear container on unmount to prevent ghost elements
+    return () => {
+      if (adContainerRef.current) {
+        adContainerRef.current.innerHTML = '';
       }
     };
-    window.addEventListener('message', handleMessage);
-    return () => window.removeEventListener('message', handleMessage);
   }, []);
 
   return (
     <div
-      className={`w-full flex justify-center my-6 ${className}`}
-      ref={containerRef}
-      style={{ minHeight: '50px' }}
+      className={`w-full flex justify-center my-8 ${className}`}
+      ref={adContainerRef}
     />
   );
 }
