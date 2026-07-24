@@ -2,8 +2,6 @@ import { useRoute, Link } from 'wouter';
 import { useMap, incrementDownloadCount } from '../hooks/useMaps';
 
 import { PageShell } from '../components/Layout';
-import { AdsterraNative } from '../components/ads/AdsterraNative';
-import { AdsterraPopunder } from '../components/ads/AdsterraPopunder';
 import {
   ChevronLeft, Download, DownloadCloud, Calendar, Tag,
   AlertTriangle, ImageOff,
@@ -112,19 +110,11 @@ export default function MapDetail() {
   }, [dlPhase]);
 
   const handleGetMap = () => {
-    // Fire smartlink URL in new tab (Popunder logic)
-    try {
-      window.open('https://www.effectivecpmnetwork.com/p9fs2r3pt?key=724fc0735b995f73810263ea4b3890a2', '_blank', 'noopener');
-    } catch { /* blocked */ }
     setGmPhase('counting');
   };
 
   const handleDownloadNow = () => {
     if (!map) return;
-    // Fire smartlink URL in new tab (Popunder logic)
-    try {
-      window.open('https://www.effectivecpmnetwork.com/p9fs2r3pt?key=724fc0735b995f73810263ea4b3890a2', '_blank', 'noopener');
-    } catch { /* blocked */ }
     incrementDownloadCount(map.id);
     setDlCountdown(COUNTDOWN_SECONDS);
     setDlPhase('counting');
@@ -132,10 +122,6 @@ export default function MapDetail() {
 
   const handleFinalDownload = () => {
     if (!map || !map.downloadUrl || map.downloadUrl === '#') return;
-    // Fire smartlink URL in new tab
-    try {
-      window.open('https://www.effectivecpmnetwork.com/p9fs2r3pt?key=724fc0735b995f73810263ea4b3890a2', '_blank', 'noopener');
-    } catch { /* blocked */ }
     const fileUrl = map.downloadUrl;
     setTimeout(() => {
       window.location.href = fileUrl;
@@ -185,7 +171,6 @@ export default function MapDetail() {
   if (dlPhase === 'counting' || dlPhase === 'ready') {
     return (
       <PageShell>
-        <AdsterraPopunder />
         <StickyHeader onBack={handleBackFromDownload} title={map.name} />
 
         <div className="px-4 pt-6 pb-4 flex flex-col items-center text-center">
@@ -217,11 +202,6 @@ export default function MapDetail() {
             ) : (
               <p className="text-foreground font-black text-lg">✅ Link ready! Tap Download below.</p>
             )}
-          </div>
-
-          {/* Native banner below the countdown block */}
-          <div className="w-full">
-            <AdsterraNative />
           </div>
 
           {/* Download button — shown only when ready */}
@@ -257,7 +237,6 @@ export default function MapDetail() {
   ══════════════════════════════════════════════════════════════ */
   return (
     <PageShell>
-      <AdsterraPopunder />
       <StickyHeader title={map.name} isLink />
 
       {/* Hero image */}
@@ -354,9 +333,6 @@ export default function MapDetail() {
         {/* Download Now — revealed after Get Map timer */}
         {gmPhase === 'revealed' && (
           <>
-            {/* Bottom banner ad — above the primary download button */}
-            <AdsterraNative />
-
             <button
               onClick={handleDownloadNow}
               className="w-full py-5 rounded-2xl bg-primary hover:bg-purple-500 active:scale-95 transition-all text-white font-black text-lg flex flex-col items-center justify-center gap-1"

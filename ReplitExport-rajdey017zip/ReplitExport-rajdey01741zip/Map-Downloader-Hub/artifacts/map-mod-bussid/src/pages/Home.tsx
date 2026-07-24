@@ -3,7 +3,6 @@ import { useMaps, useTopMaps, fmtCount, getMapBadge, isMapNew } from '../hooks/u
 
 import { MapGrid } from '../components/MapGrid';
 import { PageShell } from '../components/Layout';
-import { AdsterraNative } from '../components/ads/AdsterraNative';
 import { DownloadCloud, ChevronRight, MapPin, Trophy } from 'lucide-react';
 import { useState } from 'react';
 
@@ -148,7 +147,6 @@ export default function Home() {
             maps={allMaps}
             loading={allLoading}
             skeletonCount={6}
-            adInterval={3}
           />
         )}
       </section>

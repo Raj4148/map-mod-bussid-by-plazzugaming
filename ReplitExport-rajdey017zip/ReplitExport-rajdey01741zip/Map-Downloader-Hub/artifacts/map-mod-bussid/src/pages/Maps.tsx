@@ -3,7 +3,6 @@ import { useMaps } from '../hooks/useMaps';
 
 import { MapGrid } from '../components/MapGrid';
 import { PageShell } from '../components/Layout';
-import { AdsterraNative } from '../components/ads/AdsterraNative';
 import { ChevronLeft, MapPin } from 'lucide-react';
 
 const TABS = [
@@ -72,7 +71,6 @@ export default function Maps() {
             maps={maps}
             loading={loading}
             skeletonCount={8}
-            adInterval={3}
           />
         )}
       </div>

@@ -2,7 +2,6 @@ import { Link, useLocation } from 'wouter';
 import { Home, Star, Settings } from 'lucide-react';
 
 import { useTheme } from '../lib/theme-context';
-import { AdsterraSocialBar } from './ads/AdsterraSocialBar';
 
 /* ─── Bottom Navigation Bar ─── */
 export function BottomNav() {
@@ -56,7 +55,6 @@ export function PageShell({ children }: { children: React.ReactNode }) {
         {children}
       </div>
       <BottomNav />
-      <AdsterraSocialBar />
     </>
   );
 }
