@@ -83,25 +83,27 @@ export function MapCard({ map, showNew = true }: MapCardProps) {
         )}
 
         {/* Bottom info */}
-        <div className="absolute bottom-0 left-0 right-0 p-2">
-          <p className="text-white text-xs font-bold leading-tight line-clamp-2 drop-shadow-lg">
-            {map.name}
-          </p>
-          {/* Download count */}
-          <p className="text-white/70 text-[10px] mt-0.5 flex items-center gap-0.5">
-            📥 {fmtCount(map.downloadCount)}
-          </p>
+        <div className="absolute bottom-0 left-0 right-0 p-2 flex items-end justify-between gap-2">
+          <div className="flex-1 min-w-0">
+            <p className="text-white text-[11px] font-bold leading-tight line-clamp-2 drop-shadow-lg">
+              {map.name}
+            </p>
+            {/* Download count */}
+            <p className="text-white/70 text-[9px] mt-0.5 flex items-center gap-0.5">
+              📥 {fmtCount(map.downloadCount)}
+            </p>
+          </div>
+
+          {/* Share button moved to bottom right */}
+          <button
+            onClick={handleShare}
+            className="flex-shrink-0 p-1.5 rounded-lg bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/10 transition-colors"
+            title="Share map"
+          >
+            <Share2 className="w-3.5 h-3.5" />
+          </button>
         </div>
       </Link>
-
-      {/* Share button */}
-      <button
-        onClick={handleShare}
-        className="absolute top-2 left-2 p-1.5 rounded-full bg-black/40 backdrop-blur-md text-white border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity"
-        title="Share map"
-      >
-        <Share2 className="w-3.5 h-3.5" />
-      </button>
     </div>
   );
 }
