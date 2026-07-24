@@ -4,7 +4,7 @@ import { useMap, incrementDownloadCount } from '../hooks/useMaps';
 import { PageShell } from '../components/Layout';
 import {
   ChevronLeft, Download, DownloadCloud, Calendar, Tag,
-  AlertTriangle, ImageOff,
+  AlertTriangle, ImageOff, ArrowRight
 } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 
@@ -65,8 +65,8 @@ export default function MapDetail() {
   const [gmCountdown, setGmCountdown] = useState(GM_TIMER_SECONDS);
   const gmTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  /* Download countdown (shown after "Download Now" is tapped) */
-  type DlPhase = 'idle' | 'counting' | 'ready';
+  /* Download countdown phases */
+  type DlPhase = 'idle' | 'intermediate' | 'counting' | 'ready';
   const [dlPhase, setDlPhase]         = useState<DlPhase>('idle');
   const [dlCountdown, setDlCountdown] = useState(DL_TIMER_SECONDS);
   const dlTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -90,7 +90,6 @@ export default function MapDetail() {
     return () => {
       if (gmTimerRef.current) clearInterval(gmTimerRef.current);
       if (dlTimerRef.current) clearInterval(dlTimerRef.current);
-      // Clean up script if possible, though Monetag scripts are self-executing
     };
   }, []);
 
@@ -122,11 +121,15 @@ export default function MapDetail() {
     setGmPhase('counting');
   };
 
-  const handleStartDownloadTimer = () => {
+  const handleDownloadNow = () => {
     if (!map) return;
-    // Open Monetag Direct Link 2 on "Download Now"
+    // Open Monetag Direct Link 2
     window.open('https://omg10.com/4/11385953', '_blank', 'noopener');
+    // Move to intermediate step ("Click here to continue")
+    setDlPhase('intermediate');
+  };
 
+  const handleContinueToCountdown = () => {
     setDlCountdown(DL_TIMER_SECONDS);
     setDlPhase('counting');
   };
@@ -135,7 +138,7 @@ export default function MapDetail() {
     if (!map || !map.downloadUrl || map.downloadUrl === '#') return;
     incrementDownloadCount(map.id);
 
-    // Open Monetag Direct Link 1 on "Download File"
+    // Open Monetag Direct Link 1
     window.open('https://omg10.com/4/11385854', '_blank', 'noopener');
 
     const fileUrl = map.downloadUrl;
@@ -182,18 +185,38 @@ export default function MapDetail() {
   }
 
   /* ══════════════════════════════════════════════════════════════
-     DOWNLOAD COUNTDOWN SCREEN
+     DOWNLOAD FLOW SCREENS (Intermediate / Countdown / Ready)
   ══════════════════════════════════════════════════════════════ */
-  if (dlPhase === 'counting' || dlPhase === 'ready') {
+  if (dlPhase !== 'idle') {
     return (
       <PageShell>
         <StickyHeader onBack={handleBackFromDownload} title={map.name} />
 
         <div className="px-4 pt-6 pb-4 flex flex-col items-center text-center">
-          {/* Countdown block */}
-          <div className="w-full rounded-2xl border border-border bg-card p-6 flex flex-col items-center gap-4 my-2">
-            {dlPhase === 'counting' ? (
-              <>
+
+          {/* Phase 1: Intermediate "Click here to continue" */}
+          {dlPhase === 'intermediate' && (
+            <div className="w-full space-y-6">
+              <div className="bg-card border border-border rounded-2xl p-8 flex flex-col items-center gap-4">
+                <ArrowRight className="w-12 h-12 text-primary animate-pulse" />
+                <h3 className="text-foreground font-black text-lg">Next step ready</h3>
+                <p className="text-muted-foreground text-sm">Tap the button below to generate your download link.</p>
+              </div>
+
+              <button
+                onClick={handleContinueToCountdown}
+                className="w-full py-5 rounded-2xl bg-primary text-white font-black text-lg flex items-center justify-center gap-2 active:scale-95 transition-all shadow-xl"
+              >
+                Click here to continue
+                <ArrowRight className="w-5 h-5" />
+              </button>
+            </div>
+          )}
+
+          {/* Phase 2: Countdown Timer */}
+          {dlPhase === 'counting' && (
+            <div className="w-full space-y-6">
+              <div className="w-full rounded-2xl border border-border bg-card p-6 flex flex-col items-center gap-4 my-2">
                 <div className="relative w-28 h-28">
                   <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
                     <circle cx="50" cy="50" r="44" fill="none" stroke="hsl(var(--muted))" strokeWidth="8" />
@@ -214,25 +237,29 @@ export default function MapDetail() {
                   <span className="text-primary font-bold">{dlCountdown}s</span>…
                 </p>
                 <p className="text-muted-foreground/40 text-xs">Do not close this page</p>
-              </>
-            ) : (
-              <p className="text-foreground font-black text-lg">✅ Link ready! Tap Download below.</p>
-            )}
-          </div>
+              </div>
+            </div>
+          )}
 
-          {/* Download button — shown only when ready */}
+          {/* Phase 3: Final Ready State */}
           {dlPhase === 'ready' && (
-            <button
-              onClick={handleFinalDownload}
-              className="w-full mt-4 py-5 rounded-2xl text-white font-black text-lg flex items-center justify-center gap-2 active:scale-95 transition-all"
-              style={{
-                background: 'linear-gradient(135deg, #7c3aed 0%, #2563eb 100%)',
-                boxShadow: '0 0 32px rgba(124,58,237,0.5)',
-              }}
-            >
-              <Download className="w-6 h-6" />
-              Download File
-            </button>
+            <div className="w-full space-y-6">
+              <div className="w-full rounded-2xl border border-border bg-card p-6 flex flex-col items-center gap-4 my-2">
+                <p className="text-foreground font-black text-lg">✅ Link ready! Tap Download below.</p>
+              </div>
+
+              <button
+                onClick={handleFinalDownload}
+                className="w-full py-5 rounded-2xl text-white font-black text-lg flex items-center justify-center gap-2 active:scale-95 transition-all"
+                style={{
+                  background: 'linear-gradient(135deg, #7c3aed 0%, #2563eb 100%)',
+                  boxShadow: '0 0 32px rgba(124,58,237,0.5)',
+                }}
+              >
+                <Download className="w-6 h-6" />
+                Download File
+              </button>
+            </div>
           )}
 
           <button
@@ -350,7 +377,7 @@ export default function MapDetail() {
         {gmPhase === 'revealed' && (
           <>
             <button
-              onClick={handleStartDownloadTimer}
+              onClick={handleDownloadNow}
               className="w-full py-5 rounded-2xl bg-primary hover:bg-purple-500 active:scale-95 transition-all text-white font-black text-lg flex flex-col items-center justify-center gap-1"
               style={{ boxShadow: '0 0 24px rgba(139,92,246,0.4)' }}
             >
