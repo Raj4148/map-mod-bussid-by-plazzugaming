@@ -50,8 +50,9 @@ function StickyHeader({ onBack, title, isLink }: {
   );
 }
 
-/* ── countdown duration for the download screen ── */
-const COUNTDOWN_SECONDS = 15;
+/* ── countdown durations ── */
+const GM_TIMER_SECONDS = 15;
+const DL_TIMER_SECONDS = 15;
 
 export default function MapDetail() {
   const [, params] = useRoute('/map/:id');
@@ -61,31 +62,39 @@ export default function MapDetail() {
   /* Get Map unlock phase */
   type GmPhase = 'idle' | 'counting' | 'revealed';
   const [gmPhase, setGmPhase]         = useState<GmPhase>('idle');
-  const [gmCountdown, setGmCountdown] = useState(5);
+  const [gmCountdown, setGmCountdown] = useState(GM_TIMER_SECONDS);
   const gmTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  /* Download countdown (shown after "Click here to continue" is tapped) */
+  /* Download countdown (shown after "Download Now" is tapped) */
   type DlPhase = 'idle' | 'counting' | 'ready';
   const [dlPhase, setDlPhase]         = useState<DlPhase>('idle');
-  const [dlCountdown, setDlCountdown] = useState(COUNTDOWN_SECONDS);
+  const [dlCountdown, setDlCountdown] = useState(DL_TIMER_SECONDS);
   const dlTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   /* Reset state when navigating to a different map */
   useEffect(() => {
     setGmPhase('idle');
-    setGmCountdown(5);
+    setGmCountdown(GM_TIMER_SECONDS);
     setDlPhase('idle');
-    setDlCountdown(COUNTDOWN_SECONDS);
+    setDlCountdown(DL_TIMER_SECONDS);
     if (gmTimerRef.current) clearInterval(gmTimerRef.current);
     if (dlTimerRef.current) clearInterval(dlTimerRef.current);
   }, [id]);
 
-  useEffect(() => () => {
-    if (gmTimerRef.current) clearInterval(gmTimerRef.current);
-    if (dlTimerRef.current) clearInterval(dlTimerRef.current);
+  useEffect(() => {
+    // Inject In-page Push ad script
+    const script = document.createElement('script');
+    script.innerHTML = "(function(s){s.dataset.zone='11385886',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))";
+    document.body.appendChild(script);
+
+    return () => {
+      if (gmTimerRef.current) clearInterval(gmTimerRef.current);
+      if (dlTimerRef.current) clearInterval(dlTimerRef.current);
+      // Clean up script if possible, though Monetag scripts are self-executing
+    };
   }, []);
 
-  /* Get Map 5-second reveal timer */
+  /* Get Map 15-second reveal timer */
   useEffect(() => {
     if (gmPhase !== 'counting') return;
     gmTimerRef.current = setInterval(() => {
@@ -115,7 +124,10 @@ export default function MapDetail() {
 
   const handleStartDownloadTimer = () => {
     if (!map) return;
-    setDlCountdown(COUNTDOWN_SECONDS);
+    // Open Monetag Direct Link 2 on "Download Now"
+    window.open('https://omg10.com/4/11385953', '_blank', 'noopener');
+
+    setDlCountdown(DL_TIMER_SECONDS);
     setDlPhase('counting');
   };
 
@@ -123,7 +135,7 @@ export default function MapDetail() {
     if (!map || !map.downloadUrl || map.downloadUrl === '#') return;
     incrementDownloadCount(map.id);
 
-    // Open Monetag Direct Link
+    // Open Monetag Direct Link 1 on "Download File"
     window.open('https://omg10.com/4/11385854', '_blank', 'noopener');
 
     const fileUrl = map.downloadUrl;
@@ -135,7 +147,7 @@ export default function MapDetail() {
   const handleBackFromDownload = () => {
     if (dlTimerRef.current) clearInterval(dlTimerRef.current);
     setDlPhase('idle');
-    setDlCountdown(COUNTDOWN_SECONDS);
+    setDlCountdown(DL_TIMER_SECONDS);
   };
 
   /* ── loading skeleton ── */
@@ -189,7 +201,7 @@ export default function MapDetail() {
                       cx="50" cy="50" r="44" fill="none"
                       stroke="hsl(var(--primary))" strokeWidth="8" strokeLinecap="round"
                       strokeDasharray={`${2 * Math.PI * 44}`}
-                      strokeDashoffset={`${2 * Math.PI * 44 * (1 - (COUNTDOWN_SECONDS - dlCountdown) / COUNTDOWN_SECONDS)}`}
+                      strokeDashoffset={`${2 * Math.PI * 44 * (1 - (DL_TIMER_SECONDS - dlCountdown) / DL_TIMER_SECONDS)}`}
                       style={{ transition: 'stroke-dashoffset 1s linear' }}
                     />
                   </svg>
@@ -285,7 +297,7 @@ export default function MapDetail() {
                 <circle
                   cx="32" cy="32" r="26" fill="none" stroke="#16a34a" strokeWidth="5" strokeLinecap="round"
                   strokeDasharray={`${2 * Math.PI * 26}`}
-                  strokeDashoffset={`${2 * Math.PI * 26 * (gmCountdown / 5)}`}
+                  strokeDashoffset={`${2 * Math.PI * 26 * (gmCountdown / GM_TIMER_SECONDS)}`}
                   style={{ transition: 'stroke-dashoffset 1s linear' }}
                 />
               </svg>
@@ -299,7 +311,7 @@ export default function MapDetail() {
 
         {gmPhase === 'revealed' && (
           <p className="py-2 text-center text-sm text-green-500 dark:text-green-400 animate-pulse">
-            <strong className="font-black">⬇ Scroll down &amp; click Click here to continue</strong>
+            <strong className="font-black">⬇ Scroll down &amp; click Download Now</strong>
           </p>
         )}
       </div>
@@ -334,7 +346,7 @@ export default function MapDetail() {
           </div>
         )}
 
-        {/* Click here to continue — revealed after Get Map timer */}
+        {/* Download Now — revealed after Get Map timer */}
         {gmPhase === 'revealed' && (
           <>
             <button
@@ -344,7 +356,7 @@ export default function MapDetail() {
             >
               <span className="flex items-center gap-2">
                 <Download className="w-6 h-6" />
-                Click here to continue
+                Download Now
               </span>
               <span className="text-xs font-medium text-white/60 uppercase tracking-widest">Tap to start</span>
             </button>
