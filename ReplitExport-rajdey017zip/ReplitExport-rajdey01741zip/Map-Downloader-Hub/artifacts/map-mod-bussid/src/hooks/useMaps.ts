@@ -50,17 +50,24 @@ function toMapMod(id: string, data: FirestoreMap): MapMod {
     }
   }
 
+  // Normalize Category: "Indian map" or "Indian" -> "indian"
+  let catRaw = (data.Category || 'other').toLowerCase();
+  let category: MapCategory = 'other';
+  if (catRaw.includes('indian'))      category = 'indian';
+  else if (catRaw.includes('nepali')) category = 'nepali';
+  else if (catRaw.includes('indones')) category = 'indonesian';
+
   return {
     id,
     name: data.Name || 'Unnamed Map',
-    category: ((data.Category || '').toLowerCase() as MapCategory) || 'other',
+    category,
     thumbnail: data.ImageUrl || '',
     thumbnail2: data.ImageUrl2 || '',
     downloadUrl: data.DownloadLink || '#',
-    // Read either field name; prefer DownloadCount
-    downloadCount: data.DownloadCount ?? data['Download Count'] ?? 0,
+    // Ensure downloadCount is a number
+    downloadCount: Number(data.DownloadCount ?? data['Download Count'] ?? 0),
     createdAt,
-    featured: data.IsHot === true,
+    featured: data.IsHot === true || String(data.IsHot).toLowerCase() === 'true',
     description: data.Description || '',
   };
 }
@@ -76,7 +83,7 @@ export function fmtCount(n: number): string {
 export function getMapBadge(
   map: MapMod,
   isNew: boolean,
-  popularThreshold = 1000,
+  popularThreshold = 500,
 ): 'HOT' | 'POPULAR' | 'NEW' | null {
   if (map.featured) return 'HOT';
   if (map.downloadCount >= popularThreshold) return 'POPULAR';
@@ -84,9 +91,9 @@ export function getMapBadge(
   return null;
 }
 
-/** True when the map was uploaded within the last 3 days */
+/** True when the map was uploaded within the last 7 days */
 export function isMapNew(createdAt: number): boolean {
-  return Date.now() - createdAt < 3 * 24 * 60 * 60 * 1000;
+  return Date.now() - createdAt < 7 * 24 * 60 * 60 * 1000;
 }
 
 // Fallback mock data — shown when Firestore is unreachable or empty
