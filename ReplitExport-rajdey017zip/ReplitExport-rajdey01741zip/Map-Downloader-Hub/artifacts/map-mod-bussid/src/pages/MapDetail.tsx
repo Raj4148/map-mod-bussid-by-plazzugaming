@@ -4,9 +4,10 @@ import { useMap, incrementDownloadCount } from '../hooks/useMaps';
 import { PageShell } from '../components/Layout';
 import {
   ChevronLeft, Download, DownloadCloud, Calendar, Tag,
-  AlertTriangle, ImageOff, ArrowRight
+  AlertTriangle, ImageOff, ArrowRight, Share2
 } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
+import { useToast } from '@/hooks/use-toast';
 
 /* ── fallback image ── */
 const FALLBACK = 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&auto=format&fit=crop';
@@ -58,6 +59,7 @@ export default function MapDetail() {
   const [, params] = useRoute('/map/:id');
   const id = params?.id || '';
   const { map, loading } = useMap(id);
+  const { toast } = useToast();
 
   /* Get Map unlock phase */
   type GmPhase = 'idle' | 'counting' | 'revealed';
@@ -151,6 +153,25 @@ export default function MapDetail() {
     if (dlTimerRef.current) clearInterval(dlTimerRef.current);
     setDlPhase('idle');
     setDlCountdown(DL_TIMER_SECONDS);
+  };
+
+  const handleShare = () => {
+    if (!map) return;
+    const shareData = {
+      title: map.name,
+      text: `Download ${map.name} BUSSID Map Mod!`,
+      url: window.location.href,
+    };
+
+    if (navigator.share) {
+      navigator.share(shareData).catch(() => {});
+    } else {
+      navigator.clipboard.writeText(shareData.url);
+      toast({
+        title: "Link copied!",
+        description: "Map link copied to clipboard.",
+      });
+    }
   };
 
   /* ── loading skeleton ── */
@@ -363,6 +384,13 @@ export default function MapDetail() {
               {new Date(map.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
             </span>
           </div>
+          <button
+            onClick={handleShare}
+            className="flex items-center gap-1.5 bg-primary/10 border border-primary/20 rounded-xl px-3 py-2 text-primary hover:bg-primary/20 transition-colors"
+          >
+            <Share2 className="w-4 h-4" />
+            <span className="text-xs font-bold uppercase tracking-wider">Share</span>
+          </button>
         </div>
 
         {/* Description + mid-content native ad */}
