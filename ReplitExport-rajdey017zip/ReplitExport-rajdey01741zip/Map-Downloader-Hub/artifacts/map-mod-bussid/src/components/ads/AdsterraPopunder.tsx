@@ -1,13 +1,12 @@
 import { useEffect } from 'react';
+import { areAdsEnabled } from '@/lib/ads-control';
 
 /**
  * AdsterraPopunder — Official Popunder Script
- *
- * Injects the Adsterra popunder script. This script handles its own
- * frequency capping and user interaction detection.
  */
 export function AdsterraPopunder() {
   useEffect(() => {
+    if (!areAdsEnabled()) return;
     // Prevent multiple injections
     const scriptId = 'adsterra-popunder-script';
     if (document.getElementById(scriptId)) return;

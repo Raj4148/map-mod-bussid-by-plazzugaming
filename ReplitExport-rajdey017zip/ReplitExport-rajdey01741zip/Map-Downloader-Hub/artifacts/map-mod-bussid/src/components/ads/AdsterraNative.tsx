@@ -1,13 +1,11 @@
 import React from 'react';
+import { areAdsEnabled } from '@/lib/ads-control';
 
 /**
  * AdsterraNative — Native Ad component using an iframe (srcDoc).
- *
- * This isolates the ad script in its own HTML environment to bypass
- * React SPA lifecycle limits, ensuring the script executes on every
- * mount and route change.
  */
 export function AdsterraNative({ className = '' }: { className?: string }) {
+  if (!areAdsEnabled()) return null;
   const adHtml = `
     <!DOCTYPE html>
     <html>

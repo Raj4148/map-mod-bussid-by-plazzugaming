@@ -1,10 +1,12 @@
 import { useEffect } from 'react';
+import { areAdsEnabled } from '@/lib/ads-control';
 
 /**
  * AdsterraSocialBar — sticky social-bar ad fixed at the bottom of the viewport.
  */
 export function AdsterraSocialBar() {
   useEffect(() => {
+    if (!areAdsEnabled()) return;
     const scriptId = 'adsterra-socialbar-script';
     if (document.getElementById(scriptId)) return;
 
