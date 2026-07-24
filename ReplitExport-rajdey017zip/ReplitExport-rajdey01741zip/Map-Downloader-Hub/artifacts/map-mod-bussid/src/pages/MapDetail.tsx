@@ -51,7 +51,7 @@ function StickyHeader({ onBack, title, isLink }: {
 }
 
 /* ── countdown duration for the download screen ── */
-const COUNTDOWN_SECONDS = 10;
+const COUNTDOWN_SECONDS = 15;
 
 export default function MapDetail() {
   const [, params] = useRoute('/map/:id');
@@ -215,7 +215,7 @@ export default function MapDetail() {
               }}
             >
               <Download className="w-6 h-6" />
-              Download File
+              Click here to continue
             </button>
           )}
 
