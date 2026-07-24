@@ -52,7 +52,7 @@ function StickyHeader({ onBack, title, isLink }: {
 }
 
 /* ── countdown durations ── */
-const GM_TIMER_SECONDS = 15;
+const GM_TIMER_SECONDS = 5;
 const DL_TIMER_SECONDS = 15;
 
 export default function MapDetail() {
@@ -95,7 +95,7 @@ export default function MapDetail() {
     };
   }, []);
 
-  /* Get Map 15-second reveal timer */
+  /* Get Map 5-second reveal timer */
   useEffect(() => {
     if (gmPhase !== 'counting') return;
     gmTimerRef.current = setInterval(() => {
@@ -123,11 +123,11 @@ export default function MapDetail() {
     setGmPhase('counting');
   };
 
-  const handleDownloadNow = () => {
+  const handleNextStep = () => {
     if (!map) return;
     // Open Monetag Direct Link 2
     window.open('https://omg10.com/4/11385953', '_blank', 'noopener');
-    // Move to intermediate step ("Click here to continue")
+    // Move to intermediate step ("Continue")
     setDlPhase('intermediate');
   };
 
@@ -215,7 +215,7 @@ export default function MapDetail() {
 
         <div className="px-4 pt-6 pb-4 flex flex-col items-center text-center">
 
-          {/* Phase 1: Intermediate "Click here to continue" */}
+          {/* Phase 1: Intermediate "Continue" */}
           {dlPhase === 'intermediate' && (
             <div className="w-full space-y-6">
               <div className="bg-card border border-border rounded-2xl p-8 flex flex-col items-center gap-4">
@@ -228,7 +228,7 @@ export default function MapDetail() {
                 onClick={handleContinueToCountdown}
                 className="w-full py-5 rounded-2xl bg-primary text-white font-black text-lg flex items-center justify-center gap-2 active:scale-95 transition-all shadow-xl"
               >
-                Click here to continue
+                Continue
                 <ArrowRight className="w-5 h-5" />
               </button>
             </div>
@@ -271,7 +271,7 @@ export default function MapDetail() {
 
               <button
                 onClick={handleFinalDownload}
-                className="w-full py-5 rounded-2xl text-white font-black text-lg flex items-center justify-center gap-2 active:scale-95 transition-all"
+                className="w-full mt-4 py-5 rounded-2xl text-white font-black text-lg flex items-center justify-center gap-2 active:scale-95 transition-all"
                 style={{
                   background: 'linear-gradient(135deg, #7c3aed 0%, #2563eb 100%)',
                   boxShadow: '0 0 32px rgba(124,58,237,0.5)',
@@ -359,7 +359,7 @@ export default function MapDetail() {
 
         {gmPhase === 'revealed' && (
           <p className="py-2 text-center text-sm text-green-500 dark:text-green-400 animate-pulse">
-            <strong className="font-black">⬇ Scroll down &amp; click Download Now</strong>
+            <strong className="font-black">⬇ Scroll down &amp; click Next</strong>
           </p>
         )}
       </div>
@@ -401,17 +401,17 @@ export default function MapDetail() {
           </div>
         )}
 
-        {/* Download Now — revealed after Get Map timer */}
+        {/* Next — revealed after Get Map timer */}
         {gmPhase === 'revealed' && (
           <>
             <button
-              onClick={handleDownloadNow}
+              onClick={handleNextStep}
               className="w-full py-5 rounded-2xl bg-primary hover:bg-purple-500 active:scale-95 transition-all text-white font-black text-lg flex flex-col items-center justify-center gap-1"
               style={{ boxShadow: '0 0 24px rgba(139,92,246,0.4)' }}
             >
               <span className="flex items-center gap-2">
                 <Download className="w-6 h-6" />
-                Download Now
+                Next
               </span>
               <span className="text-xs font-medium text-white/60 uppercase tracking-widest">Tap to start</span>
             </button>
