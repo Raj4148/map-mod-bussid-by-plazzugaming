@@ -64,7 +64,7 @@ export default function MapDetail() {
   const [gmCountdown, setGmCountdown] = useState(5);
   const gmTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  /* Download countdown (shown after "Download Now" is tapped) */
+  /* Download countdown (shown after "Click here to continue" is tapped) */
   type DlPhase = 'idle' | 'counting' | 'ready';
   const [dlPhase, setDlPhase]         = useState<DlPhase>('idle');
   const [dlCountdown, setDlCountdown] = useState(COUNTDOWN_SECONDS);
@@ -97,7 +97,7 @@ export default function MapDetail() {
     return () => { if (gmTimerRef.current) clearInterval(gmTimerRef.current); };
   }, [gmPhase]);
 
-  /* Download 10-second countdown timer */
+  /* Download 15-second countdown timer */
   useEffect(() => {
     if (dlPhase !== 'counting') return;
     dlTimerRef.current = setInterval(() => {
@@ -113,15 +113,19 @@ export default function MapDetail() {
     setGmPhase('counting');
   };
 
-  const handleDownloadNow = () => {
+  const handleStartDownloadTimer = () => {
     if (!map) return;
-    incrementDownloadCount(map.id);
     setDlCountdown(COUNTDOWN_SECONDS);
     setDlPhase('counting');
   };
 
   const handleFinalDownload = () => {
     if (!map || !map.downloadUrl || map.downloadUrl === '#') return;
+    incrementDownloadCount(map.id);
+
+    // Open Monetag Direct Link
+    window.open('https://omg10.com/4/11385854', '_blank', 'noopener');
+
     const fileUrl = map.downloadUrl;
     setTimeout(() => {
       window.location.href = fileUrl;
@@ -215,7 +219,7 @@ export default function MapDetail() {
               }}
             >
               <Download className="w-6 h-6" />
-              Click here to continue
+              Download File
             </button>
           )}
 
@@ -295,7 +299,7 @@ export default function MapDetail() {
 
         {gmPhase === 'revealed' && (
           <p className="py-2 text-center text-sm text-green-500 dark:text-green-400 animate-pulse">
-            <strong className="font-black">⬇ Scroll down &amp; click Download Now</strong>
+            <strong className="font-black">⬇ Scroll down &amp; click Click here to continue</strong>
           </p>
         )}
       </div>
@@ -330,17 +334,17 @@ export default function MapDetail() {
           </div>
         )}
 
-        {/* Download Now — revealed after Get Map timer */}
+        {/* Click here to continue — revealed after Get Map timer */}
         {gmPhase === 'revealed' && (
           <>
             <button
-              onClick={handleDownloadNow}
+              onClick={handleStartDownloadTimer}
               className="w-full py-5 rounded-2xl bg-primary hover:bg-purple-500 active:scale-95 transition-all text-white font-black text-lg flex flex-col items-center justify-center gap-1"
               style={{ boxShadow: '0 0 24px rgba(139,92,246,0.4)' }}
             >
               <span className="flex items-center gap-2">
                 <Download className="w-6 h-6" />
-                Download Now
+                Click here to continue
               </span>
               <span className="text-xs font-medium text-white/60 uppercase tracking-widest">Tap to start</span>
             </button>
