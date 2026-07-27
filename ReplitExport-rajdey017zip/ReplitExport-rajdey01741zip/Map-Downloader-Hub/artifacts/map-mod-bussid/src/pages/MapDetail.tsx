@@ -129,7 +129,7 @@ export default function MapDetail() {
     if (!map) return;
     if (areAdsEnabled()) {
       // Open Monetag Direct Link 2
-      window.open('https://omg10.com/4/11385953', '_blank', 'noopener');
+      window.open('https://omg10.com/4/11401834', '_blank', 'noopener');
     }
     // Move to intermediate step ("Continue")
     setDlPhase('intermediate');
@@ -146,7 +146,7 @@ export default function MapDetail() {
 
     if (areAdsEnabled()) {
       // Open Monetag Direct Link 1
-      window.open('https://omg10.com/4/11385854', '_blank', 'noopener');
+      window.open('https://omg10.com/4/11401834', '_blank', 'noopener');
     }
 
     const fileUrl = map.downloadUrl;
