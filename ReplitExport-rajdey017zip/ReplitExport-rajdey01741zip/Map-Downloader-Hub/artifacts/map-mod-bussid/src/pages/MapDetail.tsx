@@ -110,7 +110,15 @@ export default function MapDetail() {
     setDlCountdown(DL_TIMER_SECONDS);
     if (gmTimerRef.current) clearInterval(gmTimerRef.current);
     if (dlTimerRef.current) clearInterval(dlTimerRef.current);
+    window.scrollTo(0, 0);
   }, [id]);
+
+  /* Scroll to top when moving to download screens */
+  useEffect(() => {
+    if (dlPhase !== 'idle') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [dlPhase]);
 
   useEffect(() => {
     if (!areAdsEnabled()) return;
@@ -191,6 +199,7 @@ export default function MapDetail() {
     if (dlTimerRef.current) clearInterval(dlTimerRef.current);
     setDlPhase('idle');
     setDlCountdown(DL_TIMER_SECONDS);
+    window.scrollTo(0, 0);
   };
 
   const handleShare = () => {
