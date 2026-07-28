@@ -1,10 +1,10 @@
 import { useRoute, Link } from 'wouter';
-import { useMap, incrementDownloadCount } from '../hooks/useMaps';
+import { useMap, useMaps, useTopMaps, incrementDownloadCount, MapMod, fmtCount } from '../hooks/useMaps';
 
 import { PageShell } from '../components/Layout';
 import {
   ChevronLeft, Download, DownloadCloud, Calendar, Tag,
-  AlertTriangle, ImageOff, ArrowRight, Share2
+  AlertTriangle, ImageOff, ArrowRight, Share2, Flame, Sparkles
 } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { useToast } from '@/hooks/use-toast';
@@ -52,6 +52,30 @@ function StickyHeader({ onBack, title, isLink }: {
   );
 }
 
+/* ── Suggestion Card ── */
+function SuggestionCard({ map }: { map: MapMod }) {
+  return (
+    <Link
+      href={`/map/${map.id}`}
+      className="flex-shrink-0 w-36 group relative rounded-xl overflow-hidden bg-card border border-border/50 transition-all hover:border-primary/50"
+    >
+      <div className="aspect-[4/3] overflow-hidden">
+        <img
+          src={map.thumbnail || FALLBACK}
+          alt={map.name}
+          className="w-full h-full object-cover transition-transform group-hover:scale-110"
+        />
+      </div>
+      <div className="p-2">
+        <p className="text-foreground font-bold text-[10px] leading-tight line-clamp-2 mb-1">{map.name}</p>
+        <p className="text-muted-foreground text-[8px] flex items-center gap-1">
+          📥 {fmtCount(map.downloadCount)}
+        </p>
+      </div>
+    </Link>
+  );
+}
+
 /* ── countdown durations ── */
 const GM_TIMER_SECONDS = 5;
 const DL_TIMER_SECONDS = 15;
@@ -61,6 +85,10 @@ export default function MapDetail() {
   const id = params?.id || '';
   const { map, loading } = useMap(id);
   const { toast } = useToast();
+
+  // Suggestions data
+  const { maps: newMaps } = useMaps(undefined, 'newest');
+  const { maps: trendingMaps } = useTopMaps(8);
 
   /* Get Map unlock phase */
   type GmPhase = 'idle' | 'counting' | 'revealed';
@@ -223,7 +251,7 @@ export default function MapDetail() {
       <PageShell>
         <StickyHeader onBack={handleBackFromDownload} title={map.name} />
 
-        <div className="px-4 pt-6 pb-4 flex flex-col items-center text-center">
+        <div className="px-4 pt-6 pb-20 flex flex-col items-center text-center">
 
           {/* Phase 1: Intermediate "Continue" */}
           {dlPhase === 'intermediate' && (
@@ -281,9 +309,8 @@ export default function MapDetail() {
 
               <button
                 onClick={handleFinalDownload}
-                className="w-full mt-4 py-5 rounded-2xl text-white font-black text-lg flex items-center justify-center gap-2 active:scale-95 transition-all"
+                className="w-full py-5 rounded-2xl bg-primary hover:bg-purple-500 active:scale-95 transition-all text-white font-black text-lg flex items-center justify-center gap-2"
                 style={{
-                  background: 'linear-gradient(135deg, #7c3aed 0%, #2563eb 100%)',
                   boxShadow: '0 0 32px rgba(124,58,237,0.5)',
                 }}
               >
@@ -293,9 +320,38 @@ export default function MapDetail() {
             </div>
           )}
 
+          {/* ── Suggestions Section ── */}
+          <div className="w-full mt-10 space-y-10 pb-10">
+            {/* New Released */}
+            <div className="text-left">
+              <h3 className="flex items-center gap-2 text-foreground font-black text-sm mb-4 px-1">
+                <Sparkles className="w-4 h-4 text-blue-400" />
+                🆕 New Released Maps You Might Like
+              </h3>
+              <div className="flex gap-3 overflow-x-auto pb-4 px-1 scrollbar-hide" style={{ scrollbarWidth: 'none' }}>
+                {newMaps.slice(0, 8).map(m => (
+                  <SuggestionCard key={m.id} map={m} />
+                ))}
+              </div>
+            </div>
+
+            {/* Trending */}
+            <div className="text-left">
+              <h3 className="flex items-center gap-2 text-foreground font-black text-sm mb-4 px-1">
+                <Flame className="w-4 h-4 text-orange-500" />
+                🔥 Trending BUSSID Maps This Week
+              </h3>
+              <div className="flex gap-3 overflow-x-auto pb-4 px-1 scrollbar-hide" style={{ scrollbarWidth: 'none' }}>
+                {trendingMaps.map(m => (
+                  <SuggestionCard key={m.id} map={m} />
+                ))}
+              </div>
+            </div>
+          </div>
+
           <button
             onClick={handleBackFromDownload}
-            className="text-muted-foreground text-sm underline underline-offset-2 mt-6"
+            className="text-muted-foreground text-sm underline underline-offset-2 mt-4 mb-10"
           >
             ← Go back
           </button>
