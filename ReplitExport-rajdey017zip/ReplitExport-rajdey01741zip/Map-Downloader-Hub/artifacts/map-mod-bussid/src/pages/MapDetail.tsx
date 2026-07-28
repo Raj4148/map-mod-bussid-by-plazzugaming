@@ -77,7 +77,7 @@ function SuggestionCard({ map }: { map: MapMod }) {
 }
 
 /* ── countdown durations ── */
-const GM_TIMER_SECONDS = 5;
+const GM_TIMER_SECONDS = 10;
 const DL_TIMER_SECONDS = 15;
 
 export default function MapDetail() {
