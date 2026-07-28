@@ -1,5 +1,6 @@
 import { useLocation } from 'wouter';
 import { useMaps } from '../hooks/useMaps';
+import { useState, useEffect } from 'react';
 
 import { MapGrid } from '../components/MapGrid';
 import { PageShell } from '../components/Layout';
@@ -13,14 +14,24 @@ const TABS = [
 ];
 
 export default function Maps() {
-  const [, setLocation] = useLocation();
-  const params = new URLSearchParams(window.location.search);
+  const [location, setLocation] = useLocation();
+
+  // Use a state to track search params for reactivity
+  const [search, setSearch] = useState(window.location.search);
+
+  // Sync state when location changes
+  useEffect(() => {
+    setSearch(window.location.search);
+  }, [location]);
+
+  const params = new URLSearchParams(search);
   const categoryFilter = params.get('category') || 'all';
 
   const { maps, loading } = useMaps(categoryFilter === 'all' ? undefined : categoryFilter);
 
   const handleTab = (id: string) => {
-    setLocation(id === 'all' ? '/maps' : `/maps?category=${id}`);
+    const newPath = id === 'all' ? '/maps' : `/maps?category=${id}`;
+    setLocation(newPath);
   };
 
   return (

@@ -196,14 +196,15 @@ const mockMaps: MapMod[] = [
   },
 ];
 
-/* ─── Core hook — all maps, ordered newest first ─── */
-export function useMaps(category?: string) {
+/* ─── Core hook — all maps, ordered by downloads (popularity) or timestamp (newest) ─── */
+export function useMaps(category?: string, sortBy: 'popularity' | 'newest' = 'popularity') {
   const [allMaps, setAllMaps] = useState<MapMod[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    const q = query(collection(db, 'maps'), orderBy('timestamp', 'desc'));
+    // We fetch all to allow client-side filtering/sorting flexibility
+    const q = query(collection(db, 'maps'));
 
     const unsubscribe = onSnapshot(
       q,
@@ -230,9 +231,26 @@ export function useMaps(category?: string) {
   }, []);
 
   const maps = useMemo(() => {
-    if (!category || category === 'all') return allMaps;
-    return allMaps.filter((m) => m.category === category.toLowerCase());
-  }, [allMaps, category]);
+    let filtered = [...allMaps];
+
+    // 1. Filter by category
+    if (category && category !== 'all') {
+      filtered = filtered.filter((m) => m.category === category.toLowerCase());
+    }
+
+    // 2. Sort
+    if (sortBy === 'popularity') {
+      filtered.sort((a, b) => {
+        const diff = b.downloadCount - a.downloadCount;
+        if (diff !== 0) return diff;
+        return b.createdAt - a.createdAt; // Tie-break with newest first
+      });
+    } else {
+      filtered.sort((a, b) => b.createdAt - a.createdAt);
+    }
+
+    return filtered;
+  }, [allMaps, category, sortBy]);
 
   return { maps, allMaps, loading, error };
 }

@@ -57,7 +57,7 @@ function FeaturedCard({ map }: { map: Parameters<typeof getMapBadge>[0] }) {
 
 /* ─── Home Page ─── */
 export default function Home() {
-  const { maps: allMaps, loading: allLoading } = useMaps();
+  const { maps: allMaps, loading: allLoading } = useMaps(undefined, 'newest');
   const { maps: topMaps, loading: topLoading } = useTopMaps(6);
   const [, setLocation] = useLocation();
 
