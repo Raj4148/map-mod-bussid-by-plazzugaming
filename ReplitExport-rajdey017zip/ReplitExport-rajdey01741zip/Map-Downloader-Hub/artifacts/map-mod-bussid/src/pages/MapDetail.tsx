@@ -86,10 +86,14 @@ export default function MapDetail() {
 
   useEffect(() => {
     if (!areAdsEnabled()) return;
-    // Inject In-page Push ad script
-    const script = document.createElement('script');
-    script.innerHTML = "(function(s){s.dataset.zone='11385886',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))";
-    document.body.appendChild(script);
+
+    // Inject In-page Push ad script (Zone 11385886)
+    if (!document.querySelector('script[src*="nap5k.com"]')) {
+      const s = document.createElement('script');
+      s.dataset.zone = '11385886';
+      s.src = 'https://nap5k.com/tag.min.js';
+      document.body.appendChild(s);
+    }
 
     return () => {
       if (gmTimerRef.current) clearInterval(gmTimerRef.current);
