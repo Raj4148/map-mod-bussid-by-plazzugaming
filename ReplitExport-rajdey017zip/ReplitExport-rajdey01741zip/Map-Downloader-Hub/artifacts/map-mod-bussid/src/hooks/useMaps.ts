@@ -42,6 +42,7 @@ interface FirestoreMap {
   img?: string;
   Thumbnail?: string;
   thumbnail?: string;
+  thumb?: string;              // Add thumb
   Imageurl2?: string;
   ImageUrl2?: string;
   imageurl2?: string;
@@ -82,8 +83,13 @@ function toMapMod(id: string, data: FirestoreMap): MapMod {
   else if (catRaw.includes('nepali')) category = 'nepali';
   else if (catRaw.includes('indones')) category = 'indonesian';
 
-  const thumbnail = getUrl(data.Imageurl || data.ImageUrl || data.imageurl || data.Image || data.image || data.Img || data.img || data.Thumbnail || data.thumbnail);
+  const thumbnail = getUrl(data.Imageurl || data.ImageUrl || data.imageurl || data.Image || data.image || data.Img || data.img || data.Thumbnail || data.thumbnail || data.thumb);
   const thumbnail2 = getUrl(data.Imageurl2 || data.ImageUrl2 || data.imageurl2 || data.Image2 || data.image2 || data.Img2 || data.img2 || data.Thumbnail2 || data.thumbnail2);
+
+  // Debug check
+  if (!thumbnail && !id.startsWith('mock-')) {
+    console.log(`[Map Hub Debug] Map "${data.Name}" (ID: ${id}) has no valid thumbnail URL. Raw data:`, data);
+  }
 
   // Debug check for ImgBB viewer links (common mistake)
   if (thumbnail.includes('ibb.co/') && !thumbnail.includes('i.ibb.co/')) {
