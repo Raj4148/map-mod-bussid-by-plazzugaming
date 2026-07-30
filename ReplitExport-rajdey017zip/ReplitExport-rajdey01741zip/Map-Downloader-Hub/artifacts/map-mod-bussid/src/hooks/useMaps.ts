@@ -66,6 +66,15 @@ function toMapMod(id: string, data: FirestoreMap): MapMod {
     }
   }
 
+  // Helper to extract string URL from potential object or string field
+  const getUrl = (val: any): string => {
+    if (!val) return '';
+    if (typeof val === 'string') return val;
+    if (typeof val === 'object' && val.url) return val.url; // Handle {url: "..."}
+    if (typeof val === 'object' && val.link) return val.url; // Handle {link: "..."}
+    return '';
+  };
+
   // Normalize Category: "Indian map" or "Indian" -> "indian"
   let catRaw = (data.Category || 'other').toLowerCase();
   let category: MapCategory = 'other';
@@ -73,8 +82,8 @@ function toMapMod(id: string, data: FirestoreMap): MapMod {
   else if (catRaw.includes('nepali')) category = 'nepali';
   else if (catRaw.includes('indones')) category = 'indonesian';
 
-  const thumbnail = data.Imageurl || data.ImageUrl || data.imageurl || data.Image || data.image || data.Img || data.img || data.Thumbnail || data.thumbnail || '';
-  const thumbnail2 = data.Imageurl2 || data.ImageUrl2 || data.imageurl2 || data.Image2 || data.image2 || data.Img2 || data.img2 || data.Thumbnail2 || data.thumbnail2 || '';
+  const thumbnail = getUrl(data.Imageurl || data.ImageUrl || data.imageurl || data.Image || data.image || data.Img || data.img || data.Thumbnail || data.thumbnail);
+  const thumbnail2 = getUrl(data.Imageurl2 || data.ImageUrl2 || data.imageurl2 || data.Image2 || data.image2 || data.Img2 || data.img2 || data.Thumbnail2 || data.thumbnail2);
 
   // Debug check for ImgBB viewer links (common mistake)
   if (thumbnail.includes('ibb.co/') && !thumbnail.includes('i.ibb.co/')) {
