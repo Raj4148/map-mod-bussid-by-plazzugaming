@@ -71,7 +71,7 @@ function toMapMod(id: string, data: FirestoreMap): MapMod {
     if (!val) return '';
     if (typeof val === 'string') return val;
     if (typeof val === 'object' && val.url) return val.url; // Handle {url: "..."}
-    if (typeof val === 'object' && val.link) return val.url; // Handle {link: "..."}
+    if (typeof val === 'object' && val.link) return val.link; // Handle {link: "..."}
     return '';
   };
 
