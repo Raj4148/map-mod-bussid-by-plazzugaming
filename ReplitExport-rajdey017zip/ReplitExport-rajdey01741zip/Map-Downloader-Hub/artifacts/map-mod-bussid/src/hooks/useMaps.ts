@@ -76,13 +76,14 @@ function toMapMod(id: string, data: any): MapMod {
       if (trimmed.startsWith('{') && trimmed.endsWith('}')) {
         try {
           const parsed = JSON.parse(trimmed);
-          return (parsed.url || parsed.display_url || parsed.link || '').trim();
+          return getUrl(parsed);
         } catch { return trimmed; }
       }
       return trimmed;
     }
-    if (typeof val === 'object' && (val.url || val.display_url || val.link)) {
-      return (val.url || val.display_url || val.link).trim();
+    if (Array.isArray(val) && val.length > 0) return getUrl(val[0]);
+    if (typeof val === 'object') {
+      return (val.url || val.display_url || val.link || val.secure_url || '').toString().trim();
     }
     return '';
   };
