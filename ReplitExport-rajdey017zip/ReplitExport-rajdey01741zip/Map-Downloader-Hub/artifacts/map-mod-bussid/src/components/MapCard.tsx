@@ -27,10 +27,11 @@ const BADGE_LABELS: Record<string, string> = {
 };
 
 export function MapCard({ map, showNew = true }: MapCardProps) {
-  const [imgSrc, setImgSrc] = useState(map.thumbnail || FALLBACK);
+  const [failed, setFailed] = useState(false);
   const { toast } = useToast();
 
   const badge = getMapBadge(map, showNew ? isMapNew(map.createdAt) : false);
+  const imgSrc = (!failed && map.thumbnail) ? map.thumbnail : FALLBACK;
 
   const handleShare = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -66,7 +67,7 @@ export function MapCard({ map, showNew = true }: MapCardProps) {
           referrerPolicy="no-referrer"
           className="absolute inset-0 w-full h-full object-cover"
           loading="lazy"
-          onError={() => setImgSrc(FALLBACK)}
+          onError={() => setFailed(true)}
         />
 
         {/* gradient overlay */}
