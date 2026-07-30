@@ -38,15 +38,19 @@ interface FirestoreMap {
   imageurl?: string;
   Image?: string;
   image?: string;
-  Img?: string;                // Add Img
-  img?: string;                // Add img
+  Img?: string;
+  img?: string;
+  Thumbnail?: string;
+  thumbnail?: string;
   Imageurl2?: string;
   ImageUrl2?: string;
   imageurl2?: string;
   Image2?: string;
   image2?: string;
-  Img2?: string;               // Add Img2
-  img2?: string;               // Add img2
+  Img2?: string;
+  img2?: string;
+  Thumbnail2?: string;
+  thumbnail2?: string;
   IsHot?: boolean;
   timestamp?: number | { seconds: number; nanoseconds: number };
   secret_key?: string;
@@ -69,8 +73,8 @@ function toMapMod(id: string, data: FirestoreMap): MapMod {
   else if (catRaw.includes('nepali')) category = 'nepali';
   else if (catRaw.includes('indones')) category = 'indonesian';
 
-  const thumbnail = data.Imageurl || data.ImageUrl || data.imageurl || data.Image || data.image || data.Img || data.img || '';
-  const thumbnail2 = data.Imageurl2 || data.ImageUrl2 || data.imageurl2 || data.Image2 || data.image2 || data.Img2 || data.img2 || '';
+  const thumbnail = data.Imageurl || data.ImageUrl || data.imageurl || data.Image || data.image || data.Img || data.img || data.Thumbnail || data.thumbnail || '';
+  const thumbnail2 = data.Imageurl2 || data.ImageUrl2 || data.imageurl2 || data.Image2 || data.image2 || data.Img2 || data.img2 || data.Thumbnail2 || data.thumbnail2 || '';
 
   // Debug check for ImgBB viewer links (common mistake)
   if (thumbnail.includes('ibb.co/') && !thumbnail.includes('i.ibb.co/')) {
