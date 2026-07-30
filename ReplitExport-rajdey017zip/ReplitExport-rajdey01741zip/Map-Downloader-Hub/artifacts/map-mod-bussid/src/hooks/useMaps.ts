@@ -34,7 +34,9 @@ interface FirestoreMap {
   'Download Count'?: number;   // backward-compat field name
   DownloadLink?: string;
   Imageurl?: string;
+  ImageUrl?: string;           // Support both cases
   Imageurl2?: string;
+  ImageUrl2?: string;          // Support both cases
   IsHot?: boolean;
   timestamp?: number | { seconds: number; nanoseconds: number };
   secret_key?: string;
@@ -61,8 +63,8 @@ function toMapMod(id: string, data: FirestoreMap): MapMod {
     id,
     name: data.Name || 'Unnamed Map',
     category,
-    thumbnail: data.Imageurl || '',
-    thumbnail2: data.Imageurl2 || '',
+    thumbnail: data.Imageurl || data.ImageUrl || '',
+    thumbnail2: data.Imageurl2 || data.ImageUrl2 || '',
     // Ensure downloadCount is a number
     downloadCount: Number(data.DownloadCount ?? data['Download Count'] ?? 0),
     downloadUrl: data.DownloadLink || '#',
