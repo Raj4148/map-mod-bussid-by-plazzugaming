@@ -68,6 +68,11 @@ function toMapMod(id: string, data: FirestoreMap): MapMod {
   const thumbnail = data.Imageurl || data.ImageUrl || data.imageurl || data.Image || data.image || '';
   const thumbnail2 = data.Imageurl2 || data.ImageUrl2 || data.imageurl2 || data.Image2 || data.image2 || '';
 
+  // Debug check for ImgBB viewer links (common mistake)
+  if (thumbnail.includes('ibb.co/') && !thumbnail.includes('i.ibb.co/')) {
+    console.warn(`[Map Hub] Detected ImgBB viewer link for "${data.Name}". Images will NOT show. Please use the "Direct Link" from ImgBB (starts with i.ibb.co). URL: ${thumbnail}`);
+  }
+
   return {
     id,
     name: data.Name || 'Unnamed Map',
