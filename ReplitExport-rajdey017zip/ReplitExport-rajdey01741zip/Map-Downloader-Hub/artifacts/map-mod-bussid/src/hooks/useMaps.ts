@@ -35,10 +35,14 @@ interface FirestoreMap {
   DownloadLink?: string;
   Imageurl?: string;
   ImageUrl?: string;
-  imageurl?: string;           // Support all lowercase
+  imageurl?: string;
+  Image?: string;              // Support "Image"
+  image?: string;              // Support "image"
   Imageurl2?: string;
   ImageUrl2?: string;
-  imageurl2?: string;          // Support all lowercase
+  imageurl2?: string;
+  Image2?: string;             // Support "Image2"
+  image2?: string;             // Support "image2"
   IsHot?: boolean;
   timestamp?: number | { seconds: number; nanoseconds: number };
   secret_key?: string;
@@ -61,8 +65,8 @@ function toMapMod(id: string, data: FirestoreMap): MapMod {
   else if (catRaw.includes('nepali')) category = 'nepali';
   else if (catRaw.includes('indones')) category = 'indonesian';
 
-  const thumbnail = data.Imageurl || data.ImageUrl || data.imageurl || '';
-  const thumbnail2 = data.Imageurl2 || data.ImageUrl2 || data.imageurl2 || '';
+  const thumbnail = data.Imageurl || data.ImageUrl || data.imageurl || data.Image || data.image || '';
+  const thumbnail2 = data.Imageurl2 || data.ImageUrl2 || data.imageurl2 || data.Image2 || data.image2 || '';
 
   return {
     id,
