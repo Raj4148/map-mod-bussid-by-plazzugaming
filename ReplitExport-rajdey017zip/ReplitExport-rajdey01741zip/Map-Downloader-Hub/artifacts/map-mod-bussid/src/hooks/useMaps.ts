@@ -98,7 +98,8 @@ function toMapMod(id: string, data: any): MapMod {
     data.Pic || data.pic ||       // Add Pic
     data.Thumbnail || data.thumbnail ||
     data.thumb || data.display_url ||
-    data.URL || data.url || data.link || data.Link
+    data.URL || data.url || data.link || data.Link ||
+    (data.DownloadLink?.includes('ibb.co') ? data.DownloadLink : '') // Emergency fallback
   );
 
   // 2. If still empty, try to find ANY field that looks like a URL
