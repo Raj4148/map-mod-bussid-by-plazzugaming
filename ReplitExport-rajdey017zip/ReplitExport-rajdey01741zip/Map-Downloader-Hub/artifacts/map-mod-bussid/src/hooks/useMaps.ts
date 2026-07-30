@@ -95,7 +95,8 @@ function toMapMod(id: string, data: any): MapMod {
     data.Image || data.image ||
     data.Img || data.img ||
     data.Thumbnail || data.thumbnail ||
-    data.thumb || data.display_url
+    data.thumb || data.display_url ||
+    data.URL || data.url || data.link || data.Link
   );
 
   // 2. If still empty, try to find ANY field that looks like a URL
