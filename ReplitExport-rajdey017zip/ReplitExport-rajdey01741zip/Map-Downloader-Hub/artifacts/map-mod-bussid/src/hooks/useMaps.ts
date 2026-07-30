@@ -94,6 +94,8 @@ function toMapMod(id: string, data: any): MapMod {
     data.Image_URL || data.image_url ||
     data.Image || data.image ||
     data.Img || data.img ||
+    data.Photo || data.photo ||   // Add Photo
+    data.Pic || data.pic ||       // Add Pic
     data.Thumbnail || data.thumbnail ||
     data.thumb || data.display_url ||
     data.URL || data.url || data.link || data.Link
