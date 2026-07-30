@@ -63,6 +63,7 @@ function SuggestionCard({ map }: { map: MapMod }) {
         <img
           src={map.thumbnail || FALLBACK}
           alt={map.name}
+          referrerPolicy="no-referrer"
           className="w-full h-full object-cover transition-transform group-hover:scale-110"
         />
       </div>

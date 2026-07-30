@@ -35,6 +35,7 @@ function FeaturedCard({ map }: { map: Parameters<typeof getMapBadge>[0] }) {
       <img
         src={imgSrc || `https://picsum.photos/seed/${map.id}/300/225`}
         alt={map.name}
+        referrerPolicy="no-referrer"
         className="w-full h-full object-cover"
         loading="lazy"
         onError={() => setImgSrc(`https://picsum.photos/seed/${map.id}/300/225`)}
