@@ -83,7 +83,8 @@ function toMapMod(id: string, data: any): MapMod {
     }
     if (Array.isArray(val) && val.length > 0) return getUrl(val[0]);
     if (typeof val === 'object') {
-      return (val.url || val.display_url || val.link || val.secure_url || '').toString().trim();
+      // Recursively search for common URL keys
+      return (val.url || val.display_url || val.link || val.secure_url || val.image?.url || val.image?.link || val.data?.url || '').toString().trim();
     }
     return '';
   };
