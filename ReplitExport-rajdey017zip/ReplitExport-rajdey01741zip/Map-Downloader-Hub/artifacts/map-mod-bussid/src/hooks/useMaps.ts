@@ -90,6 +90,7 @@ function toMapMod(id: string, data: any): MapMod {
   // 1. Explicitly check known field names
   let thumbCandidate = getUrl(
     data.Imageurl || data.ImageUrl || data.ImageURL || data.imageurl ||
+    data.Image_URL || data.image_url ||
     data.Image || data.image ||
     data.Img || data.img ||
     data.Thumbnail || data.thumbnail ||
