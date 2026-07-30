@@ -28,6 +28,7 @@ function SafeImage({ src, alt, className }: { src: string; alt: string; classNam
   return (
     <img
       src={imgSrc} alt={alt}
+      referrerPolicy="no-referrer"
       className={className}
       onError={() => (imgSrc !== FALLBACK ? setImgSrc(FALLBACK) : setFailed(true))}
     />
