@@ -36,13 +36,17 @@ interface FirestoreMap {
   Imageurl?: string;
   ImageUrl?: string;
   imageurl?: string;
-  Image?: string;              // Support "Image"
-  image?: string;              // Support "image"
+  Image?: string;
+  image?: string;
+  Img?: string;                // Add Img
+  img?: string;                // Add img
   Imageurl2?: string;
   ImageUrl2?: string;
   imageurl2?: string;
-  Image2?: string;             // Support "Image2"
-  image2?: string;             // Support "image2"
+  Image2?: string;
+  image2?: string;
+  Img2?: string;               // Add Img2
+  img2?: string;               // Add img2
   IsHot?: boolean;
   timestamp?: number | { seconds: number; nanoseconds: number };
   secret_key?: string;
@@ -65,8 +69,8 @@ function toMapMod(id: string, data: FirestoreMap): MapMod {
   else if (catRaw.includes('nepali')) category = 'nepali';
   else if (catRaw.includes('indones')) category = 'indonesian';
 
-  const thumbnail = data.Imageurl || data.ImageUrl || data.imageurl || data.Image || data.image || '';
-  const thumbnail2 = data.Imageurl2 || data.ImageUrl2 || data.imageurl2 || data.Image2 || data.image2 || '';
+  const thumbnail = data.Imageurl || data.ImageUrl || data.imageurl || data.Image || data.image || data.Img || data.img || '';
+  const thumbnail2 = data.Imageurl2 || data.ImageUrl2 || data.imageurl2 || data.Image2 || data.image2 || data.Img2 || data.img2 || '';
 
   // Debug check for ImgBB viewer links (common mistake)
   if (thumbnail.includes('ibb.co/') && !thumbnail.includes('i.ibb.co/')) {
