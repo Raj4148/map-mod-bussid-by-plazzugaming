@@ -63,8 +63,6 @@ export function MapCard({ map, showNew = true }: MapCardProps) {
         <img
           src={imgSrc}
           alt={map.name}
-          referrerPolicy="no-referrer"
-          crossOrigin="anonymous"
           className="absolute inset-0 w-full h-full object-cover"
           loading="lazy"
           onError={() => setImgSrc(FALLBACK)}
