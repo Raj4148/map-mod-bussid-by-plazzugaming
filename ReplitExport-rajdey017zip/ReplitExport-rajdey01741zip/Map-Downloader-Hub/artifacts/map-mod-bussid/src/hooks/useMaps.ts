@@ -70,7 +70,17 @@ function toMapMod(id: string, data: any): MapMod {
   // Helper to extract string URL from potential object or string field
   const getUrl = (val: any): string => {
     if (!val) return '';
-    if (typeof val === 'string') return val.trim();
+    if (typeof val === 'string') {
+      const trimmed = val.trim();
+      // Handle if it's a JSON string by mistake
+      if (trimmed.startsWith('{') && trimmed.endsWith('}')) {
+        try {
+          const parsed = JSON.parse(trimmed);
+          return (parsed.url || parsed.display_url || parsed.link || '').trim();
+        } catch { return trimmed; }
+      }
+      return trimmed;
+    }
     if (typeof val === 'object' && (val.url || val.display_url || val.link)) {
       return (val.url || val.display_url || val.link).trim();
     }
