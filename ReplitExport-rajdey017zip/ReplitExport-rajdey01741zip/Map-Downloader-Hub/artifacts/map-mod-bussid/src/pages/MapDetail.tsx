@@ -173,6 +173,10 @@ export default function MapDetail() {
   }, [dlPhase]);
 
   const handleGetMap = () => {
+    if (areAdsEnabled() && isIndianUser()) {
+      // Third Direct Link for Indian users only
+      window.open('https://omg10.com/4/11401834', '_blank', 'noopener');
+    }
     setGmPhase('counting');
   };
 
