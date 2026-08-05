@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { areAdsEnabled } from '@/lib/ads-control';
+import { areAdsEnabled, detectCountry, isIndianUser } from '@/lib/ads-control';
 
 /* ── fallback image ── */
 const FALLBACK = 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&auto=format&fit=crop';
@@ -122,15 +122,25 @@ export default function MapDetail() {
   }, [dlPhase]);
 
   useEffect(() => {
-    if (!areAdsEnabled()) return;
+    const initPageAds = async () => {
+      if (!areAdsEnabled()) return;
 
-    // Inject In-page Push ad script (Zone 11385886)
-    if (!document.querySelector('script[src*="nap5k.com"]')) {
-      const s = document.createElement('script');
-      s.dataset.zone = '11385886';
-      s.src = 'https://nap5k.com/tag.min.js';
-      document.body.appendChild(s);
-    }
+      // Ensure country is detected
+      await detectCountry();
+
+      // If user is from India, we do NOT load the In-page Push ad
+      if (isIndianUser()) return;
+
+      // Inject In-page Push ad script (Zone 11385886)
+      if (!document.querySelector('script[src*="nap5k.com"]')) {
+        const s = document.createElement('script');
+        s.dataset.zone = '11385886';
+        s.src = 'https://nap5k.com/tag.min.js';
+        document.body.appendChild(s);
+      }
+    };
+
+    initPageAds();
 
     return () => {
       if (gmTimerRef.current) clearInterval(gmTimerRef.current);
