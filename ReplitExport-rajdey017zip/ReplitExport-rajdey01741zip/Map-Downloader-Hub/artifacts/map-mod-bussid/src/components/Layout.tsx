@@ -2,8 +2,6 @@ import { Link, useLocation } from 'wouter';
 import { Home, Star, Settings } from 'lucide-react';
 
 import { useTheme } from '../lib/theme-context';
-import { MonetagAds } from './ads/MonetagAds';
-import { areAdsEnabled } from '@/lib/ads-control';
 
 /* ─── Bottom Navigation Bar ─── */
 export function BottomNav() {
@@ -51,11 +49,8 @@ export function BottomNav() {
 
 /* ─── Page wrapper with bottom nav spacing ─── */
 export function PageShell({ children }: { children: React.ReactNode }) {
-  const adsActive = areAdsEnabled();
-
   return (
     <>
-      {adsActive && <MonetagAds />}
       <div className="min-h-screen bg-background pb-20 transition-colors">
         {children}
       </div>
