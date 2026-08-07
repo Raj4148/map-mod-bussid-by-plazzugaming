@@ -2,8 +2,6 @@ import { useRoute, Link } from 'wouter';
 import { useMap, useMaps, useTopMaps, incrementDownloadCount, MapMod, fmtCount } from '../hooks/useMaps';
 
 import { PageShell } from '../components/Layout';
-import { AdsterraNative } from '../components/ads/AdsterraNative';
-import { AdsterraBanner } from '../components/ads/AdsterraBanner';
 import {
   ChevronLeft, Download, DownloadCloud, Calendar, Tag,
   AlertTriangle, ImageOff, ArrowRight, Share2, Flame, Sparkles
@@ -248,8 +246,6 @@ export default function MapDetail() {
           {/* Phase 1: Intermediate "Continue" */}
           {dlPhase === 'intermediate' && (
             <div className="w-full space-y-6">
-              <AdsterraBanner type="300x250" className="mx-auto rounded-xl overflow-hidden" />
-
               <div className="bg-card border border-border rounded-2xl p-8 flex flex-col items-center gap-4">
                 <ArrowRight className="w-12 h-12 text-primary animate-pulse" />
                 <h3 className="text-foreground font-black text-lg">Next step ready</h3>
@@ -297,8 +293,6 @@ export default function MapDetail() {
           {/* Phase 3: Final Ready State */}
           {dlPhase === 'ready' && (
             <div className="w-full space-y-6">
-              <AdsterraNative className="rounded-2xl overflow-hidden" />
-
               <div className="w-full rounded-2xl border border-border bg-card p-6 flex flex-col items-center gap-4 my-2">
                 <p className="text-foreground font-black text-lg">✅ Link ready! Tap Download below.</p>
               </div>
@@ -460,18 +454,6 @@ export default function MapDetail() {
           <div className="bg-card border border-border rounded-xl p-4">
             <h3 className="text-foreground font-bold text-sm mb-3">Description</h3>
             <p className="text-muted-foreground text-sm leading-relaxed">{map.description}</p>
-
-            {/* Native Ad inside description area */}
-            <div className="mt-4 pt-4 border-t border-border/50">
-              <AdsterraNative className="rounded-lg overflow-hidden" />
-            </div>
-          </div>
-        )}
-
-        {/* Ad Banner before Next button */}
-        {gmPhase === 'revealed' && (
-          <div className="py-2">
-            <AdsterraBanner type="320x50" className="mx-auto" />
           </div>
         )}
 

@@ -3,7 +3,6 @@ import { useMaps, useTopMaps, fmtCount, getMapBadge, isMapNew } from '../hooks/u
 
 import { MapGrid } from '../components/MapGrid';
 import { PageShell } from '../components/Layout';
-import { AdsterraBanner } from '../components/ads/AdsterraBanner';
 import { DownloadCloud, ChevronRight, MapPin, Trophy } from 'lucide-react';
 import { useState } from 'react';
 
@@ -124,11 +123,6 @@ export default function Home() {
           ))}
         </div>
       </section>
-
-      {/* Ad Banner */}
-      <div className="px-4 mt-4">
-        <AdsterraBanner type="728x90" className="rounded-xl overflow-hidden shadow-sm border border-border/50" />
-      </div>
 
       <section className="mt-6 px-4">
         <div className="flex items-center justify-between mb-3">
