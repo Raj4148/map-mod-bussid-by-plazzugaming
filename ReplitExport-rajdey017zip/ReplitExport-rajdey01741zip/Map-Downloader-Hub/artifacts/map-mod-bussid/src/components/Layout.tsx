@@ -2,6 +2,9 @@ import { Link, useLocation } from 'wouter';
 import { Home, Star, Settings } from 'lucide-react';
 
 import { useTheme } from '../lib/theme-context';
+import { areAdsEnabled } from '@/lib/ads-control';
+import { AdsterraPopunder } from './ads/AdsterraPopunder';
+import { AdsterraSocialBar } from './ads/AdsterraSocialBar';
 
 /* ─── Bottom Navigation Bar ─── */
 export function BottomNav() {
@@ -49,8 +52,16 @@ export function BottomNav() {
 
 /* ─── Page wrapper with bottom nav spacing ─── */
 export function PageShell({ children }: { children: React.ReactNode }) {
+  const adsActive = areAdsEnabled();
+
   return (
     <>
+      {adsActive && (
+        <>
+          <AdsterraPopunder />
+          <AdsterraSocialBar />
+        </>
+      )}
       <div className="min-h-screen bg-background pb-20 transition-colors">
         {children}
       </div>
