@@ -10,7 +10,6 @@ const Home = lazy(() => import('./pages/Home'));
 const Maps = lazy(() => import('./pages/Maps'));
 const MapDetail = lazy(() => import('./pages/MapDetail'));
 const Settings = lazy(() => import('./pages/Settings'));
-const SafeMode = lazy(() => import('./pages/SafeMode'));
 
 const queryClient = new QueryClient();
 
@@ -33,7 +32,6 @@ function Router() {
         <Route path="/maps" component={Maps} />
         <Route path="/map/:id" component={MapDetail} />
         <Route path="/settings" component={Settings} />
-        <Route path="/raju" component={SafeMode} />
         <Route component={NotFound} />
       </Switch>
     </Suspense>
