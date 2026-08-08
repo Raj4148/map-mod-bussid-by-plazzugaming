@@ -121,14 +121,6 @@ export default function MapDetail() {
   }, [dlPhase]);
 
   useEffect(() => {
-    // Inject In-page Push ad script (Zone 11385886)
-    if (!document.querySelector('script[src*="nap5k.com"]')) {
-      const s = document.createElement('script');
-      s.dataset.zone = '11385886';
-      s.src = 'https://nap5k.com/tag.min.js';
-      document.body.appendChild(s);
-    }
-
     return () => {
       if (gmTimerRef.current) clearInterval(gmTimerRef.current);
       if (dlTimerRef.current) clearInterval(dlTimerRef.current);
@@ -160,20 +152,22 @@ export default function MapDetail() {
   }, [dlPhase]);
 
   const handleGetMap = () => {
-    // Open Monetag Direct Link
+    // Open Monetag Direct Link 1
     window.open('https://omg10.com/4/11401834', '_blank', 'noopener');
     setGmPhase('counting');
   };
 
   const handleNextStep = () => {
     if (!map) return;
-    // Open Monetag Direct Link
-    window.open('https://omg10.com/4/11401834', '_blank', 'noopener');
+    // Open Monetag Direct Link 2
+    window.open('https://omg10.com/4/11385854', '_blank', 'noopener');
     // Move to intermediate step ("Continue")
     setDlPhase('intermediate');
   };
 
   const handleContinueToCountdown = () => {
+    // Open Monetag Direct Link 3
+    window.open('https://omg10.com/4/11533894', '_blank', 'noopener');
     setDlCountdown(DL_TIMER_SECONDS);
     setDlPhase('counting');
   };
@@ -182,8 +176,8 @@ export default function MapDetail() {
     if (!map || !map.downloadUrl || map.downloadUrl === '#') return;
     incrementDownloadCount(map.id);
 
-    // Open Monetag Direct Link
-    window.open('https://omg10.com/4/11401834', '_blank', 'noopener');
+    // Open Monetag Direct Link 4
+    window.open('https://omg10.com/4/11385953', '_blank', 'noopener');
 
     const fileUrl = map.downloadUrl;
     setTimeout(() => {
