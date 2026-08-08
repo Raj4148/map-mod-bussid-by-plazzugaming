@@ -159,8 +159,6 @@ export default function MapDetail() {
 
   const handleNextStep = () => {
     if (!map) return;
-    // Open Monetag Direct Link 2
-    window.open('https://omg10.com/4/11385854', '_blank', 'noopener');
     // Move to intermediate step ("Continue")
     setDlPhase('intermediate');
   };
