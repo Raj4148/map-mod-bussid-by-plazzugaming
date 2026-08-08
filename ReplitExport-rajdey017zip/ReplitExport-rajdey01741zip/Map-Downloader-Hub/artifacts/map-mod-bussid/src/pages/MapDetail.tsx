@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { useToast } from '@/hooks/use-toast';
+import { areAdsEnabled } from '../lib/ads-control';
 
 /* ── fallback image ── */
 const FALLBACK = 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&auto=format&fit=crop';
@@ -153,7 +154,9 @@ export default function MapDetail() {
 
   const handleGetMap = () => {
     // Open Monetag Direct Link 1
-    window.open('https://omg10.com/4/11401834', '_blank', 'noopener');
+    if (areAdsEnabled()) {
+      window.open('https://omg10.com/4/11401834', '_blank', 'noopener');
+    }
     setGmPhase('counting');
   };
 
@@ -165,7 +168,9 @@ export default function MapDetail() {
 
   const handleContinueToCountdown = () => {
     // Open Monetag Direct Link 3
-    window.open('https://omg10.com/4/11533894', '_blank', 'noopener');
+    if (areAdsEnabled()) {
+      window.open('https://omg10.com/4/11533894', '_blank', 'noopener');
+    }
     setDlCountdown(DL_TIMER_SECONDS);
     setDlPhase('counting');
   };
@@ -175,7 +180,9 @@ export default function MapDetail() {
     incrementDownloadCount(map.id);
 
     // Open Monetag Direct Link 4
-    window.open('https://omg10.com/4/11385953', '_blank', 'noopener');
+    if (areAdsEnabled()) {
+      window.open('https://omg10.com/4/11385953', '_blank', 'noopener');
+    }
 
     const fileUrl = map.downloadUrl;
     setTimeout(() => {
