@@ -60,10 +60,9 @@ function SuggestionCard({ map }: { map: MapMod }) {
       className="flex-shrink-0 w-36 group relative rounded-xl overflow-hidden bg-card border border-border/50 transition-all hover:border-primary/50"
     >
       <div className="aspect-[4/3] overflow-hidden">
-        <img
-          src={map.thumbnail || FALLBACK}
+        <SafeImage
+          src={map.thumbnail}
           alt={map.name}
-          referrerPolicy="no-referrer"
           className="w-full h-full object-cover transition-transform group-hover:scale-110"
         />
       </div>
@@ -74,6 +73,39 @@ function SuggestionCard({ map }: { map: MapMod }) {
         </p>
       </div>
     </Link>
+  );
+}
+
+/* ── Suggestions Section (Native Ad Style) ── */
+function SuggestionsSection({ newMaps, trendingMaps }: { newMaps: MapMod[], trendingMaps: MapMod[] }) {
+  const [activeTab, setActiveTab] = useState<'new' | 'trending'>('new');
+
+  return (
+    <div className="w-full mt-8 space-y-6">
+      <div className="flex items-center justify-between px-1">
+        <div className="flex gap-4">
+          <button
+            onClick={() => setActiveTab('new')}
+            className={`text-xs font-black transition-colors ${activeTab === 'new' ? 'text-primary border-b-2 border-primary pb-1' : 'text-muted-foreground'}`}
+          >
+            NEW RELEASED
+          </button>
+          <button
+            onClick={() => setActiveTab('trending')}
+            className={`text-xs font-black transition-colors ${activeTab === 'trending' ? 'text-primary border-b-2 border-primary pb-1' : 'text-muted-foreground'}`}
+          >
+            TRENDING
+          </button>
+        </div>
+        <span className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-tighter italic">Recommended</span>
+      </div>
+
+      <div className="flex gap-3 overflow-x-auto pb-4 px-1 scrollbar-hide" style={{ scrollbarWidth: 'none' }}>
+        {(activeTab === 'new' ? newMaps.slice(0, 8) : trendingMaps).map(m => (
+          <SuggestionCard key={m.id} map={m} />
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -405,34 +437,7 @@ export default function MapDetail() {
             </div>
           )}
 
-          {/* ── Suggestions Section ── */}
-          <div className="w-full mt-10 space-y-10 pb-10">
-            {/* New Released */}
-            <div className="text-left">
-              <h3 className="flex items-center gap-2 text-foreground font-black text-sm mb-4 px-1">
-                <Sparkles className="w-4 h-4 text-blue-400" />
-                🆕 New Released Maps You Might Like
-              </h3>
-              <div className="flex gap-3 overflow-x-auto pb-4 px-1 scrollbar-hide" style={{ scrollbarWidth: 'none' }}>
-                {newMaps.slice(0, 8).map(m => (
-                  <SuggestionCard key={m.id} map={m} />
-                ))}
-              </div>
-            </div>
-
-            {/* Trending */}
-            <div className="text-left">
-              <h3 className="flex items-center gap-2 text-foreground font-black text-sm mb-4 px-1">
-                <Flame className="w-4 h-4 text-orange-500" />
-                🔥 Trending BUSSID Maps This Week
-              </h3>
-              <div className="flex gap-3 overflow-x-auto pb-4 px-1 scrollbar-hide" style={{ scrollbarWidth: 'none' }}>
-                {trendingMaps.map(m => (
-                  <SuggestionCard key={m.id} map={m} />
-                ))}
-              </div>
-            </div>
-          </div>
+          <SuggestionsSection newMaps={newMaps} trendingMaps={trendingMaps} />
 
           <button
             onClick={handleBackFromDownload}
@@ -573,6 +578,9 @@ export default function MapDetail() {
             </p>
           </>
         )}
+
+        {/* New Released & Trending Tabs (Native Ad Style) */}
+        <SuggestionsSection newMaps={newMaps} trendingMaps={trendingMaps} />
       </div>
 
       {/* bottom padding so content isn't hidden behind social bar */}
