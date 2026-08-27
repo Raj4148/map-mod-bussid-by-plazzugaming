@@ -314,7 +314,7 @@ export default function MapDetail() {
           {/* Phase 1: Intermediate "Continue" */}
           {dlPhase === 'intermediate' && (
             <div className="w-full space-y-6">
-              <div className="bg-card border border-border rounded-2xl p-8 flex flex-col items-center gap-4">
+              <div className="bg-card border border-border rounded-2xl p-8 flex flex-col items-center gap-4 text-center">
                 <ArrowRight className="w-12 h-12 text-primary animate-pulse" />
                 <h3 className="text-foreground font-black text-lg">Next step ready</h3>
                 <p className="text-muted-foreground text-sm">Tap the button below to generate your download link.</p>
@@ -327,6 +327,33 @@ export default function MapDetail() {
                 Continue
                 <ArrowRight className="w-5 h-5" />
               </button>
+
+              <div className="mt-8 text-left bg-muted/30 rounded-2xl p-6 border border-border/50">
+                <h4 className="text-foreground font-bold text-sm mb-4">Why Download BUSSID Map Mods from Plazzu Gaming?</h4>
+                <div className="text-muted-foreground text-[11px] leading-relaxed space-y-4">
+                  <p>
+                    <strong>Bus Simulator Indonesia (BUSSID)</strong> has evolved from a simple driving game into a massive cultural phenomenon, especially in India, Nepal, and Indonesia. One of the key features that keeps the community thriving is the ability to install custom <strong>BUSSID Map Mods</strong>. These mods transform your standard routes into breathtaking journeys across specialized terrains. Whether you are looking for an <strong>Indian Map Mod for BUSSID</strong> featuring the busy streets of Delhi or the treacherous curves of the Himalayan foothills, our collection provides the most immersive experience available today.
+                  </p>
+                  <p>
+                    For those who crave technical driving challenges, the <strong>Nepali BUSSID Map Mod</strong> category is a top choice. These maps often include extreme hilly roads, muddy paths, and narrow bridges that test your precision and control. Navigating a heavy bus through a <strong>Nepali Hill Road Mod</strong> requires a deep understanding of vehicle physics and gear management, making it a favorite among hardcore simulator fans. Our maps are optimized for performance, ensuring that even players on mid-range mobile devices can enjoy high-quality textures and realistic environmental effects without significant frame drops.
+                  </p>
+                  <p>
+                    The <strong>BUSSID Map Mod download</strong> process on our site is designed to be secure and straightforward. We host a variety of unique locations, including authentic <strong>Indonesian Map Mods</strong> that capture the essence of Java, Sumatra, and Bali. From the legendary Kelok 44 sharp turns to the long stretches of the Java Trans-Toll road, the variety is endless. Each mod is carefully vetted to ensure compatibility with the latest version of Bus Simulator Indonesia, so you don't have to worry about game crashes or corrupted files.
+                  </p>
+                  <p>
+                    In addition to geography, many of our <strong>BUSSID Mod</strong> releases include specialized features like custom traffic patterns, realistic weather systems, and regional assets such as local shops, landmarks, and roadside billboards. Using an <strong>Indian Map Mod with Traffic</strong> can completely change how you play, adding the chaos and excitement of real-world Indian highways to your screen. The attention to detail in these mods is what sets <strong>Plazzu Gaming</strong> apart as a leading hub for the BUSSID community.
+                  </p>
+                  <p>
+                    Updating your game with new terrain is essential for maintaining long-term interest. The <strong>Bus Simulator Indonesia Mod Map</strong> scene is constantly innovating, and we pride ourselves on being the first to upload the daily 8:00 PM drops. By choosing our platform, you are joining a global community of virtual drivers who value quality and authenticity. From <strong>Extreme Offroad BUSSID Maps</strong> to relaxing city drives, our catalog caters to every mood and driving style.
+                  </p>
+                  <p>
+                    Keywords like <strong>BUSSID Indian Map download</strong>, <strong>Nepali Bus Simulator Mod</strong>, and <strong>Best BUSSID Maps 2024</strong> are frequently searched because players want the most up-to-date content. We ensure that our SEO-optimized descriptions help you find exactly what you're looking for. Remember, to install these mods, simply download the file, move it to your BUSSID mod folder, and activate it within the game's management menu. Get ready to explore new horizons and take your virtual driving career to the next level with our premium <strong>BUSSID Map Mods</strong>!
+                  </p>
+                  <p>
+                    Our mission is to provide a one-stop-shop for all things BUSSID. Beyond maps, we understand the importance of realistic bus skins, liveries, and vehicle mods that complement your new routes. Using a <strong>Hilly Road Map</strong> with a powerful Indian sleeper bus mod creates an unbeatable simulation atmosphere. Don't forget to check our suggestions section for more <strong>BUSSID Map Mods</strong> that might interest you, and subscribe to our YouTube channel for tutorials on how to install these mods correctly and gameplay showcases of the latest releases.
+                  </p>
+                </div>
+              </div>
             </div>
           )}
 
