@@ -35,6 +35,33 @@ function SafeImage({ src, alt, className }: { src: string; alt: string; classNam
   );
 }
 
+/* ── linkify text ── */
+function LinkifyText({ text }: { text: string }) {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  const parts = text.split(urlRegex);
+
+  return (
+    <>
+      {parts.map((part, i) => {
+        if (part.match(urlRegex)) {
+          return (
+            <a
+              key={i}
+              href={part}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary font-bold underline underline-offset-2 break-all"
+            >
+              {part}
+            </a>
+          );
+        }
+        return part;
+      })}
+    </>
+  );
+}
+
 /* ── shared sticky header ── */
 function StickyHeader({ onBack, title, isLink }: {
   onBack?: () => void;
@@ -565,7 +592,9 @@ export default function MapDetail() {
         {map.description && (
           <div className="bg-card border border-border rounded-xl p-4">
             <h3 className="text-foreground font-bold text-sm mb-3">Description</h3>
-            <p className="text-muted-foreground text-sm leading-relaxed">{map.description}</p>
+            <p className="text-muted-foreground text-sm leading-relaxed whitespace-pre-wrap">
+              <LinkifyText text={map.description} />
+            </p>
           </div>
         )}
 
