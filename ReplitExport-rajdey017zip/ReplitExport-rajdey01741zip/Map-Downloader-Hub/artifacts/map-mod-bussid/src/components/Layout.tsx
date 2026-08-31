@@ -2,7 +2,6 @@ import { Link, useLocation } from 'wouter';
 import { Home, Star, Settings } from 'lucide-react';
 
 import { useTheme } from '../lib/theme-context';
-import { MonetagPopunder } from './MonetagPopunder';
 
 /* ─── Bottom Navigation Bar ─── */
 export function BottomNav() {
@@ -52,7 +51,6 @@ export function BottomNav() {
 export function PageShell({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <MonetagPopunder />
       <div className="min-h-screen bg-background pb-20 transition-colors">
         {children}
       </div>

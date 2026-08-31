@@ -230,13 +230,6 @@ export default function MapDetail() {
   useEffect(() => {
     if (dlPhase !== 'final_step') return;
 
-    // Inject Vignette ad script (Zone 11385828)
-    if (areAdsEnabled() && !document.querySelector('script[src*="vignette.min.js"]')) {
-      const s = document.createElement('script');
-      s.innerHTML = `(function(s){s.dataset.zone='11385828',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))`;
-      document.head.appendChild(s);
-    }
-
     dlTimerRef.current = setInterval(() => {
       setDlCountdown((c) => {
         if (c <= 1) { clearInterval(dlTimerRef.current!); setDlPhase('ready'); return 0; }
