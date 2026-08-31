@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'wouter';
-import { Home, Star, Settings } from 'lucide-react';
+import { Home, Users, Settings } from 'lucide-react';
 
 import { useTheme } from '../lib/theme-context';
 
@@ -9,9 +9,9 @@ export function BottomNav() {
   const { darkMode } = useTheme();
 
   const tabs = [
-    { href: '/',         label: 'Home',     icon: Home     },
-    { href: '/maps',     label: 'Popular',  icon: Star     },
-    { href: '/settings', label: 'Settings', icon: Settings },
+    { href: '/',          label: 'Home',      icon: Home     },
+    { href: '/community', label: 'Community', icon: Users    },
+    { href: '/settings',  label: 'Settings',  icon: Settings },
   ];
 
   return (
