@@ -151,7 +151,7 @@ function YoutubePopup({ onClose }: { onClose: () => void }) {
 
 /* ── countdown durations ── */
 const GM_TIMER_SECONDS = 10;
-const DL_TIMER_SECONDS = 15;
+const FINAL_TIMER_SECONDS = 5;
 
 export default function MapDetail() {
   const [, params] = useRoute('/map/:id');
@@ -184,9 +184,9 @@ export default function MapDetail() {
   const gmTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   /* Download countdown phases */
-  type DlPhase = 'idle' | 'intermediate' | 'counting' | 'ready';
+  type DlPhase = 'idle' | 'intermediate' | 'final_step' | 'ready';
   const [dlPhase, setDlPhase]         = useState<DlPhase>('idle');
-  const [dlCountdown, setDlCountdown] = useState(DL_TIMER_SECONDS);
+  const [dlCountdown, setDlCountdown] = useState(FINAL_TIMER_SECONDS);
   const dlTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   /* Reset state when navigating to a different map */
@@ -194,7 +194,7 @@ export default function MapDetail() {
     setGmPhase('idle');
     setGmCountdown(GM_TIMER_SECONDS);
     setDlPhase('idle');
-    setDlCountdown(DL_TIMER_SECONDS);
+    setDlCountdown(FINAL_TIMER_SECONDS);
     if (gmTimerRef.current) clearInterval(gmTimerRef.current);
     if (dlTimerRef.current) clearInterval(dlTimerRef.current);
     window.scrollTo(0, 0);
@@ -226,9 +226,17 @@ export default function MapDetail() {
     return () => { if (gmTimerRef.current) clearInterval(gmTimerRef.current); };
   }, [gmPhase]);
 
-  /* Download 15-second countdown timer */
+  /* Download countdown timer (Final Step) */
   useEffect(() => {
-    if (dlPhase !== 'counting') return;
+    if (dlPhase !== 'final_step') return;
+
+    // Inject Vignette ad script (Zone 11385828)
+    if (areAdsEnabled() && !document.querySelector('script[src*="vignette.min.js"]')) {
+      const s = document.createElement('script');
+      s.innerHTML = `(function(s){s.dataset.zone='11385828',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))`;
+      document.head.appendChild(s);
+    }
+
     dlTimerRef.current = setInterval(() => {
       setDlCountdown((c) => {
         if (c <= 1) { clearInterval(dlTimerRef.current!); setDlPhase('ready'); return 0; }
@@ -248,6 +256,10 @@ export default function MapDetail() {
 
   const handleNextStep = () => {
     if (!map) return;
+    // Open Monetag Direct Link 2
+    if (areAdsEnabled()) {
+      window.open('https://omg10.com/4/11696301', '_blank', 'noopener');
+    }
     // Move to intermediate step ("Continue")
     setDlPhase('intermediate');
   };
@@ -257,8 +269,8 @@ export default function MapDetail() {
     if (areAdsEnabled()) {
       window.open('https://omg10.com/4/11533894', '_blank', 'noopener');
     }
-    setDlCountdown(DL_TIMER_SECONDS);
-    setDlPhase('counting');
+    setDlCountdown(FINAL_TIMER_SECONDS);
+    setDlPhase('final_step');
   };
 
   const handleFinalDownload = () => {
@@ -279,7 +291,7 @@ export default function MapDetail() {
   const handleBackFromDownload = () => {
     if (dlTimerRef.current) clearInterval(dlTimerRef.current);
     setDlPhase('idle');
-    setDlCountdown(DL_TIMER_SECONDS);
+    setDlCountdown(FINAL_TIMER_SECONDS);
     window.scrollTo(0, 0);
   };
 
@@ -389,8 +401,8 @@ export default function MapDetail() {
             </div>
           )}
 
-          {/* Phase 2: Countdown Timer */}
-          {dlPhase === 'counting' && (
+          {/* Phase 2: Final Countdown Timer */}
+          {dlPhase === 'final_step' && (
             <div className="w-full space-y-6">
               <div className="w-full rounded-2xl border border-border bg-card p-6 flex flex-col items-center gap-4 my-2">
                 <div className="relative w-28 h-28">
@@ -400,7 +412,7 @@ export default function MapDetail() {
                       cx="50" cy="50" r="44" fill="none"
                       stroke="hsl(var(--primary))" strokeWidth="8" strokeLinecap="round"
                       strokeDasharray={`${2 * Math.PI * 44}`}
-                      strokeDashoffset={`${2 * Math.PI * 44 * (1 - (DL_TIMER_SECONDS - dlCountdown) / DL_TIMER_SECONDS)}`}
+                      strokeDashoffset={`${2 * Math.PI * 44 * (1 - (FINAL_TIMER_SECONDS - dlCountdown) / FINAL_TIMER_SECONDS)}`}
                       style={{ transition: 'stroke-dashoffset 1s linear' }}
                     />
                   </svg>
@@ -408,11 +420,12 @@ export default function MapDetail() {
                     <span className="text-4xl font-black text-foreground">{dlCountdown}</span>
                   </div>
                 </div>
+                <h3 className="text-foreground font-black text-lg mt-2">Final Step</h3>
                 <p className="text-muted-foreground text-sm font-medium">
-                  Your download link is generating in{' '}
+                  Your secure link is arriving in{' '}
                   <span className="text-primary font-bold">{dlCountdown}s</span>…
                 </p>
-                <p className="text-muted-foreground/40 text-xs">Do not close this page</p>
+                <p className="text-muted-foreground/40 text-xs text-balance">The file will be ready after this short security check</p>
               </div>
             </div>
           )}
