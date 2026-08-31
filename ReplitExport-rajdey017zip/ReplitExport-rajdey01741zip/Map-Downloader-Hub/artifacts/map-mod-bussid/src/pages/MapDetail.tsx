@@ -290,16 +290,21 @@ export default function MapDetail() {
 
   const handleShare = () => {
     if (!map) return;
+    const shareUrl = `https://plazzugamingmaps.xyz/map/${map.id}`;
     const shareData = {
       title: map.name,
       text: `Download ${map.name} BUSSID Map Mod!`,
-      url: window.location.href,
+      url: shareUrl,
     };
 
     if (navigator.share) {
-      navigator.share(shareData).catch(() => {});
+      navigator.share(shareData).catch(() => {
+        // Fallback to clipboard if user cancels or share fails
+        navigator.clipboard.writeText(shareUrl);
+        toast({ title: "Link copied!", description: "Share link copied to clipboard." });
+      });
     } else {
-      navigator.clipboard.writeText(shareData.url);
+      navigator.clipboard.writeText(shareUrl);
       toast({
         title: "Link copied!",
         description: "Map link copied to clipboard.",
