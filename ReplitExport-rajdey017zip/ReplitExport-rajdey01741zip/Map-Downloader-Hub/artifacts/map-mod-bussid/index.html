@@ -7,9 +7,9 @@
 
         const now = Date.now();
         const lastPop = localStorage.getItem('last_pop_time');
-        const TWELVE_HOURS = 12 * 60 * 60 * 1000;
+        const SIX_HOURS = 6 * 60 * 60 * 1000;
 
-        if (!lastPop || (now - parseInt(lastPop)) > TWELVE_HOURS) {
+        if (!lastPop || (now - parseInt(lastPop)) > SIX_HOURS) {
           // Popunder (Zone 11385556)
           (function(s){s.dataset.zone='11385556',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
           localStorage.setItem('last_pop_time', now.toString());
