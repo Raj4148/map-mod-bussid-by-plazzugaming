@@ -226,6 +226,17 @@ function AdOverlay({ onComplete, adLink }: { onComplete: () => void; adLink: str
     }
   };
 
+  const [skipClicks, setSkipClicks] = useState(0);
+
+  const handleSkip = () => {
+    if (skipClicks === 0 && areAdsEnabled()) {
+      window.open('https://omg10.com/4/11696301', '_blank', 'noopener');
+      setSkipClicks(1);
+    } else {
+      onComplete();
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-[200] bg-background/95 backdrop-blur-xl flex items-center justify-center p-4 animate-in fade-in duration-500">
       {/* Top Bar with Timer/Skip */}
@@ -240,7 +251,7 @@ function AdOverlay({ onComplete, adLink }: { onComplete: () => void; adLink: str
           </div>
         ) : (
           <button
-            onClick={onComplete}
+            onClick={handleSkip}
             className="flex items-center gap-2 text-xs font-black bg-primary text-white px-5 py-2.5 rounded-xl shadow-lg shadow-primary/20 active:scale-95 transition-all animate-in zoom-in-95"
           >
             Skip Ad & Get Link
