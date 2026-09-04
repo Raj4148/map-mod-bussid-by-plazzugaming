@@ -355,19 +355,11 @@ export default function MapDetail() {
   }, [dlPhase]);
 
   const handleGetMap = () => {
-    // Open Monetag Direct Link 1
-    if (areAdsEnabled()) {
-      window.open('https://omg10.com/4/11401834', '_blank', 'noopener');
-    }
     setGmPhase('counting');
   };
 
   const handleNextStep = () => {
     if (!map) return;
-    // Open Monetag Direct Link 2
-    if (areAdsEnabled()) {
-      window.open('https://omg10.com/4/11696301', '_blank', 'noopener');
-    }
     // Move to intermediate step ("Continue")
     setDlPhase('intermediate');
   };
