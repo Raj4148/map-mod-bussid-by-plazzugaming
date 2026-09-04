@@ -215,6 +215,17 @@ function AdOverlay({ onComplete, adLink }: { onComplete: () => void; adLink: str
     return () => clearInterval(timer);
   }, []);
 
+  const handleAdClick = () => {
+    const SIX_HOURS = 6 * 60 * 60 * 1000;
+    const now = Date.now();
+    const lastClick = localStorage.getItem('last_direct_link_1_time');
+
+    if (!lastClick || (now - parseInt(lastClick)) > SIX_HOURS) {
+      window.open(adLink, '_blank', 'noopener');
+      localStorage.setItem('last_direct_link_1_time', now.toString());
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-[200] bg-background/95 backdrop-blur-xl flex items-center justify-center p-4 animate-in fade-in duration-500">
       {/* Top Bar with Timer/Skip */}
@@ -246,7 +257,7 @@ function AdOverlay({ onComplete, adLink }: { onComplete: () => void; adLink: str
 
         {/* Ad Body / Vignette Trigger Area */}
         <div
-          onClick={() => window.open(adLink, '_blank', 'noopener')}
+          onClick={handleAdClick}
           className="relative aspect-[4/5] bg-card border border-border rounded-[2.5rem] overflow-hidden shadow-2xl group cursor-pointer"
         >
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black/80 z-10" />
@@ -415,7 +426,14 @@ export default function MapDetail() {
 
     // Open Monetag Direct Link 4
     if (areAdsEnabled()) {
-      window.open('https://omg10.com/4/11385953', '_blank', 'noopener');
+      const SIX_HOURS = 6 * 60 * 60 * 1000;
+      const now = Date.now();
+      const lastClick = localStorage.getItem('last_direct_link_2_time');
+
+      if (!lastClick || (now - parseInt(lastClick)) > SIX_HOURS) {
+        window.open('https://omg10.com/4/11385953', '_blank', 'noopener');
+        localStorage.setItem('last_direct_link_2_time', now.toString());
+      }
     }
 
     const fileUrl = map.downloadUrl;
