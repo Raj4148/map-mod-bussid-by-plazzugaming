@@ -176,6 +176,92 @@ function YoutubePopup({ onClose }: { onClose: () => void }) {
   );
 }
 
+/* ── Non-Skippable Ad Overlay (7s Timer) ── */
+function AdOverlay({ onComplete, adLink }: { onComplete: () => void; adLink: string }) {
+  const [seconds, setSeconds] = useState(7);
+  const [isReady, setIsReady] = useState(false);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setSeconds((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          setIsReady(true);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <div className="fixed inset-0 z-[200] bg-background/95 backdrop-blur-xl flex items-center justify-center p-4 animate-in fade-in duration-500">
+      {/* Top Bar with Timer/Skip */}
+      <div className="absolute top-0 left-0 right-0 p-4 border-b border-border bg-card/50 flex justify-between items-center">
+        <div className="flex items-center gap-2">
+          <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+          <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Sponsored Ad</span>
+        </div>
+        {!isReady ? (
+          <div className="text-xs font-bold text-foreground bg-muted px-4 py-2 rounded-xl border border-border">
+            Please wait <span className="text-primary font-black">{seconds}s</span> to skip...
+          </div>
+        ) : (
+          <button
+            onClick={onComplete}
+            className="flex items-center gap-2 text-xs font-black bg-primary text-white px-5 py-2.5 rounded-xl shadow-lg shadow-primary/20 active:scale-95 transition-all animate-in zoom-in-95"
+          >
+            Skip Ad & Get Link
+            <X className="w-4 h-4" />
+          </button>
+        )}
+      </div>
+
+      <div className="w-full max-w-sm space-y-8 text-center mt-12">
+        <div className="space-y-2">
+          <h2 className="text-2xl font-black text-foreground">Your link is ready!</h2>
+          <p className="text-muted-foreground text-sm">Please support our community by interacting with the sponsor below.</p>
+        </div>
+
+        {/* Ad Body / Vignette Trigger Area */}
+        <div
+          onClick={() => window.open(adLink, '_blank', 'noopener')}
+          className="relative aspect-[4/5] bg-card border border-border rounded-[2.5rem] overflow-hidden shadow-2xl group cursor-pointer"
+        >
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black/80 z-10" />
+          <img
+            src="https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=800&auto=format&fit=crop"
+            alt="Sponsor Content"
+            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[2s]"
+          />
+          <div className="absolute inset-0 z-20 flex flex-col items-center justify-end p-10 text-white space-y-6">
+             <div className="w-20 h-20 bg-white/10 backdrop-blur-xl rounded-3xl flex items-center justify-center border border-white/20">
+                 <Flame className="w-10 h-10 text-orange-500 animate-bounce" />
+             </div>
+             <div className="space-y-2">
+               <p className="font-black text-2xl">BUSSID Premium</p>
+               <p className="text-white/70 text-xs font-medium">Daily New Map Releases Hub</p>
+             </div>
+             <div className="w-full py-4 bg-white text-black font-black text-sm rounded-2xl shadow-xl flex items-center justify-center gap-2 hover:bg-white/90 transition-colors">
+               VISIT SPONSOR
+               <ArrowRight className="w-4 h-4" />
+             </div>
+          </div>
+
+          <div className="absolute top-6 left-6 z-20 px-3 py-1 bg-black/40 backdrop-blur-md rounded-full border border-white/10">
+            <span className="text-[8px] font-bold text-white uppercase tracking-widest">Advertisement</span>
+          </div>
+        </div>
+
+        <p className="text-[10px] text-muted-foreground max-w-[220px] mx-auto leading-relaxed">
+          Ads help maintain our high-speed servers for free downloads. Thank you!
+        </p>
+      </div>
+    </div>
+  );
+}
+
 /* ── countdown durations ── */
 const GM_TIMER_SECONDS = 10;
 const FINAL_TIMER_SECONDS = 5;
@@ -191,6 +277,7 @@ export default function MapDetail() {
   const { maps: trendingMaps } = useTopMaps(8);
 
   const [showYoutube, setShowYoutube] = useState(false);
+  const [showAdOverlay, setShowAdOverlay] = useState(false);
 
   /* Trigger Youtube popup after 3 seconds on first visit to detail page */
   useEffect(() => {
@@ -222,6 +309,7 @@ export default function MapDetail() {
     setGmCountdown(GM_TIMER_SECONDS);
     setDlPhase('idle');
     setDlCountdown(FINAL_TIMER_SECONDS);
+    setShowAdOverlay(false);
     if (gmTimerRef.current) clearInterval(gmTimerRef.current);
     if (dlTimerRef.current) clearInterval(dlTimerRef.current);
     window.scrollTo(0, 0);
@@ -285,12 +373,19 @@ export default function MapDetail() {
   };
 
   const handleContinueToCountdown = () => {
-    // Open Monetag Direct Link 3
+    // If ads are enabled, trigger the custom overlay instead of the 5s timer
     if (areAdsEnabled()) {
-      window.open('https://omg10.com/4/11533894', '_blank', 'noopener');
+      setShowAdOverlay(true);
+    } else {
+      setDlCountdown(FINAL_TIMER_SECONDS);
+      setDlPhase('final_step');
     }
-    setDlCountdown(FINAL_TIMER_SECONDS);
-    setDlPhase('final_step');
+  };
+
+  const handleAdOverlayComplete = () => {
+    setShowAdOverlay(false);
+    // Directly go to ready state as requested
+    setDlPhase('ready');
   };
 
   const handleFinalDownload = () => {
@@ -496,6 +591,12 @@ export default function MapDetail() {
   return (
     <PageShell>
       {showYoutube && <YoutubePopup onClose={() => setShowYoutube(false)} />}
+      {showAdOverlay && (
+        <AdOverlay
+          adLink="https://omg10.com/4/11533894"
+          onComplete={handleAdOverlayComplete}
+        />
+      )}
       <StickyHeader title={map.name} isLink />
 
       {/* Hero image */}
