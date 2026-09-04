@@ -6,7 +6,7 @@ import {
   ChevronLeft, Download, DownloadCloud, Calendar, Tag,
   AlertTriangle, ImageOff, ArrowRight, Share2, Flame, Youtube, X
 } from 'lucide-react';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { areAdsEnabled } from '../lib/ads-control';
 
