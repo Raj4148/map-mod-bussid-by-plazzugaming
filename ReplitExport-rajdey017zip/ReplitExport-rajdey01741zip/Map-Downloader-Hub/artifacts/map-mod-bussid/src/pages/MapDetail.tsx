@@ -275,7 +275,7 @@ function AdOverlay({ onComplete, adLink }: { onComplete: () => void; adLink: str
                <p className="text-white/70 text-xs font-medium">Daily New Map Releases Hub</p>
              </div>
              <div className="w-full py-4 bg-white text-black font-black text-sm rounded-2xl shadow-xl flex items-center justify-center gap-2 hover:bg-white/90 transition-colors">
-               VISIT SPONSOR
+               GET MODS
                <ArrowRight className="w-4 h-4" />
              </div>
           </div>
