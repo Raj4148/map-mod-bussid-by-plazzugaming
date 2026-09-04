@@ -103,9 +103,6 @@ function SuggestionCard({ map }: { map: MapMod }) {
   );
 }
 
-/* ── Offroad Grid ── */
-}
-
 /* ── Suggestions Section (Native Ad Style) ── */
 function SuggestionsSection({ newMaps, trendingMaps }: { newMaps: MapMod[], trendingMaps: MapMod[] }) {
   const [activeTab, setActiveTab] = useState<'new' | 'trending'>('new');
@@ -272,12 +269,13 @@ const FINAL_TIMER_SECONDS = 5;
 export default function MapDetail() {
   const [, params] = useRoute('/map/:id');
   const id = params?.id || '';
-  const { map, loading } = useMap(id);
+  const { map, loading: mapLoading } = useMap(id);
   const { toast } = useToast();
 
   // Optimization: Fetch all maps once and derive lists locally
-  const { allMaps, loading } = useMaps();
-  const { toast } = useToast();
+  const { allMaps, loading: allLoading } = useMaps();
+
+  const loading = mapLoading || allLoading;
 
   const newMaps = useMemo(() =>
     [...allMaps].sort((a, b) => b.createdAt - a.createdAt),
