@@ -103,6 +103,48 @@ function SuggestionCard({ map }: { map: MapMod }) {
   );
 }
 
+/* ── Offroad Grid ── */
+function OffroadGrid({ maps }: { maps: MapMod[] }) {
+  if (maps.length === 0) return null;
+
+  return (
+    <div className="mt-6 space-y-3">
+      <div className="flex items-center justify-between px-1">
+        <h3 className="text-[10px] font-black text-foreground uppercase tracking-widest flex items-center gap-2">
+          <Sparkles className="w-3 h-3 text-yellow-500" />
+          Extreme Offroad Maps
+        </h3>
+        <span className="text-[8px] font-bold text-muted-foreground/40 uppercase">Recommended</span>
+      </div>
+      <div className="grid grid-cols-2 gap-3 px-1">
+        {maps.map(m => (
+          <Link
+            key={m.id}
+            href={`/map/${m.id}`}
+            className="group relative rounded-xl overflow-hidden bg-card border border-border/50 transition-all hover:border-primary/50 shadow-sm"
+          >
+            <div className="aspect-[16/10] overflow-hidden relative">
+              <SafeImage
+                src={m.thumbnail}
+                alt={m.name}
+                className="w-full h-full object-cover transition-transform group-hover:scale-110"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+            </div>
+            <div className="p-2">
+              <p className="text-foreground font-bold text-[10px] leading-tight line-clamp-1 mb-1">{m.name}</p>
+              <div className="flex items-center justify-between">
+                <span className="text-[8px] font-medium text-muted-foreground">📥 {fmtCount(m.downloadCount)}</span>
+                <ArrowRight className="w-3 h-3 text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
+              </div>
+            </div>
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 /* ── Suggestions Section (Native Ad Style) ── */
 function SuggestionsSection({ newMaps, trendingMaps }: { newMaps: MapMod[], trendingMaps: MapMod[] }) {
   const [activeTab, setActiveTab] = useState<'new' | 'trending'>('new');
@@ -273,8 +315,19 @@ export default function MapDetail() {
   const { toast } = useToast();
 
   // Suggestions data
-  const { maps: newMaps } = useMaps(undefined, 'newest');
+  const { maps: newMaps, allMaps } = useMaps(undefined, 'newest');
   const { maps: trendingMaps } = useTopMaps(8);
+
+  const offroadList = useMemo(() => {
+    if (!allMaps) return [];
+    return allMaps
+      .filter(m =>
+        (m.name.toLowerCase().includes('offroad') ||
+        m.description.toLowerCase().includes('offroad')) &&
+        m.id !== id
+      )
+      .slice(0, 4);
+  }, [allMaps, id]);
 
   const [showYoutube, setShowYoutube] = useState(false);
   const [showAdOverlay, setShowAdOverlay] = useState(false);
@@ -656,6 +709,8 @@ export default function MapDetail() {
             <strong className="font-black">⬇ Scroll down &amp; click Next</strong>
           </p>
         )}
+
+        <OffroadGrid maps={offroadList} />
       </div>
 
       <div className="px-4 mt-4 space-y-4">
