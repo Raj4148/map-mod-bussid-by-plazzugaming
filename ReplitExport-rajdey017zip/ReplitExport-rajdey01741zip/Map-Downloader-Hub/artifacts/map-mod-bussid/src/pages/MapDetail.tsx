@@ -263,7 +263,7 @@ function AdOverlay({ onComplete, adLink }: { onComplete: () => void; adLink: str
 }
 
 /* ── countdown durations ── */
-const GM_TIMER_SECONDS = 10;
+const GM_TIMER_SECONDS = 5;
 const FINAL_TIMER_SECONDS = 5;
 
 export default function MapDetail() {
