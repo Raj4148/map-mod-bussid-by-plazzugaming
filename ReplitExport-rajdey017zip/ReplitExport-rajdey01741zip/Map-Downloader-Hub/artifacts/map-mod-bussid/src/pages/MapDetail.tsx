@@ -314,12 +314,19 @@ export default function MapDetail() {
   const { map, loading } = useMap(id);
   const { toast } = useToast();
 
-  // Suggestions data
-  const { maps: newMaps, allMaps } = useMaps(undefined, 'newest');
-  const { maps: trendingMaps } = useTopMaps(8);
+  // Optimization: Fetch all maps once and derive lists locally
+  const { allMaps, loading } = useMaps();
+  const { toast } = useToast();
+
+  const newMaps = useMemo(() =>
+    [...allMaps].sort((a, b) => b.createdAt - a.createdAt),
+  [allMaps]);
+
+  const trendingMaps = useMemo(() =>
+    [...allMaps].sort((a, b) => b.downloadCount - a.downloadCount).slice(0, 8),
+  [allMaps]);
 
   const offroadList = useMemo(() => {
-    if (!allMaps) return [];
     return allMaps
       .filter(m =>
         (m.name.toLowerCase().includes('offroad') ||
