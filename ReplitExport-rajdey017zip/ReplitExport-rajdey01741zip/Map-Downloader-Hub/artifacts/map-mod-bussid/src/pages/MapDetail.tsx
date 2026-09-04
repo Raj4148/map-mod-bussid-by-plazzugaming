@@ -103,12 +103,12 @@ function SuggestionCard({ map }: { map: MapMod }) {
   );
 }
 
-/* ── Suggestions Section (Native Ad Style) ── */
+/* ── Suggestions Section (Grid Style) ── */
 function SuggestionsSection({ newMaps, trendingMaps }: { newMaps: MapMod[], trendingMaps: MapMod[] }) {
   const [activeTab, setActiveTab] = useState<'new' | 'trending'>('new');
 
   return (
-    <div className="w-full mt-8 space-y-6">
+    <div className="w-full mt-6 space-y-4">
       <div className="flex items-center justify-between px-1">
         <div className="flex gap-4">
           <button
@@ -127,9 +127,29 @@ function SuggestionsSection({ newMaps, trendingMaps }: { newMaps: MapMod[], tren
         <span className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-tighter italic">Recommended</span>
       </div>
 
-      <div className="flex gap-3 overflow-x-auto pb-4 px-1 scrollbar-hide" style={{ scrollbarWidth: 'none' }}>
-        {(activeTab === 'new' ? newMaps.slice(0, 8) : trendingMaps).map(m => (
-          <SuggestionCard key={m.id} map={m} />
+      <div className="grid grid-cols-2 gap-3 px-1">
+        {(activeTab === 'new' ? newMaps.slice(0, 6) : trendingMaps.slice(0, 6)).map(m => (
+          <Link
+            key={m.id}
+            href={`/map/${m.id}`}
+            className="group relative rounded-xl overflow-hidden bg-card border border-border/50 transition-all hover:border-primary/50 shadow-sm"
+          >
+            <div className="aspect-[16/10] overflow-hidden relative">
+              <SafeImage
+                src={m.thumbnail}
+                alt={m.name}
+                className="w-full h-full object-cover transition-transform group-hover:scale-110"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+            </div>
+            <div className="p-2">
+              <p className="text-foreground font-bold text-[10px] leading-tight line-clamp-1 mb-1">{m.name}</p>
+              <div className="flex items-center justify-between">
+                <span className="text-[8px] font-medium text-muted-foreground">📥 {fmtCount(m.downloadCount)}</span>
+                <ArrowRight className="w-3 h-3 text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
+              </div>
+            </div>
+          </Link>
         ))}
       </div>
     </div>
@@ -665,6 +685,8 @@ export default function MapDetail() {
             <strong className="font-black">⬇ Scroll down &amp; click Next</strong>
           </p>
         )}
+
+        <SuggestionsSection newMaps={newMaps} trendingMaps={trendingMaps} />
       </div>
 
       <div className="px-4 mt-4 space-y-4">
@@ -726,9 +748,6 @@ export default function MapDetail() {
             </p>
           </>
         )}
-
-        {/* New Released & Trending Tabs (Native Ad Style) */}
-        <SuggestionsSection newMaps={newMaps} trendingMaps={trendingMaps} />
       </div>
 
       {/* bottom padding so content isn't hidden behind social bar */}
