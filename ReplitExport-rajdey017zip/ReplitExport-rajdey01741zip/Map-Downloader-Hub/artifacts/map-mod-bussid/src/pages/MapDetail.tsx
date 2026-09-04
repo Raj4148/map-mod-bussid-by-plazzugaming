@@ -262,7 +262,7 @@ function AdOverlay({ onComplete, adLink }: { onComplete: () => void; adLink: str
         >
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black/80 z-10" />
           <img
-            src="https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=800&auto=format&fit=crop"
+            src="/cat-other.jpg"
             alt="Sponsor Content"
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[2s]"
           />
