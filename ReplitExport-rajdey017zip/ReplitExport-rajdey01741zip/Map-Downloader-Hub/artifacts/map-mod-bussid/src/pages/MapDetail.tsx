@@ -104,18 +104,18 @@ function SuggestionCard({ map }: { map: MapMod }) {
 }
 
 /* ── Suggestions Section (Grid Style) ── */
-function SuggestionsSection({ newMaps, trendingMaps }: { newMaps: MapMod[], trendingMaps: MapMod[] }) {
-  const [activeTab, setActiveTab] = useState<'new' | 'trending'>('new');
+function SuggestionsSection({ popularMaps, trendingMaps }: { popularMaps: MapMod[], trendingMaps: MapMod[] }) {
+  const [activeTab, setActiveTab] = useState<'popular' | 'trending'>('popular');
 
   return (
     <div className="w-full mt-6 space-y-4">
       <div className="flex items-center justify-between px-1">
         <div className="flex gap-4">
           <button
-            onClick={() => setActiveTab('new')}
-            className={`text-xs font-black transition-colors ${activeTab === 'new' ? 'text-primary border-b-2 border-primary pb-1' : 'text-muted-foreground'}`}
+            onClick={() => setActiveTab('popular')}
+            className={`text-xs font-black transition-colors ${activeTab === 'popular' ? 'text-primary border-b-2 border-primary pb-1' : 'text-muted-foreground'}`}
           >
-            NEW RELEASED
+            POPULAR
           </button>
           <button
             onClick={() => setActiveTab('trending')}
@@ -128,7 +128,7 @@ function SuggestionsSection({ newMaps, trendingMaps }: { newMaps: MapMod[], tren
       </div>
 
       <div className="grid grid-cols-2 gap-3 px-1">
-        {(activeTab === 'new' ? newMaps.slice(0, 6) : trendingMaps.slice(0, 6)).map(m => (
+        {(activeTab === 'popular' ? popularMaps.slice(0, 6) : trendingMaps.slice(0, 6)).map(m => (
           <Link
             key={m.id}
             href={`/map/${m.id}`}
@@ -297,12 +297,12 @@ export default function MapDetail() {
 
   const loading = mapLoading || allLoading;
 
-  const newMaps = useMemo(() =>
-    [...allMaps].sort((a, b) => b.createdAt - a.createdAt),
+  const popularMaps = useMemo(() =>
+    [...allMaps].sort((a, b) => b.downloadCount - a.downloadCount).slice(0, 8),
   [allMaps]);
 
   const trendingMaps = useMemo(() =>
-    [...allMaps].sort((a, b) => b.downloadCount - a.downloadCount).slice(0, 8),
+    [...allMaps].sort((a, b) => b.downloadCount - a.downloadCount).slice(8, 16),
   [allMaps]);
 
   const [showYoutube, setShowYoutube] = useState(false);
@@ -597,7 +597,7 @@ export default function MapDetail() {
             </div>
           )}
 
-          <SuggestionsSection newMaps={newMaps} trendingMaps={trendingMaps} />
+          <SuggestionsSection popularMaps={popularMaps} trendingMaps={trendingMaps} />
 
           <button
             onClick={handleBackFromDownload}
@@ -686,7 +686,7 @@ export default function MapDetail() {
           </p>
         )}
 
-        <SuggestionsSection newMaps={newMaps} trendingMaps={trendingMaps} />
+        <SuggestionsSection popularMaps={popularMaps} trendingMaps={trendingMaps} />
       </div>
 
       <div className="px-4 mt-4 space-y-4">
