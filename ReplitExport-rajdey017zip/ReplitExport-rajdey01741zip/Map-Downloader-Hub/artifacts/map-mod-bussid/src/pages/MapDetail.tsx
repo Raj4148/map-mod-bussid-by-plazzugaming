@@ -471,6 +471,12 @@ export default function MapDetail() {
   if (dlPhase !== 'idle') {
     return (
       <PageShell>
+        {showAdOverlay && (
+          <AdOverlay
+            adLink="https://omg10.com/4/11533894"
+            onComplete={handleAdOverlayComplete}
+          />
+        )}
         <StickyHeader onBack={handleBackFromDownload} title={map.name} />
 
         <div className="px-4 pt-6 pb-20 flex flex-col items-center text-center">
