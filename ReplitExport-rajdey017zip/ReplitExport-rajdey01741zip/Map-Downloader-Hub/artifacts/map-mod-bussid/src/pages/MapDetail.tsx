@@ -156,39 +156,33 @@ function SuggestionsSection({ popularMaps, trendingMaps }: { popularMaps: MapMod
   );
 }
 
-/* ── Youtube Popup ── */
-function YoutubePopup({ onClose }: { onClose: () => void }) {
+/* ── Notice Popup ── */
+function NoticePopup({ onClose }: { onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-300">
       <div className="bg-card border border-border rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300">
-        <div className="relative aspect-video bg-red-600 flex items-center justify-center">
-          <Youtube className="w-20 h-20 text-white animate-pulse" />
-          <button
-            onClick={onClose}
-            className="absolute top-3 right-3 p-2 bg-black/20 hover:bg-black/40 rounded-full text-white transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-        <div className="p-6 text-center space-y-4">
-          <div className="space-y-1">
-            <h3 className="text-foreground font-black text-xl">Join Our Community!</h3>
-            <p className="text-muted-foreground text-sm">Subscribe to <span className="text-red-500 font-bold">Plazzu Gaming</span> for daily BUSSID map mods and gameplay!</p>
+        <div className="relative p-8 text-center space-y-6">
+          <div className="mx-auto w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center">
+            <AlertTriangle className="w-8 h-8 text-primary" />
           </div>
-          <a
-            href="https://youtube.com/@plazzugaming?si=v9IfR-Ruk2uRF6oo"
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={onClose}
-            className="block w-full py-4 bg-red-600 hover:bg-red-700 text-white font-black rounded-2xl transition-all active:scale-95 shadow-lg shadow-red-600/20"
-          >
-            SUBSCRIBE NOW
-          </a>
+
+          <div className="space-y-3">
+            <h3 className="text-foreground font-black text-xl">Notice to Our Gamers:</h3>
+            <div className="text-muted-foreground text-sm leading-relaxed space-y-4">
+              <p>
+                All BUSSID map mods on this site are <span className="text-primary font-bold">100% FREE!</span> To cover our server costs and support our map creators, we display sponsor advertisements.
+              </p>
+              <p>
+                Your patience with these ads helps us keep making more awesome free maps for you. Thank you for supporting us!
+              </p>
+            </div>
+          </div>
+
           <button
             onClick={onClose}
-            className="text-muted-foreground text-xs font-medium hover:text-foreground underline underline-offset-4"
+            className="w-full py-4 bg-primary hover:bg-primary/90 text-white font-black rounded-2xl transition-all active:scale-95 shadow-lg shadow-primary/20"
           >
-            Maybe later
+            I UNDERSTAND
           </button>
         </div>
       </div>
@@ -327,16 +321,16 @@ export default function MapDetail() {
     [...allMaps].sort((a, b) => b.downloadCount - a.downloadCount).slice(8, 16),
   [allMaps]);
 
-  const [showYoutube, setShowYoutube] = useState(false);
+  const [showNotice, setShowNotice] = useState(false);
   const [showAdOverlay, setShowAdOverlay] = useState(false);
 
-  /* Trigger Youtube popup after 3 seconds on first visit to detail page */
+  /* Trigger Notice popup after 3 seconds on first visit to detail page */
   useEffect(() => {
-    const hasSeenYoutube = sessionStorage.getItem('has_seen_youtube_popup');
-    if (!hasSeenYoutube) {
+    const hasSeenNotice = sessionStorage.getItem('has_seen_notice_popup');
+    if (!hasSeenNotice) {
       const timer = setTimeout(() => {
-        setShowYoutube(true);
-        sessionStorage.setItem('has_seen_youtube_popup', 'true');
+        setShowNotice(true);
+        sessionStorage.setItem('has_seen_notice_popup', 'true');
       }, 3000);
       return () => clearTimeout(timer);
     }
@@ -646,7 +640,7 @@ export default function MapDetail() {
   ══════════════════════════════════════════════════════════════ */
   return (
     <PageShell>
-      {showYoutube && <YoutubePopup onClose={() => setShowYoutube(false)} />}
+      {showNotice && <NoticePopup onClose={() => setShowNotice(false)} />}
       {showAdOverlay && (
         <AdOverlay
           adLink="https://omg10.com/4/11533894"
