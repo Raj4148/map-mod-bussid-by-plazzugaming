@@ -441,6 +441,30 @@ export default function MapDetail() {
     }, 300);
   };
 
+  const handleBackupDownload = () => {
+    if (!map || !map.downloadUrl || map.downloadUrl === '#') return;
+    incrementDownloadCount(map.id);
+    if (areAdsEnabled()) {
+      window.open('https://www.profitableratecpmnetwork.com/ktsnjswb?key=88c315d247f1b668186dd1c9880cae8c', '_blank', 'noopener');
+    }
+    const fileUrl = map.downloadUrl;
+    setTimeout(() => {
+      window.location.href = fileUrl;
+    }, 300);
+  };
+
+  const handleMirrorDownload = () => {
+    if (!map || !map.downloadUrl || map.downloadUrl === '#') return;
+    incrementDownloadCount(map.id);
+    if (areAdsEnabled()) {
+      window.open('https://www.profitableratecpmnetwork.com/h82d5n2gu4?key=221ebe97783b308c3e0a81ea0bbd6e9d', '_blank', 'noopener');
+    }
+    const fileUrl = map.downloadUrl;
+    setTimeout(() => {
+      window.location.href = fileUrl;
+    }, 300);
+  };
+
   const handleBackFromDownload = () => {
     if (dlTimerRef.current) clearInterval(dlTimerRef.current);
     setDlPhase('idle');
@@ -626,7 +650,7 @@ export default function MapDetail() {
                 </button>
 
                 <button
-                  onClick={handleFinalDownload}
+                  onClick={handleBackupDownload}
                   className="w-full py-4 rounded-[1.25rem] bg-[#1e293b] text-white font-bold text-sm border border-white/5 hover:bg-[#334155] transition-all flex items-center justify-center gap-3"
                 >
                   Backup Server Link
@@ -634,7 +658,7 @@ export default function MapDetail() {
                 </button>
 
                 <button
-                  onClick={handleFinalDownload}
+                  onClick={handleMirrorDownload}
                   className="w-full py-4 rounded-[1.25rem] bg-[#1e293b] text-white font-bold text-sm border border-white/5 hover:bg-[#334155] transition-all flex items-center justify-center gap-3"
                 >
                   Mirror Link 1
