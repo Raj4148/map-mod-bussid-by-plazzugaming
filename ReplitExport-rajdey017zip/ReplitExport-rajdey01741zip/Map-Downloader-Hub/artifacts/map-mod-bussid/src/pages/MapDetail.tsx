@@ -447,14 +447,14 @@ export default function MapDetail() {
     if (!map || !map.downloadUrl || map.downloadUrl === '#') return;
     incrementDownloadCount(map.id);
 
-    // Open Adsterra Step 3
+    // Open Monetag Direct Link 4
     if (areAdsEnabled()) {
       const SIX_HOURS = 6 * 60 * 60 * 1000;
       const now = Date.now();
       const lastClick = localStorage.getItem('last_direct_link_2_time');
 
       if (!lastClick || (now - parseInt(lastClick)) > SIX_HOURS) {
-        window.open('https://www.profitableratecpmnetwork.com/ktsnjswb?key=88c315d247f1b668186dd1c9880cae8c', '_blank', 'noopener');
+        window.open('https://omg10.com/4/11385953', '_blank', 'noopener');
         localStorage.setItem('last_direct_link_2_time', now.toString());
       }
     }
