@@ -154,15 +154,28 @@ export default function Home() {
 
       {/* ── SEO Description Section ── */}
       <section className="mt-12 px-4 pb-8 border-t border-border/30 pt-8">
-        <h3 className="text-foreground/80 font-bold text-sm mb-2">About BUSSID Map Mod Hub</h3>
-        <p className="text-muted-foreground text-[11px] leading-relaxed">
-          Welcome to the ultimate destination for <strong>BUSSID Map Mod downloads</strong>.
-          Our platform specializes in high-quality terrain for Bus Simulator Indonesia,
-          including the highly searched <strong>Indian Map Mod</strong>, <strong>Nepali hilly roads</strong>,
-          and authentic Indonesian city maps. Every mod is tested for compatibility and performance.
-          Check back every day at 8:00 PM for new map releases and unlock the best driving experience
-          on your mobile device.
-        </p>
+        <h3 className="text-foreground/80 font-bold text-sm mb-4 tracking-tight">Welcome to plazzugaming (plazzu gaming)</h3>
+        <div className="text-muted-foreground text-[11px] leading-relaxed space-y-4">
+          <p>
+            Welcome to <strong>plazzugaming (plazzu gaming)</strong>, your ultimate destination for <strong>Bus simulator indonesia</strong>, <strong>bus simulator indonesia map</strong>, and the <strong>best map mod for bus simulator indonesia</strong>. Download the latest <strong>bangladeshi Map Mod For bus simulator indonesia</strong>, <strong>indian map for bus simulator indonesia</strong>, <strong>Nepali Map Mod For bus simulator indonesia</strong>, and authentic <strong>Indonesian map mod for bus simulator indonesia</strong>. We offer full support for <strong>mod map bussid 3.7</strong>, <strong>mod map bussid 3.7.1</strong>, <strong>mod map bussid</strong>, <strong>map mod bussid 3.7.1</strong>, <strong>map mod bussid 4.0</strong>, and <strong>new map mod for bus simulator indonesia</strong>. Upgrade your gameplay with premium <strong>graphics mod bussid</strong>, <strong>obb mod bussid</strong>, <strong>bussid obb</strong>, <strong>bussid bd obb</strong>, and custom <strong>bussid codename</strong>.
+          </p>
+          <p>
+            Get top-quality vehicle mods including <strong>bus mod bussid</strong>, <strong>mod bussid bus</strong>, <strong>bussid bus mod</strong>, <strong>mod bussid</strong>, <strong>bussid mod</strong>, <strong>bussid all bus mod</strong>, <strong>bussid car mod</strong>, <strong>car mod for bus simulator indonesia</strong>, <strong>truck mod for bus simulator indonesia</strong>, <strong>bussid ashok leyland truck mod</strong>, <strong>luxury bus mod for bus simulator indonesia</strong>, <strong>volvo bus mod for bus simulator indonesia</strong>, and <strong>b11r volvo bus mod bussid</strong>. We also provide <strong>bussid bike mod</strong>, <strong>bussid ambulance mod</strong>, <strong>ambulance mod bussid</strong>, <strong>apsrtc bus mod bussid</strong>, <strong>auto mod bussid</strong>, <strong>bussid ac bus mod</strong>, <strong>bussid bd bus mod</strong>, and <strong>basuri v3 bussid</strong>. Explore exciting locations with <strong>bussid bd map</strong>, <strong>bussid airport</strong>, <strong>bussid car</strong>, and features like <strong>bussid all bus unlock</strong>.
+          </p>
+          <p>
+            Whether you are looking for <strong>bus simulator indonesia mod apk</strong>, <strong>bus simulator indonesia skin</strong>, <strong>bus simulator indonesia download</strong>, <strong>bus simulator indonesia apk</strong>, <strong>bus simulator indonesia apk unlimited money</strong>, <strong>bus simulator indonesia apk download 2023</strong>, <strong>bus simulator indonesia apk + obb download</strong>, <strong>bussid apk 3.7.1</strong>, <strong>bussid apk 4.1.2</strong>, or <strong>bus simulator indonesia ambulance livery</strong>, we have it all covered! Stay updated with <strong>bussid</strong>, <strong>bussid new update</strong>, and top content on our <strong>bussid channel</strong>. Explore every <strong>map mod</strong> and <strong>bussid map mod</strong> seamlessly right here on <strong>plazzugaming</strong>.
+          </p>
+          <div className="pt-2 flex flex-wrap gap-2 text-[10px] font-bold text-primary/60">
+            <span>#mod_map_bussid</span>
+            <span>#bussimulatorindonesia</span>
+            <span>#bussid</span>
+            <span>#bussimulator</span>
+            <span>#modbussid</span>
+            <span>#modbussidterbaru</span>
+            <span>#map_mod_bussid</span>
+            <span>#plazzugaming</span>
+          </div>
+        </div>
       </section>
 
       {/* bottom padding so last card isn't hidden behind social bar */}
