@@ -210,13 +210,8 @@ function AdOverlay({ onComplete, adLink }: { onComplete: () => void; adLink: str
   }, []);
 
   const handleAdClick = () => {
-    const SIX_HOURS = 6 * 60 * 60 * 1000;
-    const now = Date.now();
-    const lastClick = localStorage.getItem('last_direct_link_1_time');
-
-    if (!lastClick || (now - parseInt(lastClick)) > SIX_HOURS) {
+    if (areAdsEnabled()) {
       window.open(adLink, '_blank', 'noopener');
-      localStorage.setItem('last_direct_link_1_time', now.toString());
     }
   };
 
@@ -401,13 +396,7 @@ export default function MapDetail() {
 
   const handleGetMap = () => {
     if (areAdsEnabled()) {
-      const SIX_HOURS = 6 * 60 * 60 * 1000;
-      const now = Date.now();
-      const lastClick = localStorage.getItem('last_step1_time');
-      if (!lastClick || (now - parseInt(lastClick)) > SIX_HOURS) {
-        window.open('https://www.profitableratecpmnetwork.com/idnjjg828?key=cb9b095032c2f884b9c08c2f116196a8', '_blank', 'noopener');
-        localStorage.setItem('last_step1_time', now.toString());
-      }
+      window.open('https://www.profitableratecpmnetwork.com/idnjjg828?key=cb9b095032c2f884b9c08c2f116196a8', '_blank', 'noopener');
     }
     setGmPhase('counting');
   };
@@ -415,13 +404,7 @@ export default function MapDetail() {
   const handleNextStep = () => {
     if (!map) return;
     if (areAdsEnabled()) {
-      const SIX_HOURS = 6 * 60 * 60 * 1000;
-      const now = Date.now();
-      const lastClick = localStorage.getItem('last_step2_time');
-      if (!lastClick || (now - parseInt(lastClick)) > SIX_HOURS) {
-        window.open('https://www.profitableratecpmnetwork.com/h82d5n2gu4?key=221ebe97783b308c3e0a81ea0bbd6e9d', '_blank', 'noopener');
-        localStorage.setItem('last_step2_time', now.toString());
-      }
+      window.open('https://www.profitableratecpmnetwork.com/h82d5n2gu4?key=221ebe97783b308c3e0a81ea0bbd6e9d', '_blank', 'noopener');
     }
     // Move to intermediate step ("Continue")
     setDlPhase('intermediate');
@@ -449,14 +432,7 @@ export default function MapDetail() {
 
     // Open Monetag Direct Link 4
     if (areAdsEnabled()) {
-      const SIX_HOURS = 6 * 60 * 60 * 1000;
-      const now = Date.now();
-      const lastClick = localStorage.getItem('last_direct_link_2_time');
-
-      if (!lastClick || (now - parseInt(lastClick)) > SIX_HOURS) {
-        window.open('https://omg10.com/4/11385953', '_blank', 'noopener');
-        localStorage.setItem('last_direct_link_2_time', now.toString());
-      }
+      window.open('https://omg10.com/4/11385953', '_blank', 'noopener');
     }
 
     const fileUrl = map.downloadUrl;
