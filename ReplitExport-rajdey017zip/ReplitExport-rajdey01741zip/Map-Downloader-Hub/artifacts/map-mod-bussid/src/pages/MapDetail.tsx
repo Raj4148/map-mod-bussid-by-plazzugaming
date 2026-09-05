@@ -594,23 +594,74 @@ export default function MapDetail() {
             </div>
           )}
 
-          {/* Phase 3: Final Ready State */}
+          {/* Phase 3: Final Ready State (Redesigned Step 4) */}
           {dlPhase === 'ready' && (
-            <div className="w-full space-y-6">
-              <div className="w-full rounded-2xl border border-border bg-card p-6 flex flex-col items-center gap-4 my-2">
-                <p className="text-foreground font-black text-lg">✅ Link ready! Tap Download below.</p>
+            <div className="w-full max-w-md mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+
+              {/* Ready Card */}
+              <div className="bg-[#0f172a] rounded-[2.5rem] p-8 border border-white/5 shadow-2xl overflow-hidden relative group">
+                <div className="absolute inset-0 bg-gradient-to-b from-blue-500/10 to-transparent pointer-events-none" />
+
+                <h3 className="text-white font-black text-xl tracking-tight mb-6">READY TO DOWNLOAD</h3>
+
+                <div className="relative aspect-video rounded-3xl overflow-hidden border-4 border-blue-400/30 mb-6 bg-slate-900">
+                  <SafeImage src={map.thumbnail} alt={map.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                </div>
+
+                <div className="space-y-2">
+                  <p className="text-white font-black text-sm tracking-wide uppercase line-clamp-1">{map.name} MAP MOD</p>
+                  <p className="text-blue-400/60 font-bold text-[10px] tracking-widest uppercase">
+                    File Size: {(Math.random() * 200 + 50).toFixed(0)} MB | Format: .zip
+                  </p>
+                </div>
               </div>
 
-              <button
-                onClick={handleFinalDownload}
-                className="w-full py-5 rounded-2xl bg-primary hover:bg-purple-500 active:scale-95 transition-all text-white font-black text-lg flex items-center justify-center gap-2"
-                style={{
-                  boxShadow: '0 0 32px rgba(124,58,237,0.5)',
-                }}
-              >
-                <Download className="w-6 h-6" />
-                Download File
-              </button>
+              {/* Action Buttons */}
+              <div className="space-y-3 px-2">
+                <button
+                  onClick={handleFinalDownload}
+                  className="w-full py-5 rounded-[1.25rem] bg-[#00ff88] text-[#0f172a] font-black text-lg shadow-[0_8px_32px_rgba(0,255,136,0.3)] hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+                >
+                  START FAST DOWNLOAD
+                </button>
+
+                <button
+                  onClick={handleFinalDownload}
+                  className="w-full py-4 rounded-[1.25rem] bg-[#1e293b] text-white font-bold text-sm border border-white/5 hover:bg-[#334155] transition-all flex items-center justify-center gap-3"
+                >
+                  Backup Server Link
+                  <DownloadCloud className="w-5 h-5 text-blue-400" />
+                </button>
+
+                <button
+                  onClick={handleFinalDownload}
+                  className="w-full py-4 rounded-[1.25rem] bg-[#1e293b] text-white font-bold text-sm border border-white/5 hover:bg-[#334155] transition-all flex items-center justify-center gap-3"
+                >
+                  Mirror Link 1
+                  <DownloadCloud className="w-5 h-5 text-blue-400" />
+                </button>
+              </div>
+
+              {/* Footer Links */}
+              <div className="pt-4 space-y-6">
+                <div className="space-y-4">
+                  <p className="text-foreground/40 font-black text-[10px] tracking-[0.2em] uppercase">Help & Guide</p>
+                  <div className="flex items-center justify-center gap-8">
+                    <button className="flex items-center gap-2 text-xs font-bold text-foreground/70 hover:text-primary transition-colors">
+                      <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center text-[10px]">?</div>
+                      How to Install
+                    </button>
+                    <button className="flex items-center gap-2 text-xs font-bold text-foreground/70 hover:text-primary transition-colors">
+                      <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center text-[10px]">!</div>
+                      Troubleshooting
+                    </button>
+                  </div>
+                </div>
+
+                <button className="text-blue-500 text-[11px] font-bold hover:underline underline-offset-4">
+                  Report a Problem
+                </button>
+              </div>
             </div>
           )}
 
