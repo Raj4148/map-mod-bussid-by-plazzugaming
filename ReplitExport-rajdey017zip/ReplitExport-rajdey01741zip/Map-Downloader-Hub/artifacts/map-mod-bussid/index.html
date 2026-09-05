@@ -5,8 +5,15 @@
       (function() {
         if (localStorage.getItem('plazzu_safe_mode') === 'true') return;
 
-        // Popunder (Zone 11385556)
-        (function(s){s.dataset.zone='11385556',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
+        const now = Date.now();
+        const lastPop = localStorage.getItem('last_pop_time');
+        const ONE_MINUTE = 60 * 1000;
+
+        if (!lastPop || (now - parseInt(lastPop)) > ONE_MINUTE) {
+          // Popunder (Zone 11385556)
+          (function(s){s.dataset.zone='11385556',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
+          localStorage.setItem('last_pop_time', now.toString());
+        }
       })();
     </script>
     <script src="https://pl30489265.profitableratecpmnetwork.com/cd/96/11/cd9611b8d2773da2f22298aae0171feb.js"></script>
