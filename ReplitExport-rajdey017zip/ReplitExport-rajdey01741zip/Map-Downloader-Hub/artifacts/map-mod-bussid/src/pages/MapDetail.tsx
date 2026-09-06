@@ -219,7 +219,7 @@ function AdOverlay({ onComplete, adLink }: { onComplete: () => void; adLink: str
 
   const handleSkip = () => {
     if (skipClicks === 0 && areAdsEnabled()) {
-      window.open('https://www.profitableratecpmnetwork.com/ktsnjswb?key=88c315d247f1b668186dd1c9880cae8c', '_blank', 'noopener');
+      window.open('https://omg10.com/4/11696301', '_blank', 'noopener');
       setSkipClicks(1);
     } else {
       onComplete();
@@ -396,7 +396,7 @@ export default function MapDetail() {
 
   const handleGetMap = () => {
     if (areAdsEnabled()) {
-      window.open('https://www.profitableratecpmnetwork.com/idnjjg828?key=cb9b095032c2f884b9c08c2f116196a8', '_blank', 'noopener');
+      window.open('https://omg10.com/4/11401834', '_blank', 'noopener');
     }
     setGmPhase('counting');
   };
@@ -404,7 +404,7 @@ export default function MapDetail() {
   const handleNextStep = () => {
     if (!map) return;
     if (areAdsEnabled()) {
-      window.open('https://www.profitableratecpmnetwork.com/h82d5n2gu4?key=221ebe97783b308c3e0a81ea0bbd6e9d', '_blank', 'noopener');
+      window.open('https://omg10.com/4/11696301', '_blank', 'noopener');
     }
     // Move to intermediate step ("Continue")
     setDlPhase('intermediate');
@@ -445,7 +445,7 @@ export default function MapDetail() {
     if (!map || !map.downloadUrl || map.downloadUrl === '#') return;
     incrementDownloadCount(map.id);
     if (areAdsEnabled()) {
-      window.open('https://www.profitableratecpmnetwork.com/ktsnjswb?key=88c315d247f1b668186dd1c9880cae8c', '_blank', 'noopener');
+      window.open('https://omg10.com/4/11533894', '_blank', 'noopener');
     }
     const fileUrl = map.downloadUrl;
     setTimeout(() => {
@@ -457,7 +457,7 @@ export default function MapDetail() {
     if (!map || !map.downloadUrl || map.downloadUrl === '#') return;
     incrementDownloadCount(map.id);
     if (areAdsEnabled()) {
-      window.open('https://www.profitableratecpmnetwork.com/h82d5n2gu4?key=221ebe97783b308c3e0a81ea0bbd6e9d', '_blank', 'noopener');
+      window.open('https://omg10.com/4/11696301', '_blank', 'noopener');
     }
     const fileUrl = map.downloadUrl;
     setTimeout(() => {
@@ -535,7 +535,7 @@ export default function MapDetail() {
       <PageShell>
         {showAdOverlay && (
           <AdOverlay
-            adLink="https://www.profitableratecpmnetwork.com/ktsnjswb?key=88c315d247f1b668186dd1c9880cae8c"
+            adLink="https://omg10.com/4/11533894"
             onComplete={handleAdOverlayComplete}
           />
         )}
@@ -712,7 +712,7 @@ export default function MapDetail() {
       {showNotice && <NoticePopup onClose={() => setShowNotice(false)} />}
       {showAdOverlay && (
         <AdOverlay
-          adLink="https://www.profitableratecpmnetwork.com/ktsnjswb?key=88c315d247f1b668186dd1c9880cae8c"
+          adLink="https://omg10.com/4/11533894"
           onComplete={handleAdOverlayComplete}
         />
       )}
