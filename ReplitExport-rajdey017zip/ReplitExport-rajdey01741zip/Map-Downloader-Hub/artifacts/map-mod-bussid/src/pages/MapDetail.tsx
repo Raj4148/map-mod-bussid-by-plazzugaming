@@ -437,7 +437,7 @@ export default function MapDetail() {
 
     const fileUrl = map.downloadUrl;
     setTimeout(() => {
-      window.location.href = fileUrl;
+      window.open(fileUrl, '_blank', 'noopener');
     }, 300);
   };
 
@@ -449,7 +449,7 @@ export default function MapDetail() {
     }
     const fileUrl = map.downloadUrl;
     setTimeout(() => {
-      window.location.href = fileUrl;
+      window.open(fileUrl, '_blank', 'noopener');
     }, 300);
   };
 
@@ -461,7 +461,7 @@ export default function MapDetail() {
     }
     const fileUrl = map.downloadUrl;
     setTimeout(() => {
-      window.location.href = fileUrl;
+      window.open(fileUrl, '_blank', 'noopener');
     }, 300);
   };
 
