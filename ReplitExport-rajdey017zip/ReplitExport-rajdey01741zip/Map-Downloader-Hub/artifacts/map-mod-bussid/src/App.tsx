@@ -7,6 +7,7 @@ import { Suspense, lazy } from 'react';
 import { ThemeProvider } from '@/lib/theme-context';
 
 const Home = lazy(() => import('./pages/Home'));
+const Maps = lazy(() => import('./pages/Maps'));
 const Community = lazy(() => import('./pages/Community'));
 const MapDetail = lazy(() => import('./pages/MapDetail'));
 const Settings = lazy(() => import('./pages/Settings'));
@@ -31,6 +32,7 @@ function Router() {
     <Suspense fallback={<PageLoading />}>
       <Switch>
         <Route path="/" component={Home} />
+        <Route path="/maps" component={Maps} />
         <Route path="/community" component={Community} />
         <Route path="/map/:id" component={MapDetail} />
         <Route path="/settings" component={Settings} />

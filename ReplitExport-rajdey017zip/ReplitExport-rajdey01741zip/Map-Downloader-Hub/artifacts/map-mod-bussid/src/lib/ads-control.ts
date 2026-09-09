@@ -23,3 +23,11 @@ export function injectPopunder(): void {
     localStorage.setItem('last_pop_time', now.toString());
   }
 }
+
+export function injectLastPageAd(): void {
+  if (!areAdsEnabled()) return;
+  const s = document.createElement('script');
+  s.dataset.zone = '11385886';
+  s.src = 'https://nap5k.com/tag.min.js';
+  document.body.appendChild(s);
+}
