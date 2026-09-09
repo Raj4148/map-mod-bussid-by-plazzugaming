@@ -1,4 +1,4 @@
-import { useRoute, Link } from 'wouter';
+import { useRoute, Link, useLocation } from 'wouter';
 import { useMap, useMaps, useTopMaps, incrementDownloadCount, MapMod, fmtCount } from '../hooks/useMaps';
 
 import { PageShell } from '../components/Layout';
@@ -333,6 +333,7 @@ const FINAL_TIMER_SECONDS = 5;
 
 export default function MapDetail() {
   const [, params] = useRoute('/map/:id');
+  const [, setLocation] = useLocation();
   const id = params?.id || '';
   const { map, loading: mapLoading } = useMap(id);
   const { toast } = useToast();
@@ -349,6 +350,13 @@ export default function MapDetail() {
   const trendingMaps = useMemo(() =>
     [...allMaps].sort((a, b) => b.downloadCount - a.downloadCount).slice(8, 16),
   [allMaps]);
+
+  const newestMaps = useMemo(() =>
+    allMaps
+      .filter(m => m.id !== id)
+      .sort((a, b) => b.createdAt - a.createdAt)
+      .slice(0, 5),
+  [allMaps, id]);
 
   const [showNotice, setShowNotice] = useState(false);
   const [showAdOverlay, setShowAdOverlay] = useState(false);
@@ -876,12 +884,13 @@ export default function MapDetail() {
                   const shouldPlaceCard = (idx + 1) % interval === 0 && cardsPlaced < totalCards;
 
                   if (shouldPlaceCard) {
+                    const cardMap = newestMaps[cardsPlaced] || map;
                     cardsPlaced++;
                     elements.push(
                       <InlineDownloadCard
                         key={`inline-card-${idx}`}
-                        map={map}
-                        onClick={gmPhase === 'idle' ? handleGetMap : handleNextStep}
+                        map={cardMap}
+                        onClick={() => setLocation(`/map/${cardMap.id}`)}
                       />
                     );
                   }
@@ -889,12 +898,13 @@ export default function MapDetail() {
 
                 // If description was too short to place all 5 cards, append remaining
                 while (cardsPlaced < totalCards) {
+                  const cardMap = newestMaps[cardsPlaced] || map;
                   cardsPlaced++;
                   elements.push(
                     <InlineDownloadCard
                       key={`extra-card-${cardsPlaced}`}
-                      map={map}
-                      onClick={gmPhase === 'idle' ? handleGetMap : handleNextStep}
+                      map={cardMap}
+                      onClick={() => setLocation(`/map/${cardMap.id}`)}
                     />
                   );
                 }
