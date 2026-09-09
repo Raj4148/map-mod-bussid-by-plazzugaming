@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { areAdsEnabled } from '../lib/ads-control';
+import { areAdsEnabled, injectPopunder } from '../lib/ads-control';
 
 /* ── fallback image ── */
 const FALLBACK = 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&auto=format&fit=crop';
@@ -345,6 +345,7 @@ export default function MapDetail() {
 
   /* Reset state when navigating to a different map */
   useEffect(() => {
+    injectPopunder();
     setGmPhase('idle');
     setGmCountdown(GM_TIMER_SECONDS);
     setDlPhase('idle');
