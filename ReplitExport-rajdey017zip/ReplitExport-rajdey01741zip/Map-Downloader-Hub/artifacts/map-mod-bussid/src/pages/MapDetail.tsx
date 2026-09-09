@@ -293,6 +293,40 @@ function AdOverlay({ onComplete, adLink }: { onComplete: () => void; adLink: str
   );
 }
 
+/* ── Inline Download Card ── */
+function InlineDownloadCard({ map, onClick }: { map: MapMod; onClick: () => void }) {
+  return (
+    <div className="my-8 bg-muted/30 border border-border/50 rounded-2xl overflow-hidden shadow-sm animate-in fade-in zoom-in-95 duration-500">
+      <div className="aspect-video relative group">
+        <SafeImage src={map.thumbnail} alt={map.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+        <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between">
+          <div className="space-y-1">
+             <div className="flex items-center gap-1.5">
+               <span className="px-1.5 py-0.5 bg-yellow-500 text-black text-[7px] font-black rounded uppercase">Premium Mod</span>
+               <span className="text-[7px] font-bold text-white/60 uppercase tracking-widest">Verified Link</span>
+             </div>
+             <p className="text-xs font-black text-white line-clamp-1 uppercase tracking-tight">{map.name}</p>
+          </div>
+          <div className="w-8 h-8 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20">
+            <DownloadCloud className="w-4 h-4 text-white" />
+          </div>
+        </div>
+      </div>
+      <div className="p-4 bg-card/50">
+        <button
+          onClick={onClick}
+          className="w-full py-3.5 bg-primary hover:bg-primary/90 text-white text-[11px] font-black rounded-xl active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
+        >
+          <Download className="w-4 h-4" />
+          START DOWNLOAD NOW
+        </button>
+        <p className="text-[8px] text-center text-muted-foreground mt-3 uppercase font-bold tracking-widest opacity-40">Server: High Speed 5G Content Delivery Network</p>
+      </div>
+    </div>
+  );
+}
+
 /* ── countdown durations ── */
 const GM_TIMER_SECONDS = 5;
 const FINAL_TIMER_SECONDS = 5;
@@ -813,11 +847,61 @@ export default function MapDetail() {
 
         {/* Description + mid-content native ad */}
         {map.description && (
-          <div className="bg-card border border-border rounded-xl p-4">
-            <h3 className="text-foreground font-bold text-sm mb-3">Description</h3>
-            <p className="text-muted-foreground text-sm leading-relaxed whitespace-pre-wrap">
-              <LinkifyText text={map.description} />
-            </p>
+          <div className="bg-card border border-border rounded-xl p-5">
+            <h3 className="text-foreground font-black text-sm mb-5 flex items-center gap-2">
+              <div className="w-1 h-4 bg-primary rounded-full" />
+              Detailed Information
+            </h3>
+            <div className="space-y-4">
+              {(() => {
+                const paragraphs = map.description.split('\n').filter(p => p.trim() !== '');
+                const totalCards = 5;
+                // Determine placement: interval = total paragraphs / 5 cards.
+                // If fewer than 5 paragraphs, we'll just put them after each until we hit 5.
+                const interval = paragraphs.length > totalCards
+                  ? Math.floor(paragraphs.length / totalCards)
+                  : 1;
+
+                let cardsPlaced = 0;
+                const elements: React.ReactNode[] = [];
+
+                paragraphs.forEach((para, idx) => {
+                  elements.push(
+                    <p key={`p-${idx}`} className="text-muted-foreground text-[13px] leading-relaxed font-medium">
+                      <LinkifyText text={para} />
+                    </p>
+                  );
+
+                  // Trigger card insertion logic
+                  const shouldPlaceCard = (idx + 1) % interval === 0 && cardsPlaced < totalCards;
+
+                  if (shouldPlaceCard) {
+                    cardsPlaced++;
+                    elements.push(
+                      <InlineDownloadCard
+                        key={`inline-card-${idx}`}
+                        map={map}
+                        onClick={gmPhase === 'idle' ? handleGetMap : handleNextStep}
+                      />
+                    );
+                  }
+                });
+
+                // If description was too short to place all 5 cards, append remaining
+                while (cardsPlaced < totalCards) {
+                  cardsPlaced++;
+                  elements.push(
+                    <InlineDownloadCard
+                      key={`extra-card-${cardsPlaced}`}
+                      map={map}
+                      onClick={gmPhase === 'idle' ? handleGetMap : handleNextStep}
+                    />
+                  );
+                }
+
+                return elements;
+              })()}
+            </div>
           </div>
         )}
 
