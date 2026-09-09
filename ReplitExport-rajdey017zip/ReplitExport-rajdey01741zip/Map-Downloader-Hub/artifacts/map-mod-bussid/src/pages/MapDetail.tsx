@@ -316,7 +316,7 @@ function InlineDownloadCard({ map, onClick }: { map: MapMod; onClick: () => void
       <div className="p-4 bg-card/50">
         <button
           onClick={onClick}
-          className="w-full py-3.5 bg-primary hover:bg-primary/90 text-white text-[11px] font-black rounded-xl active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
+          className="w-full py-3.5 bg-red-600 hover:bg-red-700 text-white text-[11px] font-black rounded-xl active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-red-600/20"
         >
           <Download className="w-4 h-4" />
           START DOWNLOAD NOW
