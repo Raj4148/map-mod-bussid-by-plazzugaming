@@ -327,6 +327,52 @@ function InlineDownloadCard({ map, onClick }: { map: MapMod; onClick: () => void
   );
 }
 
+/* ── Popular Footer Section ── */
+function PopularFooterGrid({ maps, onNavigate }: { maps: MapMod[], onNavigate: (id: string) => void }) {
+  if (maps.length === 0) return null;
+
+  return (
+    <div className="w-full mt-12 pt-8 border-t border-border/50 space-y-6 text-left">
+      <div className="flex items-center justify-between">
+         <h3 className="text-sm font-black text-foreground uppercase tracking-tight">Most Popular Maps</h3>
+         <span className="text-[10px] font-bold text-primary italic">Recommended</span>
+      </div>
+      <div className="grid grid-cols-1 gap-5">
+        {maps.map(m => (
+          <div key={m.id} className="bg-card border border-border rounded-[2rem] overflow-hidden flex flex-col shadow-sm group">
+             <div className="aspect-video relative overflow-hidden">
+                <SafeImage src={m.thumbnail} alt={m.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                <div className="absolute bottom-3 left-4">
+                   <p className="text-white font-black text-xs uppercase tracking-tight line-clamp-1">{m.name}</p>
+                </div>
+                <div className="absolute top-3 right-3 px-2 py-1 bg-primary rounded text-[9px] font-black text-white uppercase shadow-lg">
+                   {fmtCount(m.downloadCount)} DL
+                </div>
+             </div>
+             <div className="p-5">
+                <div className="grid grid-cols-2 gap-3">
+                   <button
+                      onClick={() => onNavigate(m.id)}
+                      className="py-4 bg-red-600 hover:bg-red-700 text-white font-black text-[10px] rounded-2xl active:scale-95 transition-all shadow-lg shadow-red-600/20 uppercase"
+                   >
+                      Download Now
+                   </button>
+                   <button
+                      onClick={() => onNavigate(m.id)}
+                      className="py-4 bg-muted hover:bg-muted/80 text-foreground font-black text-[10px] rounded-2xl active:scale-95 transition-all uppercase"
+                   >
+                      View Details
+                   </button>
+                </div>
+             </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 /* ── countdown durations ── */
 const GM_TIMER_SECONDS = 5;
 const FINAL_TIMER_SECONDS = 5;
@@ -729,6 +775,12 @@ export default function MapDetail() {
                   Report a Problem
                 </button>
               </div>
+
+              {/* Popular Maps in Footer */}
+              <PopularFooterGrid
+                maps={popularMaps.filter(m => m.id !== id).slice(0, 3)}
+                onNavigate={(mapId) => setLocation(`/map/${mapId}`)}
+              />
             </div>
           )}
 
