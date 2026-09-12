@@ -17,11 +17,17 @@ export function injectPopunder(): void {
 
   if (!lastPop || (now - parseInt(lastPop)) > ONE_MINUTE) {
     const s = document.createElement('script');
+    s.id = 'monetag-popunder';
     s.dataset.zone = '11385556';
     s.src = 'https://al5sm.com/tag.min.js';
     document.body.appendChild(s);
     localStorage.setItem('last_pop_time', now.toString());
   }
+}
+
+export function removePopunder(): void {
+  const s = document.getElementById('monetag-popunder');
+  if (s) s.remove();
 }
 
 export function injectLastPageAd(): void {

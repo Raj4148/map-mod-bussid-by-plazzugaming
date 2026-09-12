@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { areAdsEnabled, injectPopunder } from '../lib/ads-control';
+import { areAdsEnabled, injectPopunder, removePopunder } from '../lib/ads-control';
 
 /* ── fallback image ── */
 const FALLBACK = 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&auto=format&fit=crop';
@@ -430,6 +430,15 @@ export default function MapDetail() {
   const [dlPhase, setDlPhase]         = useState<DlPhase>('idle');
   const [dlCountdown, setDlCountdown] = useState(FINAL_TIMER_SECONDS);
   const dlTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  /* Manage Popunder lifecycle */
+  useEffect(() => {
+    if (dlPhase === 'idle') {
+      injectPopunder();
+    } else if (dlPhase === 'ready') {
+      removePopunder();
+    }
+  }, [dlPhase]);
 
   /* Reset state when navigating to a different map */
   useEffect(() => {
