@@ -5,7 +5,6 @@ import { useState, useEffect } from 'react';
 import { MapGrid } from '../components/MapGrid';
 import { PageShell } from '../components/Layout';
 import { ChevronLeft, MapPin } from 'lucide-react';
-import { injectLastPageAd } from '../lib/ads-control';
 
 const TABS = [
   { id: 'all',        label: 'All' },
@@ -34,10 +33,6 @@ export default function Maps() {
     const newPath = id === 'all' ? '/maps' : `/maps?category=${id}`;
     setLocation(newPath);
   };
-
-  useEffect(() => {
-    injectLastPageAd();
-  }, []);
 
   return (
     <PageShell>

@@ -4,8 +4,7 @@ import { useMaps, useTopMaps, fmtCount, getMapBadge, isMapNew } from '../hooks/u
 import { MapGrid } from '../components/MapGrid';
 import { PageShell } from '../components/Layout';
 import { DownloadCloud, ChevronRight, MapPin, Trophy } from 'lucide-react';
-import { useState, useEffect } from 'react';
-import { injectPopunder } from '../lib/ads-control';
+import { useState } from 'react';
 
 /* ─── Category tiles ─── */
 const CATEGORIES = [
@@ -62,10 +61,6 @@ export default function Home() {
   const { maps: allMaps, loading: allLoading } = useMaps(undefined, 'newest');
   const { maps: topMaps, loading: topLoading } = useTopMaps(6);
   const [, setLocation] = useLocation();
-
-  useEffect(() => {
-    injectPopunder();
-  }, []);
 
   const handleCategoryClick = (id: string) => {
     setLocation(id === 'all' ? '/maps' : `/maps?category=${id}`);
