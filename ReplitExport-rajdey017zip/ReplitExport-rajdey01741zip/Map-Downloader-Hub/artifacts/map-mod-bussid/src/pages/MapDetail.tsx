@@ -211,9 +211,10 @@ function AdOverlay({ onComplete, adLink }: { onComplete: () => void; adLink: str
 
   const handleAdClick = () => {
     if (areAdsEnabled()) {
+      // Create ad window
       const adWindow = window.open(adLink, '_blank', 'noopener');
       if (adWindow) {
-        adWindow.blur();
+        try { adWindow.blur(); } catch (e) {}
         window.focus();
       }
     }
@@ -223,13 +224,17 @@ function AdOverlay({ onComplete, adLink }: { onComplete: () => void; adLink: str
 
   const handleSkip = () => {
     if (skipClicks === 0 && areAdsEnabled()) {
+      // 1. Instantly mark as clicked to prevent loop
+      setSkipClicks(1);
+
+      // 2. Open Ad in background-style new tab
       const adWindow = window.open('https://omg10.com/4/11696301', '_blank', 'noopener');
       if (adWindow) {
-        adWindow.blur();
+        try { adWindow.blur(); } catch (e) {}
         window.focus();
       }
-      setSkipClicks(1);
     } else {
+      // Second click or ads disabled: Go to next step
       onComplete();
     }
   };
@@ -492,27 +497,33 @@ export default function MapDetail() {
   }, [dlPhase]);
 
   const handleGetMap = () => {
+    // 1. Instantly move main tab to "Counting" state
+    setGmPhase('counting');
+
+    // 2. Open Ad in new tab
     if (areAdsEnabled()) {
       const adWindow = window.open('https://omg10.com/4/11401834', '_blank', 'noopener');
       if (adWindow) {
-        adWindow.blur();
+        try { adWindow.blur(); } catch (e) {}
         window.focus();
       }
     }
-    setGmPhase('counting');
   };
 
   const handleNextStep = () => {
     if (!map) return;
+
+    // 1. Instantly move main tab to "Intermediate" step
+    setDlPhase('intermediate');
+
+    // 2. Open Ad in new tab
     if (areAdsEnabled()) {
       const adWindow = window.open('https://omg10.com/4/11696301', '_blank', 'noopener');
       if (adWindow) {
-        adWindow.blur();
+        try { adWindow.blur(); } catch (e) {}
         window.focus();
       }
     }
-    // Move to intermediate step ("Continue")
-    setDlPhase('intermediate');
   };
 
   const handleContinueToCountdown = () => {
@@ -535,19 +546,21 @@ export default function MapDetail() {
     if (!map || !map.downloadUrl || map.downloadUrl === '#') return;
     incrementDownloadCount(map.id);
 
-    // Open Monetag Direct Link 4
+    const fileUrl = map.downloadUrl;
+
+    // Open ad first
     if (areAdsEnabled()) {
       const adWindow = window.open('https://omg10.com/4/11385953', '_blank', 'noopener');
       if (adWindow) {
-        adWindow.blur();
+        try { adWindow.blur(); } catch (e) {}
         window.focus();
       }
     }
 
-    const fileUrl = map.downloadUrl;
+    // Trigger download in current tab context to avoid another popup blocker
     setTimeout(() => {
-      window.open(fileUrl, '_blank', 'noopener');
-    }, 300);
+      window.location.href = fileUrl;
+    }, 500);
   };
 
   const handleBackupDownload = () => {
