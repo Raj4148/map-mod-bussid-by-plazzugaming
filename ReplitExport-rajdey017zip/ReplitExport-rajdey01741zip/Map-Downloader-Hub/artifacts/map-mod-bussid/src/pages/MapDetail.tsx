@@ -538,7 +538,7 @@ export default function MapDetail() {
 
     // Trigger download in current tab context
     setTimeout(() => {
-      window.location.href = fileUrl;
+      window.location.assign(fileUrl);
     }, 500);
   };
 
