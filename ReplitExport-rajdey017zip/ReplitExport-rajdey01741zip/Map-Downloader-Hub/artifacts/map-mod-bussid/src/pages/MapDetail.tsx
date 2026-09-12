@@ -538,7 +538,8 @@ export default function MapDetail() {
     setDlPhase('ready');
   };
 
-  const handleFinalDownload = () => {
+  const handleFinalDownload = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (!map || !map.downloadUrl || map.downloadUrl === '#') return;
     incrementDownloadCount(map.id);
 
@@ -552,7 +553,8 @@ export default function MapDetail() {
     }, 300);
   };
 
-  const handleBackupDownload = () => {
+  const handleBackupDownload = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (!map || !map.downloadUrl || map.downloadUrl === '#') return;
     incrementDownloadCount(map.id);
     if (areAdsEnabled()) {
@@ -564,7 +566,8 @@ export default function MapDetail() {
     }, 300);
   };
 
-  const handleMirrorDownload = () => {
+  const handleMirrorDownload = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (!map || !map.downloadUrl || map.downloadUrl === '#') return;
     incrementDownloadCount(map.id);
     if (areAdsEnabled()) {
