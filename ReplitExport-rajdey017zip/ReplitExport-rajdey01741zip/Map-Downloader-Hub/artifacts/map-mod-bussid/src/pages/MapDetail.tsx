@@ -211,7 +211,11 @@ function AdOverlay({ onComplete, adLink }: { onComplete: () => void; adLink: str
 
   const handleAdClick = () => {
     if (areAdsEnabled()) {
-      window.open(adLink, '_blank', 'noopener');
+      const adWindow = window.open(adLink, '_blank', 'noopener');
+      if (adWindow) {
+        adWindow.blur();
+        window.focus();
+      }
     }
   };
 
@@ -219,7 +223,11 @@ function AdOverlay({ onComplete, adLink }: { onComplete: () => void; adLink: str
 
   const handleSkip = () => {
     if (skipClicks === 0 && areAdsEnabled()) {
-      window.open('https://omg10.com/4/11696301', '_blank', 'noopener');
+      const adWindow = window.open('https://omg10.com/4/11696301', '_blank', 'noopener');
+      if (adWindow) {
+        adWindow.blur();
+        window.focus();
+      }
       setSkipClicks(1);
     } else {
       onComplete();
@@ -485,7 +493,11 @@ export default function MapDetail() {
 
   const handleGetMap = () => {
     if (areAdsEnabled()) {
-      window.open('https://omg10.com/4/11401834', '_blank', 'noopener');
+      const adWindow = window.open('https://omg10.com/4/11401834', '_blank', 'noopener');
+      if (adWindow) {
+        adWindow.blur();
+        window.focus();
+      }
     }
     setGmPhase('counting');
   };
@@ -493,7 +505,11 @@ export default function MapDetail() {
   const handleNextStep = () => {
     if (!map) return;
     if (areAdsEnabled()) {
-      window.open('https://omg10.com/4/11696301', '_blank', 'noopener');
+      const adWindow = window.open('https://omg10.com/4/11696301', '_blank', 'noopener');
+      if (adWindow) {
+        adWindow.blur();
+        window.focus();
+      }
     }
     // Move to intermediate step ("Continue")
     setDlPhase('intermediate');
@@ -521,7 +537,11 @@ export default function MapDetail() {
 
     // Open Monetag Direct Link 4
     if (areAdsEnabled()) {
-      window.open('https://omg10.com/4/11385953', '_blank', 'noopener');
+      const adWindow = window.open('https://omg10.com/4/11385953', '_blank', 'noopener');
+      if (adWindow) {
+        adWindow.blur();
+        window.focus();
+      }
     }
 
     const fileUrl = map.downloadUrl;
@@ -534,7 +554,11 @@ export default function MapDetail() {
     if (!map || !map.downloadUrl || map.downloadUrl === '#') return;
     incrementDownloadCount(map.id);
     if (areAdsEnabled()) {
-      window.open('https://omg10.com/4/11533894', '_blank', 'noopener');
+      const adWindow = window.open('https://omg10.com/4/11533894', '_blank', 'noopener');
+      if (adWindow) {
+        adWindow.blur();
+        window.focus();
+      }
     }
     const fileUrl = map.downloadUrl;
     setTimeout(() => {
@@ -546,7 +570,11 @@ export default function MapDetail() {
     if (!map || !map.downloadUrl || map.downloadUrl === '#') return;
     incrementDownloadCount(map.id);
     if (areAdsEnabled()) {
-      window.open('https://omg10.com/4/11696301', '_blank', 'noopener');
+      const adWindow = window.open('https://omg10.com/4/11696301', '_blank', 'noopener');
+      if (adWindow) {
+        adWindow.blur();
+        window.focus();
+      }
     }
     const fileUrl = map.downloadUrl;
     setTimeout(() => {
