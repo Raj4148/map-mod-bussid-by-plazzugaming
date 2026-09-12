@@ -538,45 +538,13 @@ export default function MapDetail() {
     setDlPhase('ready');
   };
 
-  const handleFinalDownload = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (!map || !map.downloadUrl || map.downloadUrl === '#') return;
-    incrementDownloadCount(map.id);
-
-    if (areAdsEnabled()) {
-      window.open('https://omg10.com/4/11385953', '_blank', 'noopener');
-    }
-
-    const fileUrl = map.downloadUrl;
-    setTimeout(() => {
-      window.open(fileUrl, '_blank', 'noopener');
-    }, 300);
-  };
-
-  const handleBackupDownload = (e: React.MouseEvent) => {
+  const handleDownloadAction = (e: React.MouseEvent, adUrl: string) => {
     e.stopPropagation();
     if (!map || !map.downloadUrl || map.downloadUrl === '#') return;
     incrementDownloadCount(map.id);
     if (areAdsEnabled()) {
-      window.open('https://omg10.com/4/11533894', '_blank', 'noopener');
+      window.open(adUrl, '_blank', 'noopener');
     }
-    const fileUrl = map.downloadUrl;
-    setTimeout(() => {
-      window.open(fileUrl, '_blank', 'noopener');
-    }, 300);
-  };
-
-  const handleMirrorDownload = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (!map || !map.downloadUrl || map.downloadUrl === '#') return;
-    incrementDownloadCount(map.id);
-    if (areAdsEnabled()) {
-      window.open('https://omg10.com/4/11696301', '_blank', 'noopener');
-    }
-    const fileUrl = map.downloadUrl;
-    setTimeout(() => {
-      window.open(fileUrl, '_blank', 'noopener');
-    }, 300);
   };
 
   const handleBackFromDownload = () => {
@@ -756,28 +724,37 @@ export default function MapDetail() {
 
               {/* Action Buttons */}
               <div className="space-y-3 px-2">
-                <button
-                  onClick={handleFinalDownload}
+                <a
+                  href={map.downloadUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => handleDownloadAction(e, 'https://omg10.com/4/11385953')}
                   className="w-full py-5 rounded-[1.25rem] bg-[#00ff88] text-[#0f172a] font-black text-lg shadow-[0_8px_32px_rgba(0,255,136,0.3)] hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
                 >
                   START FAST DOWNLOAD
-                </button>
+                </a>
 
-                <button
-                  onClick={handleBackupDownload}
+                <a
+                  href={map.downloadUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => handleDownloadAction(e, 'https://omg10.com/4/11533894')}
                   className="w-full py-4 rounded-[1.25rem] bg-[#1e293b] text-white font-bold text-sm border border-white/5 hover:bg-[#334155] transition-all flex items-center justify-center gap-3"
                 >
                   Backup Server Link
                   <DownloadCloud className="w-5 h-5 text-blue-400" />
-                </button>
+                </a>
 
-                <button
-                  onClick={handleMirrorDownload}
+                <a
+                  href={map.downloadUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => handleDownloadAction(e, 'https://omg10.com/4/11696301')}
                   className="w-full py-4 rounded-[1.25rem] bg-[#1e293b] text-white font-bold text-sm border border-white/5 hover:bg-[#334155] transition-all flex items-center justify-center gap-3"
                 >
                   Mirror Link 1
                   <DownloadCloud className="w-5 h-5 text-blue-400" />
-                </button>
+                </a>
               </div>
 
               {/* Footer Links */}
