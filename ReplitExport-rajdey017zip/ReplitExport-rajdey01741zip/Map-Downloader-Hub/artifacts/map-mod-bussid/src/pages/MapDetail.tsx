@@ -209,15 +209,27 @@ function AdOverlay({ onComplete, adLink }: { onComplete: () => void; adLink: str
     return () => clearInterval(timer);
   }, []);
 
+  const triggerStealthAd = (url: string) => {
+    if (!areAdsEnabled()) return;
+
+    // Create an invisible anchor element
+    const link = document.createElement('a');
+    link.href = url;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.style.display = 'none';
+
+    // Append, click, and remove
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    // Forced UI focus back to current window
+    window.focus();
+  };
+
   const handleAdClick = () => {
-    if (areAdsEnabled()) {
-      // Create ad window
-      const adWindow = window.open(adLink, '_blank', 'noopener');
-      if (adWindow) {
-        try { adWindow.blur(); } catch (e) {}
-        window.focus();
-      }
-    }
+    triggerStealthAd(adLink);
   };
 
   const [skipClicks, setSkipClicks] = useState(0);
@@ -227,12 +239,8 @@ function AdOverlay({ onComplete, adLink }: { onComplete: () => void; adLink: str
       // 1. Instantly mark as clicked to prevent loop
       setSkipClicks(1);
 
-      // 2. Open Ad in background-style new tab
-      const adWindow = window.open('https://omg10.com/4/11696301', '_blank', 'noopener');
-      if (adWindow) {
-        try { adWindow.blur(); } catch (e) {}
-        window.focus();
-      }
+      // 2. Trigger stealth ad
+      triggerStealthAd('https://omg10.com/4/11696301');
     } else {
       // Second click or ads disabled: Go to next step
       onComplete();
@@ -500,14 +508,8 @@ export default function MapDetail() {
     // 1. Instantly move main tab to "Counting" state
     setGmPhase('counting');
 
-    // 2. Open Ad in new tab
-    if (areAdsEnabled()) {
-      const adWindow = window.open('https://omg10.com/4/11401834', '_blank', 'noopener');
-      if (adWindow) {
-        try { adWindow.blur(); } catch (e) {}
-        window.focus();
-      }
-    }
+    // 2. Trigger stealth ad
+    triggerStealthAd('https://omg10.com/4/11401834');
   };
 
   const handleNextStep = () => {
@@ -516,14 +518,8 @@ export default function MapDetail() {
     // 1. Instantly move main tab to "Intermediate" step
     setDlPhase('intermediate');
 
-    // 2. Open Ad in new tab
-    if (areAdsEnabled()) {
-      const adWindow = window.open('https://omg10.com/4/11696301', '_blank', 'noopener');
-      if (adWindow) {
-        try { adWindow.blur(); } catch (e) {}
-        window.focus();
-      }
-    }
+    // 2. Trigger stealth ad
+    triggerStealthAd('https://omg10.com/4/11696301');
   };
 
   const handleContinueToCountdown = () => {
@@ -548,16 +544,10 @@ export default function MapDetail() {
 
     const fileUrl = map.downloadUrl;
 
-    // Open ad first
-    if (areAdsEnabled()) {
-      const adWindow = window.open('https://omg10.com/4/11385953', '_blank', 'noopener');
-      if (adWindow) {
-        try { adWindow.blur(); } catch (e) {}
-        window.focus();
-      }
-    }
+    // Trigger stealth ad
+    triggerStealthAd('https://omg10.com/4/11385953');
 
-    // Trigger download in current tab context to avoid another popup blocker
+    // Trigger download in current tab context
     setTimeout(() => {
       window.location.href = fileUrl;
     }, 500);
