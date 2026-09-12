@@ -377,20 +377,31 @@ export default function MapDetail() {
     return () => { if (dlTimerRef.current) clearInterval(dlTimerRef.current); };
   }, [dlPhase]);
 
-  const handleGetMap = () => {
-    // Instantly move to "Counting" state, Popunder script catches the click
+  const handleGetMap = (e: React.MouseEvent) => {
+    // 1. Instantly move main tab to "Counting" state synchronously
     setGmPhase('counting');
+
+    // 2. Forced focus to ensure current tab stays active on mobile
+    window.focus();
   };
 
-  const handleNextStep = () => {
+  const handleNextStep = (e: React.MouseEvent) => {
     if (!map) return;
-    // Instantly move to "Intermediate" step, Popunder script catches the click
+
+    // 1. Instantly move main tab to "Intermediate" step
     setDlPhase('intermediate');
+
+    // 2. Forced focus
+    window.focus();
   };
 
-  const handleContinueToCountdown = () => {
+  const handleContinueToCountdown = (e: React.MouseEvent) => {
+    // 1. UI state update
     setDlCountdown(FINAL_TIMER_SECONDS);
     setDlPhase('final_step');
+
+    // 2. Forced focus
+    window.focus();
   };
 
   const handleFinalDownload = () => {
