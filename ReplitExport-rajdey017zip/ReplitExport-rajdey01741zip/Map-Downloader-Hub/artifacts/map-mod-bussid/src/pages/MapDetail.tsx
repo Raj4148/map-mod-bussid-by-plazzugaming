@@ -212,6 +212,7 @@ function AdOverlay({ onComplete, adLink }: { onComplete: () => void; adLink: str
   const handleAdClick = () => {
     if (areAdsEnabled()) {
       window.open(adLink, '_blank', 'noopener');
+      window.focus();
     }
   };
 
@@ -221,6 +222,7 @@ function AdOverlay({ onComplete, adLink }: { onComplete: () => void; adLink: str
     if (skipClicks === 0 && areAdsEnabled()) {
       window.open('https://omg10.com/4/11696301', '_blank', 'noopener');
       setSkipClicks(1);
+      window.focus();
     } else {
       onComplete();
     }
@@ -492,30 +494,30 @@ export default function MapDetail() {
   }, [dlPhase]);
 
   const handleGetMap = (e: React.MouseEvent) => {
-    // 1. Instantly move main tab to "Counting" state synchronously
-    setGmPhase('counting');
-
-    // 2. Open ad
+    // 1. Instant Direct Link Trigger (Synchronous)
     if (areAdsEnabled()) {
       window.open('https://omg10.com/4/11401834', '_blank', 'noopener');
     }
 
-    // 3. Forced focus
+    // 2. Synchronously move UI to next state
+    setGmPhase('counting');
+
+    // 3. Instant focus lock
     window.focus();
   };
 
   const handleNextStep = (e: React.MouseEvent) => {
     if (!map) return;
 
-    // 1. Instantly move main tab to "Intermediate" step
-    setDlPhase('intermediate');
-
-    // 2. Open ad
+    // 1. Instant Direct Link Trigger (Synchronous)
     if (areAdsEnabled()) {
       window.open('https://omg10.com/4/11696301', '_blank', 'noopener');
     }
 
-    // 3. Forced focus
+    // 2. Synchronously move UI to next state
+    setDlPhase('intermediate');
+
+    // 3. Instant focus lock
     window.focus();
   };
 
@@ -545,16 +547,16 @@ export default function MapDetail() {
 
     incrementDownloadCount(map.id);
 
-    // 1. Open Ad in New Tab
+    // 1. Instant Direct Link Trigger (Synchronous)
     if (areAdsEnabled()) {
       window.open(adUrl, '_blank', 'noopener');
     }
 
-    // 2. Redirect CURRENT tab to Mediafire (Reliable)
-    const fileUrl = map.downloadUrl;
-    setTimeout(() => {
-      window.location.assign(fileUrl);
-    }, 100);
+    // 2. Instant File Link Trigger (Synchronous)
+    window.open(map.downloadUrl, '_blank', 'noopener');
+
+    // 3. Lock focus to Plazzu Gaming (Tab 1)
+    window.focus();
   };
 
   const handleBackFromDownload = () => {
