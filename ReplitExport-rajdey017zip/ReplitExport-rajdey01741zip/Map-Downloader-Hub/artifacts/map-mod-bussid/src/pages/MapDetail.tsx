@@ -547,16 +547,17 @@ export default function MapDetail() {
 
     incrementDownloadCount(map.id);
 
-    // 1. Instant Direct Link Trigger (Synchronous)
+    // 1. Open Ad in New Tab (Tab 2)
     if (areAdsEnabled()) {
       window.open(adUrl, '_blank', 'noopener');
     }
 
-    // 2. Instant File Link Trigger (Synchronous)
-    window.open(map.downloadUrl, '_blank', 'noopener');
-
-    // 3. Lock focus to Plazzu Gaming (Tab 1)
-    window.focus();
+    // 2. Redirect CURRENT tab to Mediafire (Tab 1)
+    // This is the only way to avoid the browser "popup loop" block
+    const fileUrl = map.downloadUrl;
+    setTimeout(() => {
+      window.location.assign(fileUrl);
+    }, 100);
   };
 
   const handleBackFromDownload = () => {
