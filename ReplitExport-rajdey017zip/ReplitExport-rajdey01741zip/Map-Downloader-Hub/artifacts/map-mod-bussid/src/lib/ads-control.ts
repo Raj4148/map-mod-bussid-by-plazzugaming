@@ -8,26 +8,35 @@ export function areAdsEnabled(): boolean {
   return localStorage.getItem(ADS_DISABLED_KEY) !== 'true';
 }
 
+let popunderListener: ((e: MouseEvent) => void) | null = null;
+
 export function injectPopunder(): void {
-  if (!areAdsEnabled()) return;
+  if (!areAdsEnabled() || popunderListener) return;
 
-  const now = Date.now();
-  const lastPop = localStorage.getItem('last_pop_time');
-  const ONE_MINUTE = 60 * 1000;
+  popunderListener = () => {
+    const now = Date.now();
+    const lastPop = localStorage.getItem('last_pop_time');
+    const ONE_MINUTE = 60 * 1000;
 
-  if (!lastPop || (now - parseInt(lastPop)) > ONE_MINUTE) {
-    const s = document.createElement('script');
-    s.id = 'monetag-popunder';
-    s.dataset.zone = '11385556';
-    s.src = 'https://al5sm.com/tag.min.js';
-    document.body.appendChild(s);
-    localStorage.setItem('last_pop_time', now.toString());
-  }
+    if (!lastPop || (now - parseInt(lastPop)) > ONE_MINUTE) {
+      // Manual Popunder trigger to avoid about:blank hanging
+      const adWindow = window.open('https://omg10.com/4/11385556', '_blank', 'noopener');
+      if (adWindow) {
+        adWindow.blur();
+        window.focus();
+        localStorage.setItem('last_pop_time', now.toString());
+      }
+    }
+  };
+
+  window.addEventListener('click', popunderListener);
 }
 
 export function removePopunder(): void {
-  const s = document.getElementById('monetag-popunder');
-  if (s) s.remove();
+  if (popunderListener) {
+    window.removeEventListener('click', popunderListener);
+    popunderListener = null;
+  }
 }
 
 export function injectLastPageAd(): void {
