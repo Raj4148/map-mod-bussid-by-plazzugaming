@@ -220,7 +220,7 @@ function AdOverlay({ onComplete, adLink }: { onComplete: () => void; adLink: str
 
   const handleSkip = () => {
     if (skipClicks === 0 && areAdsEnabled()) {
-      window.open('https://fluffy-machine.com/b-3IVX0.PM3Bpuv/b/mnVNJ_Z/DG0D3kNkD/Mh5/MxDVQrx/LMTBcl0JMNzSkAw/N/DoUf', '_blank', 'noopener');
+      window.open('https://fluffy-machine.com/FM5gKj', '_blank', 'noopener');
       setSkipClicks(1);
       window.focus();
     } else {
@@ -498,7 +498,7 @@ export default function MapDetail() {
   const handleGetMap = (e: React.MouseEvent) => {
     // 1. Instant Direct Link Trigger (Synchronous)
     if (areAdsEnabled()) {
-      window.open('https://fluffy-machine.com/bP3PVu0nP.3fpYv/bqm/V/JCZ/DG0Q3jNiD_MC5HMhDTMUz/LYT/ck0vMbzqkfwdMvz/c_', '_blank', 'noopener');
+      window.open('https://fluffy-machine.com/KxMlNY', '_blank', 'noopener');
     }
 
     // 2. Synchronously move UI to next state
@@ -513,7 +513,7 @@ export default function MapDetail() {
 
     // 1. Instant Direct Link Trigger (Synchronous)
     if (areAdsEnabled()) {
-      window.open('https://fluffy-machine.com/b-3IVX0.PM3Bpuv/b/mnVNJ_Z/DG0D3kNkD/Mh5/MxDVQrx/LMTBcl0JMNzSkAw/N/DoUf', '_blank', 'noopener');
+      window.open('https://fluffy-machine.com/FM5gKj', '_blank', 'noopener');
     }
 
     // 2. Synchronously move UI to next state
@@ -739,14 +739,14 @@ export default function MapDetail() {
               {/* Action Buttons */}
               <div className="space-y-3 px-2">
                 <button
-                  onClick={(e) => handleDownloadAction(e, 'https://fluffy-machine.com/bI3IVq0NP.3fpBvubUmuVRJPZXDN0r3CNeDiM/5nMdDHcHzLL/Tpcl0/MvzmkdwnN-z/cR')}
+                  onClick={(e) => handleDownloadAction(e, 'https://fluffy-machine.com/PBiKwF')}
                   className="w-full py-5 rounded-[1.25rem] bg-[#00ff88] text-[#0f172a] font-black text-lg shadow-[0_8px_32px_rgba(0,255,136,0.3)] hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
                 >
                   START FAST DOWNLOAD
                 </button>
 
                 <button
-                  onClick={(e) => handleDownloadAction(e, 'https://fluffy-machine.com/b/3hV/0.P/3xpbv/bMmcVgJDZ/Dk0Q3qNyDKMw5lMHD/Q/5bLWT/cm0KMbzUkSwLN/TNMY')}
+                  onClick={(e) => handleDownloadAction(e, 'https://fluffy-machine.com/bZLyvl')}
                   className="w-full py-4 rounded-[1.25rem] bg-[#1e293b] text-white font-bold text-sm border border-white/5 hover:bg-[#334155] transition-all flex items-center justify-center gap-3"
                 >
                   Backup Server Link
@@ -754,7 +754,7 @@ export default function MapDetail() {
                 </button>
 
                 <button
-                  onClick={(e) => handleDownloadAction(e, 'https://fluffy-machine.com/b-3IVX0.PM3Bpuv/b/mnVNJ_Z/DG0D3kNkD/Mh5/MxDVQrx/LMTBcl0JMNzSkAw/N/DoUf')}
+                  onClick={(e) => handleDownloadAction(e, 'https://fluffy-machine.com/FM5gKj')}
                   className="w-full py-4 rounded-[1.25rem] bg-[#1e293b] text-white font-bold text-sm border border-white/5 hover:bg-[#334155] transition-all flex items-center justify-center gap-3"
                 >
                   Mirror Link 1
@@ -814,7 +814,7 @@ export default function MapDetail() {
       {showNotice && <NoticePopup onClose={() => setShowNotice(false)} />}
       {showAdOverlay && (
         <AdOverlay
-          adLink="https://fluffy-machine.com/b/3hV/0.P/3xpbv/bMmcVgJDZ/Dk0Q3qNyDKMw5lMHD/Q/5bLWT/cm0KMbzUkSwLN/TNMY"
+          adLink="https://fluffy-machine.com/bZLyvl"
           onComplete={handleAdOverlayComplete}
         />
       )}
