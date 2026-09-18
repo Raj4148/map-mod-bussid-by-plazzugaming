@@ -37,3 +37,20 @@ export function injectLastPageAd(): void {
   s.src = 'https://nap5k.com/tag.min.js';
   document.body.appendChild(s);
 }
+
+export function injectHilltopVideoSlide(): void {
+  if (!areAdsEnabled()) return;
+  if (document.getElementById('hilltop-video-slide')) return;
+
+  const s = document.createElement('script');
+  s.id = 'hilltop-video-slide';
+  s.src = "//unfoldedtrade.com/b/XZVisNd.GClh0pYGW/co/MeXmh9TuJZbUWlukkPkTgcN0/MPzDgo5vNejgk/tXNCzzQGzOOfDjkx3SM_wz";
+  s.async = true;
+  s.referrerPolicy = 'no-referrer-when-downgrade';
+  document.body.appendChild(s);
+}
+
+export function removeHilltopVideoSlide(): void {
+  const s = document.getElementById('hilltop-video-slide');
+  if (s) s.remove();
+}
