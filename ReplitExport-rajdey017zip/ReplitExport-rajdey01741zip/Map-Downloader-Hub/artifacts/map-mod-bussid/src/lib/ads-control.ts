@@ -9,6 +9,8 @@ export function areAdsEnabled(): boolean {
 }
 
 export function injectPopunder(): void {
+  // Monetag popunder disabled for now
+  /*
   if (!areAdsEnabled()) return;
 
   const now = Date.now();
@@ -23,6 +25,7 @@ export function injectPopunder(): void {
     document.body.appendChild(s);
     localStorage.setItem('last_pop_time', now.toString());
   }
+  */
 }
 
 export function removePopunder(): void {
