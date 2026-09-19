@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { areAdsEnabled, injectPopunder, removePopunder, injectHilltopVideoSlide, removeHilltopVideoSlide } from '../lib/ads-control';
+import { areAdsEnabled, injectPopunder, removePopunder } from '../lib/ads-control';
 
 /* ── fallback image ── */
 const FALLBACK = 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&auto=format&fit=crop';
@@ -220,7 +220,7 @@ function AdOverlay({ onComplete, adLink }: { onComplete: () => void; adLink: str
 
   const handleSkip = () => {
     if (skipClicks === 0 && areAdsEnabled()) {
-      window.open('https://fluffy-machine.com/FM5gKj', '_blank', 'noopener');
+      window.open('https://omg10.com/4/11696301', '_blank', 'noopener');
       setSkipClicks(1);
       window.focus();
     } else {
@@ -437,10 +437,8 @@ export default function MapDetail() {
   useEffect(() => {
     if (dlPhase === 'idle' || dlPhase === 'intermediate' || dlPhase === 'final_step') {
       injectPopunder();
-      injectHilltopVideoSlide();
     } else if (dlPhase === 'ready') {
       removePopunder();
-      removeHilltopVideoSlide();
     }
   }, [dlPhase]);
 
@@ -498,7 +496,7 @@ export default function MapDetail() {
   const handleGetMap = (e: React.MouseEvent) => {
     // 1. Instant Direct Link Trigger (Synchronous)
     if (areAdsEnabled()) {
-      window.open('https://fluffy-machine.com/KxMlNY', '_blank', 'noopener');
+      window.open('https://omg10.com/4/11401834', '_blank', 'noopener');
     }
 
     // 2. Synchronously move UI to next state
@@ -513,7 +511,7 @@ export default function MapDetail() {
 
     // 1. Instant Direct Link Trigger (Synchronous)
     if (areAdsEnabled()) {
-      window.open('https://fluffy-machine.com/FM5gKj', '_blank', 'noopener');
+      window.open('https://omg10.com/4/11696301', '_blank', 'noopener');
     }
 
     // 2. Synchronously move UI to next state
@@ -739,14 +737,14 @@ export default function MapDetail() {
               {/* Action Buttons */}
               <div className="space-y-3 px-2">
                 <button
-                  onClick={(e) => handleDownloadAction(e, 'https://fluffy-machine.com/PBiKwF')}
+                  onClick={(e) => handleDownloadAction(e, 'https://omg10.com/4/11385953')}
                   className="w-full py-5 rounded-[1.25rem] bg-[#00ff88] text-[#0f172a] font-black text-lg shadow-[0_8px_32px_rgba(0,255,136,0.3)] hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
                 >
                   START FAST DOWNLOAD
                 </button>
 
                 <button
-                  onClick={(e) => handleDownloadAction(e, 'https://fluffy-machine.com/bZLyvl')}
+                  onClick={(e) => handleDownloadAction(e, 'https://omg10.com/4/11533894')}
                   className="w-full py-4 rounded-[1.25rem] bg-[#1e293b] text-white font-bold text-sm border border-white/5 hover:bg-[#334155] transition-all flex items-center justify-center gap-3"
                 >
                   Backup Server Link
@@ -754,7 +752,7 @@ export default function MapDetail() {
                 </button>
 
                 <button
-                  onClick={(e) => handleDownloadAction(e, 'https://fluffy-machine.com/FM5gKj')}
+                  onClick={(e) => handleDownloadAction(e, 'https://omg10.com/4/11696301')}
                   className="w-full py-4 rounded-[1.25rem] bg-[#1e293b] text-white font-bold text-sm border border-white/5 hover:bg-[#334155] transition-all flex items-center justify-center gap-3"
                 >
                   Mirror Link 1
@@ -814,7 +812,7 @@ export default function MapDetail() {
       {showNotice && <NoticePopup onClose={() => setShowNotice(false)} />}
       {showAdOverlay && (
         <AdOverlay
-          adLink="https://fluffy-machine.com/bZLyvl"
+          adLink="https://omg10.com/4/11533894"
           onComplete={handleAdOverlayComplete}
         />
       )}
