@@ -1,14 +1,14 @@
-import { useRoute, Link, useLocation } from 'wouter';
-import { useMap, useMaps, useTopMaps, incrementDownloadCount, MapMod, fmtCount } from '../hooks/useMaps';
+import { useRoute, Link } from 'wouter';
+import { useMap, useMaps, incrementDownloadCount, MapMod, fmtCount } from '../hooks/useMaps';
 
 import { PageShell } from '../components/Layout';
 import {
   ChevronLeft, Download, DownloadCloud, Calendar, Tag,
-  AlertTriangle, ImageOff, ArrowRight, Share2, Flame, Youtube, X
+  AlertTriangle, ImageOff, Share2, Flame, Youtube, X
 } from 'lucide-react';
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { areAdsEnabled, injectPopunder, removePopunder, injectFunnelAd, removeFunnelAd } from '../lib/ads-control';
+import { areAdsEnabled, injectPopunder } from '../lib/ads-control';
 
 /* ── fallback image ── */
 const FALLBACK = 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&auto=format&fit=crop';
@@ -76,30 +76,6 @@ function StickyHeader({ onBack, title, isLink }: {
       }
       <h1 className="text-foreground font-bold text-sm line-clamp-1">{title}</h1>
     </div>
-  );
-}
-
-/* ── Suggestion Card ── */
-function SuggestionCard({ map }: { map: MapMod }) {
-  return (
-    <Link
-      href={`/map/${map.id}`}
-      className="flex-shrink-0 w-36 group relative rounded-xl overflow-hidden bg-card border border-border/50 transition-all hover:border-primary/50"
-    >
-      <div className="aspect-[4/3] overflow-hidden">
-        <SafeImage
-          src={map.thumbnail}
-          alt={map.name}
-          className="w-full h-full object-cover transition-transform group-hover:scale-110"
-        />
-      </div>
-      <div className="p-2">
-        <p className="text-foreground font-bold text-[10px] leading-tight line-clamp-2 mb-1">{map.name}</p>
-        <p className="text-muted-foreground text-[8px] flex items-center gap-1">
-          📥 {fmtCount(map.downloadCount)}
-        </p>
-      </div>
-    </Link>
   );
 }
 
@@ -190,111 +166,6 @@ function NoticePopup({ onClose }: { onClose: () => void }) {
   );
 }
 
-/* ── Non-Skippable Ad Overlay (7s Timer) ── */
-function AdOverlay({ onComplete, adLink }: { onComplete: () => void; adLink: string }) {
-  const [seconds, setSeconds] = useState(7);
-  const [isReady, setIsReady] = useState(false);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setSeconds((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          setIsReady(true);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
-
-  const handleAdClick = () => {
-    if (areAdsEnabled()) {
-      window.open(adLink, '_blank', 'noopener');
-      window.focus();
-    }
-  };
-
-  const [skipClicks, setSkipClicks] = useState(0);
-
-  const handleSkip = () => {
-    if (skipClicks === 0 && areAdsEnabled()) {
-      window.open('https://omg10.com/4/11696301', '_blank', 'noopener');
-      setSkipClicks(1);
-      window.focus();
-    } else {
-      onComplete();
-    }
-  };
-
-  return (
-    <div className="fixed inset-0 z-[200] bg-background/95 backdrop-blur-xl flex items-center justify-center p-4 animate-in fade-in duration-500">
-      {/* Top Bar with Timer/Skip */}
-      <div className="absolute top-0 left-0 right-0 p-4 border-b border-border bg-card/50 flex justify-between items-center">
-        <div className="flex items-center gap-2">
-          <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-          <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Sponsored Ad</span>
-        </div>
-        {!isReady ? (
-          <div className="text-xs font-bold text-foreground bg-muted px-4 py-2 rounded-xl border border-border">
-            Please wait <span className="text-primary font-black">{seconds}s</span> to skip...
-          </div>
-        ) : (
-          <button
-            onClick={handleSkip}
-            className="flex items-center gap-2 text-xs font-black bg-primary text-white px-5 py-2.5 rounded-xl shadow-lg shadow-primary/20 active:scale-95 transition-all animate-in zoom-in-95"
-          >
-            Skip Ad & Get Link
-            <X className="w-4 h-4" />
-          </button>
-        )}
-      </div>
-
-      <div className="w-full max-w-sm space-y-8 text-center mt-12">
-        <div className="space-y-2">
-          <h2 className="text-2xl font-black text-foreground">Your link is ready!</h2>
-          <p className="text-muted-foreground text-sm">Please support our community by interacting with the sponsor below.</p>
-        </div>
-
-        {/* Ad Body / Vignette Trigger Area */}
-        <div
-          onClick={handleAdClick}
-          className="relative aspect-[4/5] bg-card border border-border rounded-[2.5rem] overflow-hidden shadow-2xl group cursor-pointer"
-        >
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black/80 z-10" />
-          <img
-            src="/cat-other.jpg"
-            alt="Sponsor Content"
-            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[2s]"
-          />
-          <div className="absolute inset-0 z-20 flex flex-col items-center justify-end p-10 text-white space-y-6">
-             <div className="w-20 h-20 bg-white/10 backdrop-blur-xl rounded-3xl flex items-center justify-center border border-white/20">
-                 <Flame className="w-10 h-10 text-orange-500 animate-bounce" />
-             </div>
-             <div className="space-y-2">
-               <p className="font-black text-2xl">BUSSID Premium</p>
-               <p className="text-white/70 text-xs font-medium">Daily New Map Releases Hub</p>
-             </div>
-             <div className="w-full py-4 bg-red-600 text-white font-black text-sm rounded-2xl shadow-xl flex items-center justify-center gap-2 hover:bg-red-700 transition-colors">
-               GET MODS
-               <ArrowRight className="w-4 h-4" />
-             </div>
-          </div>
-
-          <div className="absolute top-6 left-6 z-20 px-3 py-1 bg-black/40 backdrop-blur-md rounded-full border border-white/10">
-            <span className="text-[8px] font-bold text-white uppercase tracking-widest">Advertisement</span>
-          </div>
-        </div>
-
-        <p className="text-[10px] text-muted-foreground max-w-[220px] mx-auto leading-relaxed">
-          Ads help maintain our high-speed servers for free downloads. Thank you!
-        </p>
-      </div>
-    </div>
-  );
-}
-
 /* ── Inline Download Card ── */
 function InlineDownloadCard({ map, onClick }: { map: MapMod; onClick: () => void }) {
   return (
@@ -329,66 +200,15 @@ function InlineDownloadCard({ map, onClick }: { map: MapMod; onClick: () => void
   );
 }
 
-/* ── Popular Footer Section ── */
-function PopularFooterGrid({ maps, onNavigate }: { maps: MapMod[], onNavigate: (id: string) => void }) {
-  if (maps.length === 0) return null;
-
-  return (
-    <div className="w-full mt-12 pt-8 border-t border-border/50 space-y-6 text-left">
-      <div className="flex items-center justify-between">
-         <h3 className="text-sm font-black text-foreground uppercase tracking-tight">Most Popular Maps</h3>
-         <span className="text-[10px] font-bold text-primary italic">Recommended</span>
-      </div>
-      <div className="grid grid-cols-1 gap-5">
-        {maps.map(m => (
-          <div key={m.id} className="bg-card border border-border rounded-[2rem] overflow-hidden flex flex-col shadow-sm group">
-             <div className="aspect-video relative overflow-hidden">
-                <SafeImage src={m.thumbnail} alt={m.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                <div className="absolute bottom-3 left-4">
-                   <p className="text-white font-black text-xs uppercase tracking-tight line-clamp-1">{m.name}</p>
-                </div>
-                <div className="absolute top-3 right-3 px-2 py-1 bg-primary rounded text-[9px] font-black text-white uppercase shadow-lg">
-                   {fmtCount(m.downloadCount)} DL
-                </div>
-             </div>
-             <div className="p-5">
-                <div className="grid grid-cols-2 gap-3">
-                   <button
-                      onClick={() => onNavigate(m.id)}
-                      className="py-4 bg-red-600 hover:bg-red-700 text-white font-black text-[10px] rounded-2xl active:scale-95 transition-all shadow-lg shadow-red-600/20 uppercase"
-                   >
-                      Download Now
-                   </button>
-                   <button
-                      onClick={() => onNavigate(m.id)}
-                      className="py-4 bg-muted hover:bg-muted/80 text-foreground font-black text-[10px] rounded-2xl active:scale-95 transition-all uppercase"
-                   >
-                      View Details
-                   </button>
-                </div>
-             </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 /* ── countdown durations ── */
 const GM_TIMER_SECONDS = 5;
-const FINAL_TIMER_SECONDS = 5;
 
 export default function MapDetail() {
   const [, params] = useRoute('/map/:id');
-  const [, setLocation] = useLocation();
   const id = params?.id || '';
   const { map, loading: mapLoading } = useMap(id);
   const { toast } = useToast();
-
-  // Optimization: Fetch all maps once and derive lists locally
   const { allMaps, loading: allLoading } = useMaps();
-
   const loading = mapLoading || allLoading;
 
   const popularMaps = useMemo(() =>
@@ -400,10 +220,7 @@ export default function MapDetail() {
   [allMaps]);
 
   const newestMaps = useMemo(() =>
-    allMaps
-      .filter(m => m.id !== id)
-      .sort((a, b) => b.createdAt - a.createdAt)
-      .slice(0, 5),
+    allMaps.filter(m => m.id !== id).sort((a, b) => b.createdAt - a.createdAt).slice(0, 5),
   [allMaps, id]);
 
   /* Dynamic SEO Tags */
@@ -414,8 +231,6 @@ export default function MapDetail() {
       if (metaDesc) {
         metaDesc.setAttribute('content', `Download ${map.name} BUSSID map mod. Latest ${map.category} map for Bus Simulator Indonesia. High speed free download available!`);
       }
-
-      // Update canonical link
       let canonical = document.querySelector('link[rel="canonical"]');
       if (!canonical) {
         canonical = document.createElement('link');
@@ -427,9 +242,6 @@ export default function MapDetail() {
   }, [map]);
 
   const [showNotice, setShowNotice] = useState(false);
-  const [showAdOverlay, setShowAdOverlay] = useState(false);
-
-  /* Trigger Notice popup after 3 seconds on first visit to detail page */
   useEffect(() => {
     const hasSeenNotice = sessionStorage.getItem('has_seen_notice_popup');
     if (!hasSeenNotice) {
@@ -441,57 +253,13 @@ export default function MapDetail() {
     }
   }, [id]);
 
-  /* Get Map unlock phase */
+  useEffect(() => { injectPopunder(); }, []);
+
   type GmPhase = 'idle' | 'counting' | 'revealed';
-  const [gmPhase, setGmPhase]         = useState<GmPhase>('idle');
+  const [gmPhase, setGmPhase] = useState<GmPhase>('idle');
   const [gmCountdown, setGmCountdown] = useState(GM_TIMER_SECONDS);
   const gmTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  /* Download countdown phases */
-  type DlPhase = 'idle' | 'intermediate' | 'final_step' | 'ready';
-  const [dlPhase, setDlPhase]         = useState<DlPhase>('idle');
-  const [dlCountdown, setDlCountdown] = useState(FINAL_TIMER_SECONDS);
-  const dlTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  /* Manage Ads lifecycle */
-  useEffect(() => {
-    if (dlPhase === 'idle' || dlPhase === 'intermediate' || dlPhase === 'final_step') {
-      injectPopunder();
-      injectFunnelAd();
-    } else if (dlPhase === 'ready') {
-      removePopunder();
-      // Keep funnel ad script for final download buttons
-      injectFunnelAd();
-    }
-  }, [dlPhase]);
-
-  /* Reset state when navigating to a different map */
-  useEffect(() => {
-    setGmPhase('idle');
-    setGmCountdown(GM_TIMER_SECONDS);
-    setDlPhase('idle');
-    setDlCountdown(FINAL_TIMER_SECONDS);
-    setShowAdOverlay(false);
-    if (gmTimerRef.current) clearInterval(gmTimerRef.current);
-    if (dlTimerRef.current) clearInterval(dlTimerRef.current);
-    window.scrollTo(0, 0);
-  }, [id]);
-
-  /* Scroll to top when moving to download screens */
-  useEffect(() => {
-    if (dlPhase !== 'idle') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  }, [dlPhase]);
-
-  useEffect(() => {
-    return () => {
-      if (gmTimerRef.current) clearInterval(gmTimerRef.current);
-      if (dlTimerRef.current) clearInterval(dlTimerRef.current);
-    };
-  }, []);
-
-  /* Get Map 5-second reveal timer */
   useEffect(() => {
     if (gmPhase !== 'counting') return;
     gmTimerRef.current = setInterval(() => {
@@ -503,117 +271,19 @@ export default function MapDetail() {
     return () => { if (gmTimerRef.current) clearInterval(gmTimerRef.current); };
   }, [gmPhase]);
 
-  /* Download countdown timer (Final Step) */
-  useEffect(() => {
-    if (dlPhase !== 'final_step') return;
-
-    dlTimerRef.current = setInterval(() => {
-      setDlCountdown((c) => {
-        if (c <= 1) { clearInterval(dlTimerRef.current!); setDlPhase('ready'); return 0; }
-        return c - 1;
-      });
-    }, 1000);
-    return () => { if (dlTimerRef.current) clearInterval(dlTimerRef.current); };
-  }, [dlPhase]);
-
   const handleGetMap = (e: React.MouseEvent) => {
-    // 1. Instant Direct Link Trigger (Synchronous)
-    if (areAdsEnabled()) {
-      window.open('https://omg10.com/4/11401834', '_blank', 'noopener');
-    }
-
-    // 2. Synchronously move UI to next state
     setGmPhase('counting');
-
-    // 3. Instant focus lock
+    if (areAdsEnabled()) { window.open('https://omg10.com/4/11401834', '_blank', 'noopener'); }
     window.focus();
   };
 
   const handleNextStep = (e: React.MouseEvent) => {
     if (!map) return;
-
-    // 1. Instant Direct Link Trigger (Synchronous)
-    if (areAdsEnabled()) {
-      window.open('https://omg10.com/4/11696301', '_blank', 'noopener');
-    }
-
-    // 2. Synchronously move UI to next state
-    setDlPhase('intermediate');
-
-    // 3. Instant focus lock
-    window.focus();
+    if (areAdsEnabled()) { window.open('https://omg10.com/4/11696301', '_blank', 'noopener'); }
+    // Redirect to index2 (Step 3/4)
+    window.location.assign(`/download/${map.id}`);
   };
 
-  const handleContinueToCountdown = (e: React.MouseEvent) => {
-    // If ads are enabled, trigger the custom overlay instead of the 5s timer
-    if (areAdsEnabled()) {
-      setShowAdOverlay(true);
-    } else {
-      setDlCountdown(FINAL_TIMER_SECONDS);
-      setDlPhase('final_step');
-    }
-
-    // Forced focus
-    window.focus();
-  };
-
-  const handleAdOverlayComplete = () => {
-    setShowAdOverlay(false);
-    // Directly go to ready state
-    setDlPhase('ready');
-  };
-
-  const handleDownloadAction = (e: React.MouseEvent, adUrl: string) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (!map || !map.downloadUrl || map.downloadUrl === '#') return;
-
-    incrementDownloadCount(map.id);
-
-    // 1. Instant Direct Link Trigger (Synchronous)
-    if (areAdsEnabled()) {
-      window.open(adUrl, '_blank', 'noopener');
-    }
-
-    // 2. Instant File Link Trigger (Synchronous)
-    window.open(map.downloadUrl, '_blank', 'noopener');
-
-    // 3. Lock focus to Plazzu Gaming (Tab 1)
-    window.focus();
-  };
-
-  const handleBackFromDownload = () => {
-    if (dlTimerRef.current) clearInterval(dlTimerRef.current);
-    setDlPhase('idle');
-    setDlCountdown(FINAL_TIMER_SECONDS);
-    window.scrollTo(0, 0);
-  };
-
-  const handleShare = () => {
-    if (!map) return;
-    const shareUrl = `https://plazzugamingmaps.xyz/map/${map.id}`;
-    const shareData = {
-      title: map.name,
-      text: `Download ${map.name} BUSSID Map Mod!`,
-      url: shareUrl,
-    };
-
-    if (navigator.share) {
-      navigator.share(shareData).catch(() => {
-        // Fallback to clipboard if user cancels or share fails
-        navigator.clipboard.writeText(shareUrl);
-        toast({ title: "Link copied!", description: "Share link copied to clipboard." });
-      });
-    } else {
-      navigator.clipboard.writeText(shareUrl);
-      toast({
-        title: "Link copied!",
-        description: "Map link copied to clipboard.",
-      });
-    }
-  };
-
-  /* ── loading skeleton ── */
   if (loading) {
     return (
       <PageShell>
@@ -621,236 +291,37 @@ export default function MapDetail() {
           <div className="h-6 w-24 bg-muted rounded" />
           <div className="rounded-2xl bg-muted w-full" style={{ aspectRatio: '16/9' }} />
           <div className="h-8 bg-muted rounded w-3/4" />
-          <div className="h-4 bg-muted rounded" />
-          <div className="h-4 bg-muted rounded w-2/3" />
         </div>
       </PageShell>
     );
   }
 
-  /* ── not found ── */
   if (!map) {
     return (
       <PageShell>
         <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 text-center">
           <AlertTriangle className="w-16 h-16 text-destructive mb-4 opacity-60" />
           <h1 className="text-2xl font-bold text-foreground mb-2">Map Not Found</h1>
-          <p className="text-muted-foreground text-sm mb-6">This map mod doesn't exist or was removed.</p>
-          <Link href="/" className="px-6 py-3 rounded-xl bg-primary text-white font-bold text-sm">
-            Return Home
-          </Link>
+          <Link href="/" className="px-6 py-3 rounded-xl bg-primary text-white font-bold text-sm">Return Home</Link>
         </div>
       </PageShell>
     );
   }
 
-  /* ══════════════════════════════════════════════════════════════
-     DOWNLOAD FLOW SCREENS (Intermediate / Countdown / Ready)
-  ══════════════════════════════════════════════════════════════ */
-  if (dlPhase !== 'idle') {
-    return (
-      <PageShell>
-        <StickyHeader onBack={handleBackFromDownload} title={map.name} />
-
-        <div className="px-4 pt-6 pb-20 flex flex-col items-center text-center">
-
-          {/* Phase 1: Intermediate "Continue" */}
-          {dlPhase === 'intermediate' && (
-            <div className="w-full space-y-6">
-              <div className="bg-card border border-border rounded-2xl p-8 flex flex-col items-center gap-4 text-center">
-                <ArrowRight className="w-12 h-12 text-primary animate-pulse" />
-                <h3 className="text-foreground font-black text-lg">Next step ready</h3>
-                <p className="text-muted-foreground text-sm">Tap the button below to generate your download link.</p>
-              </div>
-
-              <button
-                onClick={handleContinueToCountdown}
-                className="w-full py-5 rounded-2xl bg-primary text-white font-black text-lg flex items-center justify-center gap-2 active:scale-95 transition-all shadow-xl"
-              >
-                Continue
-                <ArrowRight className="w-5 h-5" />
-              </button>
-
-              <div className="mt-8 text-left bg-muted/30 rounded-2xl p-6 border border-border/50">
-                <h4 className="text-foreground font-bold text-sm mb-4">Why Download BUSSID Map Mods from Plazzu Gaming?</h4>
-                <div className="text-muted-foreground text-[11px] leading-relaxed space-y-4">
-                  <p>
-                    <strong>Bus Simulator Indonesia (BUSSID)</strong> has evolved from a simple driving game into a massive cultural phenomenon, especially in India, Nepal, and Indonesia. One of the key features that keeps the community thriving is the ability to install custom <strong>BUSSID Map Mods</strong>. These mods transform your standard routes into breathtaking journeys across specialized terrains. Whether you are looking for an <strong>Indian Map Mod for BUSSID</strong> featuring the busy streets of Delhi or the treacherous curves of the Himalayan foothills, our collection provides the most immersive experience available today.
-                  </p>
-                  <p>
-                    For those who crave technical driving challenges, the <strong>Nepali BUSSID Map Mod</strong> category is a top choice. These maps often include extreme hilly roads, muddy paths, and narrow bridges that test your precision and control. Navigating a heavy bus through a <strong>Nepali Hill Road Mod</strong> requires a deep understanding of vehicle physics and gear management, making it a favorite among hardcore simulator fans. Our maps are optimized for performance, ensuring that even players on mid-range mobile devices can enjoy high-quality textures and realistic environmental effects without significant frame drops.
-                  </p>
-                  <p>
-                    The <strong>BUSSID Map Mod download</strong> process on our site is designed to be secure and straightforward. We host a variety of unique locations, including authentic <strong>Indonesian Map Mods</strong> that capture the essence of Java, Sumatra, and Bali. From the legendary Kelok 44 sharp turns to the long stretches of the Java Trans-Toll road, the variety is endless. Each mod is carefully vetted to ensure compatibility with the latest version of Bus Simulator Indonesia, so you don't have to worry about game crashes or corrupted files.
-                  </p>
-                  <p>
-                    In addition to geography, many of our <strong>BUSSID Mod</strong> releases include specialized features like custom traffic patterns, realistic weather systems, and regional assets such as local shops, landmarks, and roadside billboards. Using an <strong>Indian Map Mod with Traffic</strong> can completely change how you play, adding the chaos and excitement of real-world Indian highways to your screen. The attention to detail in these mods is what sets <strong>Plazzu Gaming</strong> apart as a leading hub for the BUSSID community.
-                  </p>
-                  <p>
-                    Updating your game with new terrain is essential for maintaining long-term interest. The <strong>Bus Simulator Indonesia Mod Map</strong> scene is constantly innovating, and we pride ourselves on being the first to upload the daily 8:00 PM drops. By choosing our platform, you are joining a global community of virtual drivers who value quality and authenticity. From <strong>Extreme Offroad BUSSID Maps</strong> to relaxing city drives, our catalog caters to every mood and driving style.
-                  </p>
-                  <p>
-                    Keywords like <strong>BUSSID Indian Map download</strong>, <strong>Nepali Bus Simulator Mod</strong>, and <strong>Best BUSSID Maps 2024</strong> are frequently searched because players want the most up-to-date content. We ensure that our SEO-optimized descriptions help you find exactly what you're looking for. Remember, to install these mods, simply download the file, move it to your BUSSID mod folder, and activate it within the game's management menu. Get ready to explore new horizons and take your virtual driving career to the next level with our premium <strong>BUSSID Map Mods</strong>!
-                  </p>
-                  <p>
-                    Our mission is to provide a one-stop-shop for all things BUSSID. Beyond maps, we understand the importance of realistic bus skins, liveries, and vehicle mods that complement your new routes. Using a <strong>Hilly Road Map</strong> with a powerful Indian sleeper bus mod creates an unbeatable simulation atmosphere. Don't forget to check our suggestions section for more <strong>BUSSID Map Mods</strong> that might interest you, and subscribe to our YouTube channel for tutorials on how to install these mods correctly and gameplay showcases of the latest releases.
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Phase 2: Final Countdown Timer */}
-          {dlPhase === 'final_step' && (
-            <div className="w-full space-y-6">
-              <div className="w-full rounded-2xl border border-border bg-card p-6 flex flex-col items-center gap-4 my-2">
-                <div className="relative w-28 h-28">
-                  <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
-                    <circle cx="50" cy="50" r="44" fill="none" stroke="hsl(var(--muted))" strokeWidth="8" />
-                    <circle
-                      cx="50" cy="50" r="44" fill="none"
-                      stroke="hsl(var(--primary))" strokeWidth="8" strokeLinecap="round"
-                      strokeDasharray={`${2 * Math.PI * 44}`}
-                      strokeDashoffset={`${2 * Math.PI * 44 * (1 - (FINAL_TIMER_SECONDS - dlCountdown) / FINAL_TIMER_SECONDS)}`}
-                      style={{ transition: 'stroke-dashoffset 1s linear' }}
-                    />
-                  </svg>
-                  <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <span className="text-4xl font-black text-foreground">{dlCountdown}</span>
-                  </div>
-                </div>
-                <h3 className="text-foreground font-black text-lg mt-2">Final Step</h3>
-                <p className="text-muted-foreground text-sm font-medium">
-                  Your secure link is arriving in{' '}
-                  <span className="text-primary font-bold">{dlCountdown}s</span>…
-                </p>
-                <p className="text-muted-foreground/40 text-xs text-balance">The file will be ready after this short security check</p>
-              </div>
-            </div>
-          )}
-
-          {/* Phase 3: Final Ready State (Redesigned Step 4) */}
-          {dlPhase === 'ready' && (
-            <div className="w-full max-md mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-
-              {/* Ready Card */}
-              <div className="bg-[#0f172a] rounded-[2.5rem] p-8 border border-white/5 shadow-2xl overflow-hidden relative group">
-                <div className="absolute inset-0 bg-gradient-to-b from-blue-500/10 to-transparent pointer-events-none" />
-
-                <h3 className="text-white font-black text-xl tracking-tight mb-6">READY TO DOWNLOAD</h3>
-
-                <div className="relative aspect-video rounded-3xl overflow-hidden border-4 border-blue-400/30 mb-6 bg-slate-900">
-                  <SafeImage src={map.thumbnail} alt={map.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                </div>
-
-                <div className="space-y-2">
-                  <p className="text-white font-black text-sm tracking-wide uppercase line-clamp-1">{map.name} MAP MOD</p>
-                  <p className="text-blue-400/60 font-bold text-[10px] tracking-widest uppercase">
-                    File Size: {(Math.random() * 200 + 50).toFixed(0)} MB | Format: .zip
-                  </p>
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="space-y-3 px-2">
-                <button
-                  onClick={(e) => handleDownloadAction(e, 'https://omg10.com/4/11385953')}
-                  className="w-full py-5 rounded-[1.25rem] bg-[#00ff88] text-[#0f172a] font-black text-lg shadow-[0_8px_32px_rgba(0,255,136,0.3)] hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
-                >
-                  START FAST DOWNLOAD
-                </button>
-
-                <button
-                  onClick={(e) => handleDownloadAction(e, 'https://omg10.com/4/11533894')}
-                  className="w-full py-4 rounded-[1.25rem] bg-[#1e293b] text-white font-bold text-sm border border-white/5 hover:bg-[#334155] transition-all flex items-center justify-center gap-3"
-                >
-                  Backup Server Link
-                  <DownloadCloud className="w-5 h-5 text-blue-400" />
-                </button>
-
-                <button
-                  onClick={(e) => handleDownloadAction(e, 'https://omg10.com/4/11696301')}
-                  className="w-full py-4 rounded-[1.25rem] bg-[#1e293b] text-white font-bold text-sm border border-white/5 hover:bg-[#334155] transition-all flex items-center justify-center gap-3"
-                >
-                  Mirror Link 1
-                  <DownloadCloud className="w-5 h-5 text-blue-400" />
-                </button>
-              </div>
-
-              {/* Footer Links */}
-              <div className="pt-4 space-y-6">
-                <div className="space-y-4">
-                  <p className="text-foreground/40 font-black text-[10px] tracking-[0.2em] uppercase">Help & Guide</p>
-                  <div className="flex items-center justify-center gap-8">
-                    <button className="flex items-center gap-2 text-xs font-bold text-foreground/70 hover:text-primary transition-colors">
-                      <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center text-[10px]">?</div>
-                      How to Install
-                    </button>
-                    <button className="flex items-center gap-2 text-xs font-bold text-foreground/70 hover:text-primary transition-colors">
-                      <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center text-[10px]">!</div>
-                      Troubleshooting
-                    </button>
-                  </div>
-                </div>
-
-                <button className="text-blue-500 text-[11px] font-bold hover:underline underline-offset-4">
-                  Report a Problem
-                </button>
-              </div>
-
-              {/* Popular Maps in Footer */}
-              <PopularFooterGrid
-                maps={popularMaps.filter(m => m.id !== id).slice(0, 3)}
-                onNavigate={(mapId) => setLocation(`/map/${mapId}`)}
-              />
-            </div>
-          )}
-
-          <SuggestionsSection popularMaps={popularMaps} trendingMaps={trendingMaps} />
-
-          <button
-            onClick={handleBackFromDownload}
-            className="text-muted-foreground text-sm underline underline-offset-2 mt-4 mb-10"
-          >
-            ← Go back
-          </button>
-        </div>
-
-        <div className="h-16" />
-      </PageShell>
-    );
-  }
-
-  /* ══════════════════════════════════════════════════════════════
-     MAIN DETAIL VIEW (idle / get-map flow)
-  ══════════════════════════════════════════════════════════════ */
   return (
     <PageShell>
       {showNotice && <NoticePopup onClose={() => setShowNotice(false)} />}
       <StickyHeader title={map.name} isLink />
-
-      {/* Hero image */}
       <div className="relative mx-4 rounded-2xl overflow-hidden bg-muted" style={{ aspectRatio: '16/9' }}>
         <SafeImage src={map.thumbnail} alt={map.name} className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent pointer-events-none" />
-        <div className="absolute top-3 left-3 px-2 py-1 bg-black/60 rounded text-[10px] font-black text-yellow-400 uppercase tracking-widest border border-yellow-500/30">
-          MAP MOD BUSSID
-        </div>
-        {map.featured && (
-          <div className="absolute top-3 right-3 px-2 py-1 rounded text-[10px] font-black text-white bg-red-500 uppercase">
-            HOT
-          </div>
-        )}
+        <div className="absolute top-3 left-3 px-2 py-1 bg-black/60 rounded text-[10px] font-black text-yellow-400 uppercase tracking-widest border border-yellow-500/30">MAP MOD BUSSID</div>
       </div>
-
-      {/* Second image */}
       {map.thumbnail2 && (
         <div className="relative mx-4 mt-3 rounded-2xl overflow-hidden bg-muted" style={{ aspectRatio: '16/9' }}>
           <SafeImage src={map.thumbnail2} alt={`${map.name} preview 2`} className="w-full h-full object-cover" />
         </div>
       )}
-
-      {/* ── Get Map / unlock area ── */}
       <div className="mx-4 mt-4">
         {gmPhase === 'idle' && (
           <button
@@ -858,45 +329,30 @@ export default function MapDetail() {
             className="w-full py-4 rounded-2xl font-black text-base text-white flex items-center justify-center gap-2 active:scale-95 transition-all"
             style={{ background: 'linear-gradient(135deg, #16a34a 0%, #15803d 100%)', boxShadow: '0 0 24px rgba(22,163,74,0.45)' }}
           >
-            <DownloadCloud className="w-5 h-5" />
-            Get Map
+            <DownloadCloud className="w-5 h-5" /> Get Map
           </button>
         )}
-
         {gmPhase === 'counting' && (
           <div className="flex flex-col items-center gap-3 py-2">
             <div className="relative w-16 h-16">
               <svg className="w-full h-full -rotate-90" viewBox="0 0 64 64">
                 <circle cx="32" cy="32" r="26" fill="none" stroke="hsl(var(--muted))" strokeWidth="5" />
-                <circle
-                  cx="32" cy="32" r="26" fill="none" stroke="#16a34a" strokeWidth="5" strokeLinecap="round"
-                  strokeDasharray={`${2 * Math.PI * 26}`}
-                  strokeDashoffset={`${2 * Math.PI * 26 * (gmCountdown / GM_TIMER_SECONDS)}`}
-                  style={{ transition: 'stroke-dashoffset 1s linear' }}
-                />
+                <circle cx="32" cy="32" r="26" fill="none" stroke="#16a34a" strokeWidth="5" strokeLinecap="round" strokeDasharray={`${2 * Math.PI * 26}`} strokeDashoffset={`${2 * Math.PI * 26 * (gmCountdown / GM_TIMER_SECONDS)}`} style={{ transition: 'stroke-dashoffset 1s linear' }} />
               </svg>
-              <span className="absolute inset-0 flex items-center justify-center text-foreground font-black text-xl">
-                {gmCountdown}
-              </span>
+              <span className="absolute inset-0 flex items-center justify-center text-foreground font-black text-xl">{gmCountdown}</span>
             </div>
             <p className="text-muted-foreground text-xs font-medium">Preparing your link…</p>
           </div>
         )}
-
         {gmPhase === 'revealed' && (
           <p className="py-2 text-center text-sm text-green-500 dark:text-green-400 animate-pulse">
             <strong className="font-black">⬇ Scroll down &amp; click Next</strong>
           </p>
         )}
-
         <SuggestionsSection popularMaps={popularMaps} trendingMaps={trendingMaps} />
       </div>
-
       <div className="px-4 mt-4 space-y-4">
-        {/* Title */}
         <h2 className="text-foreground font-black text-xl leading-tight">{map.name}</h2>
-
-        {/* Stats chips */}
         <div className="flex flex-wrap gap-2">
           <div className="flex items-center gap-1.5 bg-card border border-border rounded-xl px-3 py-2">
             <DownloadCloud className="w-4 h-4 text-primary" />
@@ -906,106 +362,45 @@ export default function MapDetail() {
             <Tag className="w-4 h-4 text-purple-500 dark:text-purple-400" />
             <span className="text-foreground text-xs font-bold capitalize">{map.category}</span>
           </div>
-          <div className="flex items-center gap-1.5 bg-card border border-border rounded-xl px-3 py-2">
-            <Calendar className="w-4 h-4 text-blue-500 dark:text-blue-400" />
-            <span className="text-foreground text-xs font-bold">
-              {new Date(map.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
-            </span>
-          </div>
-          <button
-            onClick={handleShare}
-            className="flex items-center gap-1.5 bg-primary/10 border border-primary/20 rounded-xl px-3 py-2 text-primary hover:bg-primary/20 transition-colors"
-          >
-            <Share2 className="w-4 h-4" />
-            <span className="text-xs font-bold uppercase tracking-wider">Share</span>
-          </button>
         </div>
-
-        {/* Description + mid-content native ad */}
         {map.description && (
           <div className="bg-card border border-border rounded-xl p-5">
             <h3 className="text-foreground font-black text-sm mb-5 flex items-center gap-2">
-              <div className="w-1 h-4 bg-primary rounded-full" />
-              Detailed Information
+              <div className="w-1 h-4 bg-primary rounded-full" /> Detailed Information
             </h3>
             <div className="space-y-4">
               {(() => {
                 const paragraphs = map.description.split('\n').filter(p => p.trim() !== '');
                 const totalCards = 5;
-                // Determine placement: interval = total paragraphs / 5 cards.
-                // If fewer than 5 paragraphs, we'll just put them after each until we hit 5.
-                const interval = paragraphs.length > totalCards
-                  ? Math.floor(paragraphs.length / totalCards)
-                  : 1;
-
+                const interval = paragraphs.length > totalCards ? Math.floor(paragraphs.length / totalCards) : 1;
                 let cardsPlaced = 0;
                 const elements: React.ReactNode[] = [];
-
                 paragraphs.forEach((para, idx) => {
-                  elements.push(
-                    <p key={`p-${idx}`} className="text-muted-foreground text-[13px] leading-relaxed font-medium">
-                      <LinkifyText text={para} />
-                    </p>
-                  );
-
-                  // Trigger card insertion logic
+                  elements.push(<p key={`p-${idx}`} className="text-muted-foreground text-[13px] leading-relaxed font-medium"><LinkifyText text={para} /></p>);
                   const shouldPlaceCard = (idx + 1) % interval === 0 && cardsPlaced < totalCards;
-
                   if (shouldPlaceCard) {
                     const cardMap = newestMaps[cardsPlaced] || map;
                     cardsPlaced++;
-                    elements.push(
-                      <InlineDownloadCard
-                        key={`inline-card-${idx}`}
-                        map={cardMap}
-                        onClick={() => setLocation(`/map/${cardMap.id}`)}
-                      />
-                    );
+                    elements.push(<InlineDownloadCard key={`inline-card-${idx}`} map={cardMap} onClick={() => window.location.assign(`/map/${cardMap.id}`)} />);
                   }
                 });
-
-                // If description was too short to place all 5 cards, append remaining
                 while (cardsPlaced < totalCards) {
                   const cardMap = newestMaps[cardsPlaced] || map;
                   cardsPlaced++;
-                  elements.push(
-                    <InlineDownloadCard
-                      key={`extra-card-${cardsPlaced}`}
-                      map={cardMap}
-                      onClick={() => setLocation(`/map/${cardMap.id}`)}
-                    />
-                  );
+                  elements.push(<InlineDownloadCard key={`extra-card-${cardsPlaced}`} map={cardMap} onClick={() => window.location.assign(`/map/${cardMap.id}`)} />);
                 }
-
                 return elements;
               })()}
             </div>
           </div>
         )}
-
-        {/* Next — revealed after Get Map timer */}
         {gmPhase === 'revealed' && (
-          <>
-            <button
-              onClick={handleNextStep}
-              className="w-full py-5 rounded-2xl bg-primary hover:bg-purple-500 active:scale-95 transition-all text-white font-black text-lg flex flex-col items-center justify-center gap-1"
-              style={{ boxShadow: '0 0 24px rgba(139,92,246,0.4)' }}
-            >
-              <span className="flex items-center gap-2">
-                <Download className="w-6 h-6" />
-                Next
-              </span>
-              <span className="text-xs font-medium text-white/60 uppercase tracking-widest">Tap to start</span>
-            </button>
-
-            <p className="text-xs text-muted-foreground/50 text-center leading-relaxed pb-2">
-              By downloading you agree this mod is for BUSSID entertainment purposes only.
-            </p>
-          </>
+          <button onClick={handleNextStep} className="w-full py-5 rounded-2xl bg-primary hover:bg-purple-500 active:scale-95 transition-all text-white font-black text-lg flex flex-col items-center justify-center gap-1" style={{ boxShadow: '0 0 24px rgba(139,92,246,0.4)' }}>
+            <span className="flex items-center gap-2"><Download className="w-6 h-6" /> Next</span>
+            <span className="text-xs font-medium text-white/60 uppercase tracking-widest">Tap to start</span>
+          </button>
         )}
       </div>
-
-      {/* bottom padding so content isn't hidden behind social bar */}
       <div className="h-16" />
     </PageShell>
   );
