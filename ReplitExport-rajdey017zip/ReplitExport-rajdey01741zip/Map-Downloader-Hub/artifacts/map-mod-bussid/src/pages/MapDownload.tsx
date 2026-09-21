@@ -38,25 +38,32 @@ function AdOverlay({ onComplete }: { onComplete: () => void }) {
   }, []);
 
   return (
-    <div className="fixed inset-0 z-[200] bg-background/95 backdrop-blur-xl flex flex-col items-center justify-center p-4">
-      <div className="absolute top-0 left-0 right-0 p-4 border-b border-border bg-card/50 flex justify-between items-center">
-        <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Sponsored Content</span>
+    <div className="fixed inset-0 z-[200] bg-background/95 backdrop-blur-2xl flex flex-col items-center justify-center p-3 animate-in fade-in duration-500">
+      <div className="absolute top-0 left-0 right-0 p-3.5 border-b border-border bg-card/50 backdrop-blur-md flex justify-between items-center">
+        <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Sponsored Ad</span>
         {!isReady ? (
-          <div className="text-xs font-bold text-foreground bg-muted px-4 py-2 rounded-xl">Please wait <span className="text-primary font-black">{seconds}s</span>...</div>
+          <div className="text-[10px] font-black text-foreground bg-muted/80 px-3 py-1.5 rounded-lg border border-border/50">
+            WAIT <span className="text-primary tabular-nums">{seconds}s</span>
+          </div>
         ) : (
-          <button onClick={onComplete} className="flex items-center gap-2 text-xs font-black bg-primary text-white px-5 py-2.5 rounded-xl animate-bounce">SKIP AD & CONTINUE <X className="w-4 h-4" /></button>
+          <button onClick={onComplete} className="flex items-center gap-1.5 text-[10px] font-black bg-primary text-white px-4 py-2 rounded-lg animate-pulse shadow-lg shadow-primary/20">
+            SKIP & CONTINUE <X className="w-3.5 h-3.5" />
+          </button>
         )}
       </div>
-      <div className="w-full max-w-sm space-y-8 text-center mt-12">
-        <h2 className="text-2xl font-black">Link is generating...</h2>
-        <div className="relative aspect-[4/5] bg-card border rounded-[2.5rem] overflow-hidden shadow-2xl">
-          <img src="/cat-other.jpg" alt="Sponsor" className="w-full h-full object-cover opacity-80" />
-          <div className="absolute inset-0 z-20 flex flex-col items-center justify-end p-10 text-white space-y-6">
-             <div className="w-20 h-20 bg-white/10 backdrop-blur-xl rounded-3xl flex items-center justify-center border border-white/20"><Flame className="w-10 h-10 text-orange-500" /></div>
-             <div className="w-full py-4 bg-red-600 font-black text-sm rounded-2xl uppercase">Interacting supports us</div>
+      <div className="w-full max-w-xs space-y-6 text-center mt-10">
+        <div className="space-y-1">
+          <h2 className="text-xl font-black tracking-tighter uppercase">Link Generating...</h2>
+          <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider opacity-60">Please wait for the check</p>
+        </div>
+        <div className="relative aspect-[4/5] bg-card border border-border rounded-[2rem] overflow-hidden shadow-2xl scale-95">
+          <img src="/cat-other.jpg" alt="Sponsor" className="w-full h-full object-cover opacity-90" />
+          <div className="absolute inset-0 z-20 flex flex-col items-center justify-end p-8 text-white space-y-4 bg-gradient-to-t from-black/80 via-transparent to-transparent">
+             <div className="w-16 h-16 bg-white/10 backdrop-blur-xl rounded-2xl flex items-center justify-center border border-white/20 shadow-xl"><Flame className="w-8 h-8 text-orange-500" /></div>
+             <div className="w-full py-3.5 bg-red-600 font-black text-[11px] rounded-xl uppercase tracking-widest shadow-xl">Support our work</div>
           </div>
         </div>
-        <p className="text-[10px] text-muted-foreground font-bold tracking-widest uppercase">Tap to start download immediately</p>
+        <p className="text-[9px] text-muted-foreground font-black tracking-widest uppercase opacity-40">Tap overlay to unlock speed</p>
       </div>
     </div>
   );
@@ -85,30 +92,35 @@ export default function MapDownload() {
   return (
     <PageShell>
       {showAdOverlay && <AdOverlay onComplete={() => window.location.assign(`/ready/${map.id}`)} />}
-      <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-md border-b border-border px-4 py-3">
-        <h1 className="text-foreground font-black text-xs uppercase text-center tracking-tighter">Security Check: {map.name}</h1>
+      <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-md border-b border-border px-4 py-2.5">
+        <h1 className="text-foreground font-black text-[12px] uppercase text-center tracking-tighter line-clamp-1">Step 2: {map.name}</h1>
       </div>
 
-      <div className="px-4 pt-6 pb-20 flex flex-col items-center text-center space-y-8">
-        <div className="bg-card border border-border rounded-2xl p-8 flex flex-col items-center gap-4 text-center shadow-sm w-full">
-          <ArrowRight className="w-12 h-12 text-primary animate-pulse" />
-          <h3 className="text-foreground font-black text-lg uppercase tracking-tight">Final security verification</h3>
-          <p className="text-muted-foreground text-xs font-bold leading-relaxed uppercase opacity-60">Generate your direct mediafire link by tapping the button below.</p>
+      <div className="px-3 pt-6 pb-20 flex flex-col items-center text-center space-y-8">
+        <div className="bg-card border border-border/50 rounded-3xl p-7 flex flex-col items-center gap-4 text-center shadow-sm w-full">
+          <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center">
+            <ArrowRight className="w-7 h-7 text-primary animate-pulse" />
+          </div>
+          <div className="space-y-1">
+            <h3 className="text-foreground font-black text-[15px] uppercase tracking-tight">Security Check Required</h3>
+            <p className="text-muted-foreground text-[10px] font-bold leading-relaxed uppercase opacity-60">Generate your high-speed link by tapping the button below.</p>
+          </div>
         </div>
 
-        <button onClick={() => setShowAdOverlay(true)} className="w-full py-5 rounded-2xl bg-primary text-white font-black text-xl flex items-center justify-center gap-2 shadow-2xl active:scale-95 transition-all">
-          CONTINUE TO DOWNLOAD <ArrowRight className="w-6 h-6" />
+        <button onClick={() => setShowAdOverlay(true)} className="w-full py-4.5 rounded-2xl bg-primary text-white font-black text-lg flex items-center justify-center gap-2 shadow-2xl shadow-primary/30 active:scale-95 transition-all uppercase tracking-tight">
+          CONTINUE TO DOWNLOAD <ArrowRight className="w-5 h-5" />
         </button>
 
-        <div className="mt-8 text-left bg-muted/20 rounded-2xl p-6 border border-border/50">
-          <h4 className="text-foreground font-black text-[10px] uppercase tracking-widest mb-4 opacity-40">Information: Why we show ads?</h4>
+        <div className="text-left bg-muted/10 rounded-2xl p-5 border border-border/40">
+          <h4 className="text-foreground font-black text-[9px] uppercase tracking-[0.2em] mb-3 opacity-40">Info: Why show ads?</h4>
           <div className="text-muted-foreground text-[10px] leading-relaxed font-bold uppercase opacity-60">
-            <p>We provide 100% free BUSSID map mods for our community. To keep our high-speed 5G servers running and support creators, we use minimal advertisements. Thank you for your patience!</p>
+            <p>Our server costs are covered by sponsors. This allows us to keep map downloads 100% free and fast for everyone. Thank you for your support!</p>
           </div>
         </div>
 
         <SuggestionsSection popularMaps={popularMaps} trendingMaps={trendingMaps} />
       </div>
+      <div className="h-10" />
     </PageShell>
   );
 }

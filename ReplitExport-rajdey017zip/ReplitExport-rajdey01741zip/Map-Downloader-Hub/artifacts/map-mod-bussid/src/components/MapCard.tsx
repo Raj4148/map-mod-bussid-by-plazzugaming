@@ -62,8 +62,8 @@ export function MapCard({ map, showNew = true }: MapCardProps) {
     <div className="relative group">
       <Link
         href={`/map/${map.id}`}
-        className="block relative rounded-xl overflow-hidden bg-muted"
-        style={{ aspectRatio: '4/3' }}
+        className="block relative rounded-2xl overflow-hidden bg-muted border border-border/50 shadow-sm active:scale-95 transition-all"
+        style={{ aspectRatio: '1.2' }}
       >
         <img
           src={imgSrc}
@@ -87,13 +87,13 @@ export function MapCard({ map, showNew = true }: MapCardProps) {
         )}
 
         {/* Bottom info */}
-        <div className="absolute bottom-0 left-0 right-0 p-2 flex items-end justify-between gap-2">
+        <div className="absolute bottom-0 left-0 right-0 p-2.5 flex items-end justify-between gap-2">
           <div className="flex-1 min-w-0">
-            <p className="text-white text-[11px] font-bold leading-tight line-clamp-2 drop-shadow-lg">
+            <p className="text-white text-[10px] font-black leading-tight line-clamp-2 uppercase tracking-tight drop-shadow-md">
               {map.name}
             </p>
             {/* Download count */}
-            <p className="text-white/70 text-[9px] mt-0.5 flex items-center gap-0.5">
+            <p className="text-white/80 text-[8px] font-bold mt-1 flex items-center gap-0.5 uppercase tracking-widest">
               📥 {fmtCount(map.downloadCount)}
             </p>
           </div>
