@@ -134,12 +134,45 @@ export default function MapDetail() {
         <div className="bg-card border border-border/50 rounded-2xl p-4.5 space-y-4 shadow-sm">
           <h3 className="text-foreground font-black text-xs uppercase flex items-center gap-2 tracking-tight"><div className="w-1 h-3.5 bg-primary rounded-full" /> Detailed Information</h3>
           <div className="space-y-4">
-            {map.description.split('\n').filter(p => p.trim() !== '').map((para, idx) => (
-               <div key={idx}>
-                 <p className="text-muted-foreground text-[12px] leading-relaxed font-bold uppercase opacity-70"><LinkifyText text={para} /></p>
-                 {idx === 1 && newestMaps[0] && <InlineDownloadCard map={newestMaps[0]} onClick={() => window.location.assign(`/map/${newestMaps[0].id}`)} />}
-               </div>
-            ))}
+            {(() => {
+              const paragraphs = map.description.split('\n').filter(p => p.trim() !== '');
+              const totalCards = 5;
+              const interval = paragraphs.length > totalCards ? Math.floor(paragraphs.length / totalCards) : 1;
+
+              let cardsPlaced = 0;
+              const elements: React.ReactNode[] = [];
+
+              paragraphs.forEach((para, idx) => {
+                elements.push(
+                  <p key={`p-${idx}`} className="text-muted-foreground text-[12px] leading-relaxed font-bold uppercase opacity-70">
+                    <LinkifyText text={para} />
+                  </p>
+                );
+
+                const shouldPlaceCard = (idx + 1) % interval === 0 && cardsPlaced < totalCards;
+
+                if (shouldPlaceCard) {
+                  const cardMap = newestMaps[cardsPlaced];
+                  if (cardMap) {
+                    cardsPlaced++;
+                    elements.push(<InlineDownloadCard key={`inline-card-${idx}`} map={cardMap} onClick={() => window.location.assign(`/map/${cardMap.id}`)} />);
+                  }
+                }
+              });
+
+              // If description was too short to place all 5 cards, append remaining
+              while (cardsPlaced < totalCards) {
+                const cardMap = newestMaps[cardsPlaced];
+                if (cardMap) {
+                  cardsPlaced++;
+                  elements.push(<InlineDownloadCard key={`extra-card-${cardsPlaced}`} map={cardMap} onClick={() => window.location.assign(`/map/${cardMap.id}`)} />);
+                } else {
+                  break;
+                }
+              }
+
+              return elements;
+            })()}
           </div>
         </div>
 
