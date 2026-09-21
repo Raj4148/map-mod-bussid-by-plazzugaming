@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { areAdsEnabled, injectPopunder } from '../lib/ads-control';
+import { areAdsEnabled, injectHomePopunder } from '../lib/ads-control';
 
 /* ── fallback image ── */
 const FALLBACK = 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&auto=format&fit=crop';
@@ -253,7 +253,7 @@ export default function MapDetail() {
     }
   }, [id]);
 
-  useEffect(() => { injectPopunder(); }, []);
+  useEffect(() => { injectHomePopunder(); }, []);
 
   type GmPhase = 'idle' | 'counting' | 'revealed';
   const [gmPhase, setGmPhase] = useState<GmPhase>('idle');

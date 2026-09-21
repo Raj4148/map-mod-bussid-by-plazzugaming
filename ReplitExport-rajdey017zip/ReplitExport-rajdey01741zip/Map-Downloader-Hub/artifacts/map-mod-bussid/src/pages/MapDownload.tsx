@@ -5,7 +5,7 @@ import {
   ChevronLeft, DownloadCloud, ArrowRight, Flame, X
 } from 'lucide-react';
 import { useState, useEffect, useMemo } from 'react';
-import { areAdsEnabled, injectPopunder } from '../lib/ads-control';
+import { areAdsEnabled, injectDownloadPopunder } from '../lib/ads-control';
 
 function SafeImage({ src, alt, className }: { src: string; alt: string; className?: string }) {
   return <img src={src} alt={alt} className={className} />;
@@ -93,7 +93,7 @@ export default function MapDownload() {
   const { allMaps, loading: allLoading } = useMaps();
   const [showAdOverlay, setShowAdOverlay] = useState(false);
 
-  useEffect(() => { injectPopunder(); window.scrollTo(0, 0); }, []);
+  useEffect(() => { injectDownloadPopunder(); window.scrollTo(0, 0); }, []);
 
   const popularMaps = useMemo(() => [...allMaps].sort((a, b) => b.downloadCount - a.downloadCount).slice(0, 8), [allMaps]);
   const trendingMaps = useMemo(() => [...allMaps].sort((a, b) => b.downloadCount - a.downloadCount).slice(8, 16), [allMaps]);

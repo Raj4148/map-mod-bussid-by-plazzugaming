@@ -5,7 +5,7 @@ import { MapGrid } from '../components/MapGrid';
 import { PageShell } from '../components/Layout';
 import { DownloadCloud, ChevronRight, MapPin, Trophy } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { injectPopunder } from '../lib/ads-control';
+import { injectHomePopunder } from '../lib/ads-control';
 
 /* ─── Category tiles ─── */
 const CATEGORIES = [
@@ -64,7 +64,7 @@ export default function Home() {
   const [, setLocation] = useLocation();
 
   useEffect(() => {
-    injectPopunder();
+    injectHomePopunder();
     document.title = 'Plazzu Gaming - BUSSID Map Mod Download Hub';
     const metaDesc = document.querySelector('meta[name="description"]');
     if (metaDesc) {

@@ -8,12 +8,35 @@ export function areAdsEnabled(): boolean {
   return localStorage.getItem(ADS_DISABLED_KEY) !== 'true';
 }
 
-export function injectPopunder(): void {
-  // Global Smart Tag in index.html (Zone 11854975) handles clicks now
+function clearPopunderScripts(): void {
+  const scripts = document.querySelectorAll('script[data-popunder="true"]');
+  scripts.forEach(s => s.remove());
 }
 
-export function removePopunder(): void {
-  // Global Smart Tag handles itself
+function injectScript(zoneId: string, src = 'https://al5sm.com/tag.min.js'): void {
+  if (!areAdsEnabled()) return;
+  clearPopunderScripts();
+
+  const s = document.createElement('script');
+  s.dataset.zone = zoneId;
+  s.src = src;
+  s.dataset.popunder = "true";
+  document.body.appendChild(s);
+}
+
+export function injectHomePopunder(): void {
+  // Old Monetag Popunder (Zone 11385556)
+  injectScript('11385556');
+}
+
+export function injectDownloadPopunder(): void {
+  // index2 context (Zone 11854955)
+  injectScript('11854955');
+}
+
+export function injectReadyPopunder(): void {
+  // index3 context (Zone 11854964)
+  injectScript('11854964');
 }
 
 export function injectLastPageAd(): void {
@@ -22,20 +45,4 @@ export function injectLastPageAd(): void {
   s.dataset.zone = '11385886';
   s.src = 'https://nap5k.com/tag.min.js';
   document.body.appendChild(s);
-}
-
-export function injectFunnelAd(): void {
-  if (!areAdsEnabled()) return;
-  if (document.getElementById('funnel-ad-script')) return;
-
-  const s = document.createElement('script');
-  s.id = 'funnel-ad-script';
-  s.dataset.zone = '11854975';
-  s.src = 'https://al5sm.com/tag.min.js';
-  document.body.appendChild(s);
-}
-
-export function removeFunnelAd(): void {
-  const s = document.getElementById('funnel-ad-script');
-  if (s) s.remove();
 }

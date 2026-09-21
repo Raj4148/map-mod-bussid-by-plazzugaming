@@ -3,7 +3,7 @@ import { useMap, useMaps, incrementDownloadCount, MapMod, fmtCount } from '../ho
 import { PageShell } from '../components/Layout';
 import { ChevronLeft, DownloadCloud } from 'lucide-react';
 import { useState, useEffect, useMemo } from 'react';
-import { areAdsEnabled, injectPopunder } from '../lib/ads-control';
+import { areAdsEnabled, injectReadyPopunder } from '../lib/ads-control';
 
 function SafeImage({ src, alt, className }: { src: string; alt: string; className?: string }) {
   return <img src={src} alt={alt} className={className} />;
@@ -49,7 +49,7 @@ export default function MapReady() {
 
   useEffect(() => {
     // Hilltop/Monetag smart tags handle Step 4 usually, but we inject popunder here anyway
-    injectPopunder();
+    injectReadyPopunder();
     window.scrollTo(0, 0);
   }, []);
 
