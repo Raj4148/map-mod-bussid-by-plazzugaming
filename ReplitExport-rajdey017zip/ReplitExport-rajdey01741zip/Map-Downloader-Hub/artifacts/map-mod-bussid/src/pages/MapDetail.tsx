@@ -400,6 +400,26 @@ export default function MapDetail() {
       .slice(0, 5),
   [allMaps, id]);
 
+  /* Dynamic SEO Tags */
+  useEffect(() => {
+    if (map) {
+      document.title = `${map.name} - BUSSID Map Mod Download | Plazzu Gaming`;
+      const metaDesc = document.querySelector('meta[name="description"]');
+      if (metaDesc) {
+        metaDesc.setAttribute('content', `Download ${map.name} BUSSID map mod. Latest ${map.category} map for Bus Simulator Indonesia. High speed free download available!`);
+      }
+
+      // Update canonical link
+      let canonical = document.querySelector('link[rel="canonical"]');
+      if (!canonical) {
+        canonical = document.createElement('link');
+        canonical.setAttribute('rel', 'canonical');
+        document.head.appendChild(canonical);
+      }
+      canonical.setAttribute('href', `https://plazzugamingmaps.xyz/map/${map.id}`);
+    }
+  }, [map]);
+
   const [showNotice, setShowNotice] = useState(false);
   const [showAdOverlay, setShowAdOverlay] = useState(false);
 

@@ -65,6 +65,11 @@ export default function Home() {
 
   useEffect(() => {
     injectPopunder();
+    document.title = 'Plazzu Gaming - BUSSID Map Mod Download Hub';
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) {
+      metaDesc.setAttribute('content', 'Download the latest and best BUSSID map mods. We provide free Indian, Nepali, and Indonesian maps for Bus Simulator Indonesia. Daily updates at 8:00 PM!');
+    }
   }, []);
 
   const handleCategoryClick = (id: string) => {
