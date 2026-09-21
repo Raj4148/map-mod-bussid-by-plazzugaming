@@ -101,23 +101,27 @@ export default function MapDetail() {
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
         </div>
 
-        {/* Phase 1: Idle or Counting */}
-        {gmPhase !== 'revealed' && (
-          <div className="space-y-4">
-            {gmPhase === 'idle' && (
-              <button onClick={() => setGmPhase('counting')} className="w-full py-4 rounded-2xl bg-green-600 text-white font-black text-lg flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-all">
-                <DownloadCloud className="w-6 h-6" /> GET MAP
-              </button>
-            )}
+        {/* Phase 1: Idle or Counting or Revealed */}
+        <div className="space-y-4">
+          {gmPhase === 'idle' && (
+            <button onClick={() => setGmPhase('counting')} className="w-full py-4 rounded-2xl bg-green-600 text-white font-black text-lg flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-all">
+              <DownloadCloud className="w-6 h-6" /> GET MAP
+            </button>
+          )}
 
-            {gmPhase === 'counting' && (
-              <div className="flex flex-col items-center gap-2 py-4 bg-muted/20 rounded-2xl border border-border">
-                <span className="text-3xl font-black text-primary animate-pulse">{gmCountdown}s</span>
-                <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Generating Secure Link...</p>
-              </div>
-            )}
-          </div>
-        )}
+          {gmPhase === 'counting' && (
+            <div className="flex flex-col items-center gap-2 py-4 bg-muted/20 rounded-2xl border border-border">
+              <span className="text-3xl font-black text-primary animate-pulse">{gmCountdown}s</span>
+              <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Generating Secure Link...</p>
+            </div>
+          )}
+
+          {gmPhase === 'revealed' && (
+            <div className="py-2 text-center animate-bounce">
+              <p className="text-sm font-black text-green-500 uppercase tracking-tight">⬇ Scroll down and press next</p>
+            </div>
+          )}
+        </div>
 
         <div className="bg-card border border-border rounded-xl p-5 space-y-4">
           <h3 className="text-foreground font-black text-sm uppercase flex items-center gap-2"><div className="w-1 h-4 bg-primary rounded-full" /> Detailed Information</h3>
