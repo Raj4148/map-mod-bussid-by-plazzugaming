@@ -51,7 +51,7 @@ export function BottomNav() {
 export function PageShell({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <div className="min-h-screen bg-background pb-20 transition-colors">
+      <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-background pb-20 transition-colors">
         {children}
       </div>
       <BottomNav />
