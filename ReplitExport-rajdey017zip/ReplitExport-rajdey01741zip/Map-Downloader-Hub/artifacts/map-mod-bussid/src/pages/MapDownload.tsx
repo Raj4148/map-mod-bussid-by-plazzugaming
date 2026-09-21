@@ -1,4 +1,4 @@
-import { useRoute, Link } from 'wouter';
+import { useRoute, Link, useLocation } from 'wouter';
 import { useMap, useMaps, MapMod, fmtCount } from '../hooks/useMaps';
 import { PageShell } from '../components/Layout';
 import {
@@ -88,6 +88,7 @@ function AdOverlay({ onComplete, adLink }: { onComplete: () => void; adLink: str
 
 export default function MapDownload() {
   const [, params] = useRoute('/download/:id');
+  const [, setLocation] = useLocation();
   const id = params?.id || '';
   const { map, loading: mapLoading } = useMap(id);
   const { allMaps, loading: allLoading } = useMaps();
@@ -103,10 +104,10 @@ export default function MapDownload() {
 
   const handleContinue = () => {
     if (areAdsEnabled()) { setShowAdOverlay(true); }
-    else { window.location.assign(`/ready/${map.id}`); }
+    else { setLocation(`/ready/${map.id}`); }
   };
 
-  const handleAdOverlayComplete = () => { window.location.assign(`/ready/${map.id}`); };
+  const handleAdOverlayComplete = () => { setLocation(`/ready/${map.id}`); };
 
   return (
     <PageShell>

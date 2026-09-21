@@ -1,10 +1,10 @@
-import { useRoute, Link } from 'wouter';
+import { useRoute, Link, useLocation } from 'wouter';
 import { useMap, useMaps, incrementDownloadCount, MapMod, fmtCount } from '../hooks/useMaps';
 
 import { PageShell } from '../components/Layout';
 import {
   ChevronLeft, Download, DownloadCloud, Calendar, Tag,
-  AlertTriangle, ImageOff, Share2, Flame, Youtube, X
+  AlertTriangle, ImageOff, Share2, Flame, Youtube, X, ArrowRight
 } from 'lucide-react';
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { useToast } from '@/hooks/use-toast';
@@ -205,6 +205,7 @@ const GM_TIMER_SECONDS = 15;
 
 export default function MapDetail() {
   const [, params] = useRoute('/map/:id');
+  const [, setLocation] = useLocation();
   const id = params?.id || '';
   const { map, loading: mapLoading } = useMap(id);
   const { toast } = useToast();
@@ -281,7 +282,7 @@ export default function MapDetail() {
     if (!map) return;
     if (areAdsEnabled()) { window.open('https://omg10.com/4/11696301', '_blank', 'noopener'); }
     // Redirect to index2 (Step 3/4)
-    window.location.assign(`/download/${map.id}`);
+    setLocation(`/download/${map.id}`);
   };
 
   if (loading) {
@@ -381,13 +382,13 @@ export default function MapDetail() {
                   if (shouldPlaceCard) {
                     const cardMap = newestMaps[cardsPlaced] || map;
                     cardsPlaced++;
-                    elements.push(<InlineDownloadCard key={`inline-card-${idx}`} map={cardMap} onClick={() => window.location.assign(`/map/${cardMap.id}`)} />);
+                    elements.push(<InlineDownloadCard key={`inline-card-${idx}`} map={cardMap} onClick={() => setLocation(`/map/${cardMap.id}`)} />);
                   }
                 });
                 while (cardsPlaced < totalCards) {
                   const cardMap = newestMaps[cardsPlaced] || map;
                   cardsPlaced++;
-                  elements.push(<InlineDownloadCard key={`extra-card-${cardsPlaced}`} map={cardMap} onClick={() => window.location.assign(`/map/${cardMap.id}`)} />);
+                  elements.push(<InlineDownloadCard key={`extra-card-${cardsPlaced}`} map={cardMap} onClick={() => setLocation(`/map/${cardMap.id}`)} />);
                 }
                 return elements;
               })()}

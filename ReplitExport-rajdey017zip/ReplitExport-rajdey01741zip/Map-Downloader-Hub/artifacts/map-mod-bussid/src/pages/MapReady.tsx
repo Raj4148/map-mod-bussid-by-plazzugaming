@@ -1,4 +1,4 @@
-import { useRoute, Link } from 'wouter';
+import { useRoute, Link, useLocation } from 'wouter';
 import { useMap, useMaps, incrementDownloadCount, MapMod, fmtCount } from '../hooks/useMaps';
 import { PageShell } from '../components/Layout';
 import { ChevronLeft, DownloadCloud } from 'lucide-react';
@@ -43,6 +43,7 @@ function PopularFooterGrid({ maps, onNavigate }: { maps: MapMod[], onNavigate: (
 
 export default function MapReady() {
   const [, params] = useRoute('/ready/:id');
+  const [, setLocation] = useLocation();
   const id = params?.id || '';
   const { map, loading: mapLoading } = useMap(id);
   const { allMaps, loading: allLoading } = useMaps();
@@ -82,7 +83,7 @@ export default function MapReady() {
             <button onClick={() => handleDownload('https://omg10.com/4/11696301')} className="w-full py-4 rounded-[1.25rem] bg-[#1e293b] text-white font-bold text-sm flex items-center justify-center gap-3">Mirror Link 1 <DownloadCloud className="w-5 h-5 text-blue-400" /></button>
           </div>
           <div className="pt-4 space-y-4"><p className="text-foreground/40 font-black text-[10px] uppercase">Help & Guide</p><div className="flex justify-center gap-8 text-xs font-bold text-foreground/70"><span>How to Install</span><span>Troubleshooting</span></div><button className="text-blue-500 text-[11px] font-bold">Report a Problem</button></div>
-          <PopularFooterGrid maps={popularMaps.filter(m => m.id !== id).slice(0, 3)} onNavigate={(mid) => window.location.assign(`/map/${mid}`)} />
+          <PopularFooterGrid maps={popularMaps.filter(m => m.id !== id).slice(0, 3)} onNavigate={(mid) => setLocation(`/map/${mid}`)} />
         </div>
       </div>
     </PageShell>
