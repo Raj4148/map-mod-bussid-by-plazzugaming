@@ -52,13 +52,13 @@ function AdOverlay({ onComplete, adLink }: { onComplete: () => void; adLink: str
     const timer = setInterval(() => { setSeconds((p) => { if (p <= 1) { clearInterval(timer); setIsReady(true); return 0; } return p - 1; }); }, 1000);
     return () => clearInterval(timer);
   }, []);
-  const [skipClicks, setSkipClicks] = useState(0);
   const handleSkip = () => {
-    if (skipClicks === 0 && areAdsEnabled()) {
+    if (areAdsEnabled()) {
+      // Open ad in new tab
       window.open('https://omg10.com/4/11696301', '_blank', 'noopener');
-      setSkipClicks(1);
-      window.focus();
-    } else { onComplete(); }
+    }
+    // Instantly move to next page in current tab
+    onComplete();
   };
   return (
     <div className="fixed inset-0 z-[200] bg-background/95 backdrop-blur-xl flex items-center justify-center p-4">
