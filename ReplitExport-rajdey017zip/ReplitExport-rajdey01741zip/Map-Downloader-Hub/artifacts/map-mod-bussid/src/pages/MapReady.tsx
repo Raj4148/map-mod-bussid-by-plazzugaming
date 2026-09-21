@@ -60,9 +60,20 @@ export default function MapReady() {
   if (!map) return <PageShell><div className="p-8 text-center">Map Not Found</div></PageShell>;
 
   const handleDownload = (adUrl: string) => {
+    if (!map || !map.downloadUrl || map.downloadUrl === '#') return;
     incrementDownloadCount(map.id);
-    if (areAdsEnabled()) { window.open(adUrl, '_blank', 'noopener'); }
-    window.open(map.downloadUrl, '_blank', 'noopener');
+
+    // 1. Open Ad in New Tab (Tab 2)
+    if (areAdsEnabled()) {
+      window.open(adUrl, '_blank', 'noopener');
+    }
+
+    // 2. Redirect CURRENT tab to File (Mediafire)
+    // This avoids the browser "multiple popup" block
+    const fileUrl = map.downloadUrl;
+    setTimeout(() => {
+      window.location.assign(fileUrl);
+    }, 100);
   };
 
   return (
