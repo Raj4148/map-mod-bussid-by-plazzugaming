@@ -2,11 +2,10 @@ import { useRoute, Link } from 'wouter';
 import { useMap, useMaps, MapMod, fmtCount } from '../hooks/useMaps';
 import { PageShell } from '../components/Layout';
 import {
-  ChevronLeft, Download, DownloadCloud, Calendar, Tag,
-  AlertTriangle, ImageOff, Share2, Flame, ArrowRight
+  ChevronLeft, DownloadCloud, Calendar, Tag,
+  AlertTriangle, Share2, ArrowRight
 } from 'lucide-react';
-import { useState, useEffect, useRef, useMemo } from 'react';
-import { useToast } from '@/hooks/use-toast';
+import { useState, useEffect, useMemo } from 'react';
 import { areAdsEnabled, injectHomePopunder } from '../lib/ads-control';
 
 function SafeImage({ src, alt, className }: { src: string; alt: string; className?: string }) {
@@ -71,6 +70,7 @@ export default function MapDetail() {
      if (map) {
        document.title = `${map.name} - BUSSID Map Mod | Plazzu Gaming`;
        injectHomePopunder();
+       window.scrollTo(0,0);
      }
   }, [map]);
 
@@ -101,26 +101,23 @@ export default function MapDetail() {
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
         </div>
 
-        <div className="space-y-4">
-          {gmPhase === 'idle' && (
-            <button onClick={() => setGmPhase('counting')} className="w-full py-4 rounded-2xl bg-green-600 text-white font-black text-lg flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-all">
-              <DownloadCloud className="w-6 h-6" /> GET MAP
-            </button>
-          )}
+        {/* Phase 1: Idle or Counting */}
+        {gmPhase !== 'revealed' && (
+          <div className="space-y-4">
+            {gmPhase === 'idle' && (
+              <button onClick={() => setGmPhase('counting')} className="w-full py-4 rounded-2xl bg-green-600 text-white font-black text-lg flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-all">
+                <DownloadCloud className="w-6 h-6" /> GET MAP
+              </button>
+            )}
 
-          {gmPhase === 'counting' && (
-            <div className="flex flex-col items-center gap-2 py-4 bg-muted/20 rounded-2xl border border-border">
-              <span className="text-3xl font-black text-primary animate-pulse">{gmCountdown}s</span>
-              <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Generating Secure Link...</p>
-            </div>
-          )}
-
-          {gmPhase === 'revealed' && (
-            <button onClick={() => window.location.assign(`/download/${map.id}`)} className="w-full py-5 rounded-2xl bg-primary text-white font-black text-xl flex items-center justify-center gap-2 shadow-2xl animate-in zoom-in-95 duration-300">
-              NEXT STEP <ArrowRight className="w-6 h-6" />
-            </button>
-          )}
-        </div>
+            {gmPhase === 'counting' && (
+              <div className="flex flex-col items-center gap-2 py-4 bg-muted/20 rounded-2xl border border-border">
+                <span className="text-3xl font-black text-primary animate-pulse">{gmCountdown}s</span>
+                <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Generating Secure Link...</p>
+              </div>
+            )}
+          </div>
+        )}
 
         <div className="bg-card border border-border rounded-xl p-5 space-y-4">
           <h3 className="text-foreground font-black text-sm uppercase flex items-center gap-2"><div className="w-1 h-4 bg-primary rounded-full" /> Detailed Information</h3>
@@ -131,7 +128,18 @@ export default function MapDetail() {
              </div>
           ))}
         </div>
+
         <SuggestionsSection popularMaps={popularMaps} trendingMaps={trendingMaps} />
+
+        {/* Phase 2: Next Step (Moved to Bottom) */}
+        {gmPhase === 'revealed' && (
+           <div className="pt-6 pb-10">
+              <button onClick={() => window.location.assign(`/download/${map.id}`)} className="w-full py-5 rounded-2xl bg-primary text-white font-black text-xl flex items-center justify-center gap-2 shadow-2xl animate-bounce">
+                NEXT STEP <ArrowRight className="w-6 h-6" />
+              </button>
+              <p className="text-[10px] text-center text-muted-foreground mt-4 uppercase font-bold tracking-widest opacity-60">Verified Link Ready Below</p>
+           </div>
+        )}
       </div>
       <div className="h-16" />
     </PageShell>
