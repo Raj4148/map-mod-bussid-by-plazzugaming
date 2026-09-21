@@ -46,7 +46,7 @@ function SuggestionsSection({ popularMaps, trendingMaps }: { popularMaps: MapMod
 }
 
 function AdOverlay({ onComplete, adLink }: { onComplete: () => void; adLink: string }) {
-  const [seconds, setSeconds] = useState(7);
+  const [seconds, setSeconds] = useState(15);
   const [isReady, setIsReady] = useState(false);
   useEffect(() => {
     const timer = setInterval(() => { setSeconds((p) => { if (p <= 1) { clearInterval(timer); setIsReady(true); return 0; } return p - 1; }); }, 1000);

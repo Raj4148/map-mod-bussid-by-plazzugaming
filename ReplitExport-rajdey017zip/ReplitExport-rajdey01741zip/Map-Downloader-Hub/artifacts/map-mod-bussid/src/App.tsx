@@ -10,6 +10,8 @@ const Home = lazy(() => import('./pages/Home'));
 const Maps = lazy(() => import('./pages/Maps'));
 const Community = lazy(() => import('./pages/Community'));
 const MapDetail = lazy(() => import('./pages/MapDetail'));
+const MapDownload = lazy(() => import('./pages/MapDownload'));
+const MapReady = lazy(() => import('./pages/MapReady'));
 const Settings = lazy(() => import('./pages/Settings'));
 const Sitemap = lazy(() => import('./pages/Sitemap'));
 const SafeMode = lazy(() => import('./pages/SafeMode'));
@@ -35,6 +37,8 @@ function Router() {
         <Route path="/maps" component={Maps} />
         <Route path="/community" component={Community} />
         <Route path="/map/:id" component={MapDetail} />
+        <Route path="/download/:id" component={MapDownload} />
+        <Route path="/ready/:id" component={MapReady} />
         <Route path="/settings" component={Settings} />
         <Route path="/raju" component={SafeMode} />
         <Route path="/sitemap.xml" component={Sitemap} />

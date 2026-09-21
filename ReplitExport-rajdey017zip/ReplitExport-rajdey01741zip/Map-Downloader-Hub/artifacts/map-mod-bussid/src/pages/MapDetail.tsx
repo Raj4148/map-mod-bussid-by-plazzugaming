@@ -201,7 +201,7 @@ function InlineDownloadCard({ map, onClick }: { map: MapMod; onClick: () => void
 }
 
 /* ── countdown durations ── */
-const GM_TIMER_SECONDS = 5;
+const GM_TIMER_SECONDS = 15;
 
 export default function MapDetail() {
   const [, params] = useRoute('/map/:id');
