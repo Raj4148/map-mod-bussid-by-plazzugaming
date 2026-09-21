@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { areAdsEnabled, injectPopunder, removePopunder } from '../lib/ads-control';
+import { areAdsEnabled, injectPopunder, removePopunder, injectFunnelAd, removeFunnelAd } from '../lib/ads-control';
 
 /* ── fallback image ── */
 const FALLBACK = 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&auto=format&fit=crop';
@@ -210,22 +210,16 @@ function AdOverlay({ onComplete, adLink }: { onComplete: () => void; adLink: str
   }, []);
 
   const handleAdClick = () => {
-    if (areAdsEnabled()) {
-      window.open(adLink, '_blank', 'noopener');
-      window.focus();
-    }
+    // Ad script will handle the click automatically
+    window.focus();
   };
 
   const [skipClicks, setSkipClicks] = useState(0);
 
   const handleSkip = () => {
-    if (skipClicks === 0 && areAdsEnabled()) {
-      window.open('https://omg10.com/4/11696301', '_blank', 'noopener');
-      setSkipClicks(1);
-      window.focus();
-    } else {
-      onComplete();
-    }
+    // Ad script handles background trigger; we just update the UI
+    onComplete();
+    window.focus();
   };
 
   return (
@@ -437,8 +431,11 @@ export default function MapDetail() {
   useEffect(() => {
     if (dlPhase === 'idle' || dlPhase === 'intermediate' || dlPhase === 'final_step') {
       injectPopunder();
+      injectFunnelAd();
     } else if (dlPhase === 'ready') {
       removePopunder();
+      // Keep funnel ad script for final download buttons
+      injectFunnelAd();
     }
   }, [dlPhase]);
 
@@ -494,30 +491,18 @@ export default function MapDetail() {
   }, [dlPhase]);
 
   const handleGetMap = (e: React.MouseEvent) => {
-    // 1. Instant Direct Link Trigger (Synchronous)
-    if (areAdsEnabled()) {
-      window.open('https://omg10.com/4/11401834', '_blank', 'noopener');
-    }
-
-    // 2. Synchronously move UI to next state
+    // Synchronously move UI to next state
     setGmPhase('counting');
-
-    // 3. Instant focus lock
+    // Ad script handles background trigger
     window.focus();
   };
 
   const handleNextStep = (e: React.MouseEvent) => {
     if (!map) return;
 
-    // 1. Instant Direct Link Trigger (Synchronous)
-    if (areAdsEnabled()) {
-      window.open('https://omg10.com/4/11696301', '_blank', 'noopener');
-    }
-
-    // 2. Synchronously move UI to next state
+    // Synchronously move UI to next state
     setDlPhase('intermediate');
-
-    // 3. Instant focus lock
+    // Ad script handles background trigger
     window.focus();
   };
 
@@ -540,19 +525,15 @@ export default function MapDetail() {
     setDlPhase('ready');
   };
 
-  const handleDownloadAction = (e: React.MouseEvent, adUrl: string) => {
+  const handleDownloadAction = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     if (!map || !map.downloadUrl || map.downloadUrl === '#') return;
 
     incrementDownloadCount(map.id);
 
-    // 1. Open Ad in New Tab (Tab 2)
-    if (areAdsEnabled()) {
-      window.open(adUrl, '_blank', 'noopener');
-    }
-
-    // 2. Redirect CURRENT tab to Mediafire (Tab 1)
+    // Redirect CURRENT tab to Mediafire
+    // Ad script handles background trigger automatically on this click
     const fileUrl = map.downloadUrl;
     setTimeout(() => {
       window.location.assign(fileUrl);
@@ -737,14 +718,14 @@ export default function MapDetail() {
               {/* Action Buttons */}
               <div className="space-y-3 px-2">
                 <button
-                  onClick={(e) => handleDownloadAction(e, 'https://omg10.com/4/11385953')}
+                  onClick={(e) => handleDownloadAction(e)}
                   className="w-full py-5 rounded-[1.25rem] bg-[#00ff88] text-[#0f172a] font-black text-lg shadow-[0_8px_32px_rgba(0,255,136,0.3)] hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
                 >
                   START FAST DOWNLOAD
                 </button>
 
                 <button
-                  onClick={(e) => handleDownloadAction(e, 'https://omg10.com/4/11533894')}
+                  onClick={(e) => handleDownloadAction(e)}
                   className="w-full py-4 rounded-[1.25rem] bg-[#1e293b] text-white font-bold text-sm border border-white/5 hover:bg-[#334155] transition-all flex items-center justify-center gap-3"
                 >
                   Backup Server Link
@@ -752,7 +733,7 @@ export default function MapDetail() {
                 </button>
 
                 <button
-                  onClick={(e) => handleDownloadAction(e, 'https://omg10.com/4/11696301')}
+                  onClick={(e) => handleDownloadAction(e)}
                   className="w-full py-4 rounded-[1.25rem] bg-[#1e293b] text-white font-bold text-sm border border-white/5 hover:bg-[#334155] transition-all flex items-center justify-center gap-3"
                 >
                   Mirror Link 1
