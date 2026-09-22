@@ -68,7 +68,8 @@ function InlineDownloadCard({ map, onClick }: { map: MapMod; onClick: () => void
 
 export default function MapDetail() {
   const [, params] = useRoute('/map/:id');
-  const id = params?.id || '';
+  const queryId = new URLSearchParams(window.location.search).get('id');
+  const id = params?.id || queryId || '';
   const { map, loading: mapLoading } = useMap(id);
   const { allMaps, loading: allLoading } = useMaps();
 
@@ -181,7 +182,7 @@ export default function MapDetail() {
         {/* Phase 2: Next Step (Moved to Bottom) */}
         {gmPhase === 'revealed' && (
            <div className="pt-4 pb-12">
-              <button onClick={() => window.location.assign(`/download/${map.id}`)} className="w-full py-5 rounded-2xl bg-primary text-white font-black text-xl flex items-center justify-center gap-2 shadow-2xl shadow-primary/30 active:scale-95 transition-all">
+              <button onClick={() => window.location.href = `download.html?id=${map.id}`} className="w-full py-5 rounded-2xl bg-primary text-white font-black text-xl flex items-center justify-center gap-2 shadow-2xl shadow-primary/30 active:scale-95 transition-all">
                 NEXT STEP <ArrowRight className="w-6 h-6" />
               </button>
               <p className="text-[9px] text-center text-muted-foreground mt-4 uppercase font-black tracking-[0.2em] opacity-40">Final security check ahead</p>

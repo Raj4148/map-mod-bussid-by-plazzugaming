@@ -60,8 +60,8 @@ export function MapCard({ map, showNew = true }: MapCardProps) {
 
   return (
     <div className="relative group">
-      <Link
-        href={`/map/${map.id}`}
+      <a
+        href={`index.html?id=${map.id}`}
         className="block relative rounded-2xl overflow-hidden bg-muted border border-border/50 shadow-sm active:scale-95 transition-all"
         style={{ aspectRatio: '1.2' }}
       >
@@ -107,7 +107,7 @@ export function MapCard({ map, showNew = true }: MapCardProps) {
             <Share2 className="w-3.5 h-3.5" />
           </button>
         </div>
-      </Link>
+      </a>
     </div>
   );
 }

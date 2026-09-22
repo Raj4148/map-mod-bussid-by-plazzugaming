@@ -71,7 +71,8 @@ function AdOverlay({ onComplete }: { onComplete: () => void }) {
 
 export default function MapDownload() {
   const [, params] = useRoute('/download/:id');
-  const id = params?.id || '';
+  const queryId = new URLSearchParams(window.location.search).get('id');
+  const id = params?.id || queryId || '';
   const { map, loading: mapLoading } = useMap(id);
   const { allMaps, loading: allLoading } = useMaps();
   const [showAdOverlay, setShowAdOverlay] = useState(false);
@@ -91,7 +92,7 @@ export default function MapDownload() {
 
   return (
     <PageShell>
-      {showAdOverlay && <AdOverlay onComplete={() => window.location.assign(`/ready/${map.id}`)} />}
+      {showAdOverlay && <AdOverlay onComplete={() => window.location.href = `ready.html?id=${map.id}`} />}
       <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-md border-b border-border px-4 py-2.5">
         <h1 className="text-foreground font-black text-[12px] uppercase text-center tracking-tighter line-clamp-1">Step 2: {map.name}</h1>
       </div>

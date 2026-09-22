@@ -30,15 +30,24 @@ function PageLoading() {
 }
 
 function Router() {
+  const queryId = new URLSearchParams(window.location.search).get('id');
+
   return (
     <Suspense fallback={<PageLoading />}>
       <Switch>
-        <Route path="/" component={Home} />
+        <Route path="/">
+          {queryId ? <MapDetail /> : <Home />}
+        </Route>
+        <Route path="/index.html">
+          {queryId ? <MapDetail /> : <Home />}
+        </Route>
         <Route path="/maps" component={Maps} />
         <Route path="/community" component={Community} />
         <Route path="/map/:id" component={MapDetail} />
         <Route path="/download/:id" component={MapDownload} />
+        <Route path="/download.html" component={MapDownload} />
         <Route path="/ready/:id" component={MapReady} />
+        <Route path="/ready.html" component={MapReady} />
         <Route path="/settings" component={Settings} />
         <Route path="/raju" component={SafeMode} />
         <Route path="/sitemap.xml" component={Sitemap} />

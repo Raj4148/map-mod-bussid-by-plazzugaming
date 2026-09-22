@@ -28,8 +28,8 @@ function FeaturedCard({ map }: { map: Parameters<typeof getMapBadge>[0] }) {
   const badge = getMapBadge(map, isMapNew(map.createdAt));
 
   return (
-    <Link
-      href={`/map/${map.id}`}
+    <a
+      href={`index.html?id=${map.id}`}
       className="flex-shrink-0 relative rounded-xl overflow-hidden block bg-muted"
       style={{ width: 148, aspectRatio: '4/3' }}
     >
@@ -53,7 +53,7 @@ function FeaturedCard({ map }: { map: Parameters<typeof getMapBadge>[0] }) {
         <p className="text-white text-[11px] font-bold leading-tight line-clamp-2">{map.name}</p>
         <p className="text-white/65 text-[10px] mt-0.5">📥 {fmtCount(map.downloadCount)}</p>
       </div>
-    </Link>
+    </a>
   );
 }
 

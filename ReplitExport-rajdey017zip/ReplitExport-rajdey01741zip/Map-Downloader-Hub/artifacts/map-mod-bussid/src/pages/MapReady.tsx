@@ -33,7 +33,8 @@ function PopularFooterGrid({ maps, onNavigate }: { maps: MapMod[], onNavigate: (
 
 export default function MapReady() {
   const [, params] = useRoute('/ready/:id');
-  const id = params?.id || '';
+  const queryId = new URLSearchParams(window.location.search).get('id');
+  const id = params?.id || queryId || '';
   const { map, loading: mapLoading } = useMap(id);
   const { allMaps, loading: allLoading } = useMaps();
 

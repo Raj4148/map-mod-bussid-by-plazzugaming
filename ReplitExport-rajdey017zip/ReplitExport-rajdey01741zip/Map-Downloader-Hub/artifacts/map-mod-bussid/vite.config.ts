@@ -45,6 +45,13 @@ export default defineConfig({
     outDir: path.resolve(import.meta.dirname, 'dist'),
     emptyOutDir: true,
     sourcemap: false,
+    rollupOptions: {
+      input: {
+        main: path.resolve(import.meta.dirname, 'index.html'),
+        download: path.resolve(import.meta.dirname, 'download.html'),
+        ready: path.resolve(import.meta.dirname, 'ready.html'),
+      },
+    },
   },
   server: {
     port,
