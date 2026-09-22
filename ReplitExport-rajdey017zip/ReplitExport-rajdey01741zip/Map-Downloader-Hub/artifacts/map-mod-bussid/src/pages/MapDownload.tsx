@@ -3,7 +3,7 @@ import { useMap, useMaps, MapMod, fmtCount } from '../hooks/useMaps';
 import { PageShell } from '../components/Layout';
 import { ChevronLeft, ArrowRight, Flame, X } from 'lucide-react';
 import { useState, useEffect, useMemo } from 'react';
-import { areAdsEnabled, injectDownloadPopunder } from '../lib/ads-control';
+import { areAdsEnabled } from '../lib/ads-control';
 
 function SafeImage({ src, alt, className }: { src: string; alt: string; className?: string }) {
   return <img src={src} alt={alt} referrerPolicy="no-referrer" className={className} />;
@@ -80,7 +80,6 @@ export default function MapDownload() {
   useEffect(() => {
     if (map) {
       document.title = `Step 2: Processing ${map.name} | Plazzu Gaming`;
-      injectDownloadPopunder();
     }
   }, [map]);
 

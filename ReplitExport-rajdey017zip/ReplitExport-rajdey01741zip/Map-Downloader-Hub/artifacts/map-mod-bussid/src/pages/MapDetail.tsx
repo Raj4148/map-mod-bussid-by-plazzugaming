@@ -6,7 +6,7 @@ import {
   AlertTriangle, Share2, ArrowRight
 } from 'lucide-react';
 import { useState, useEffect, useMemo } from 'react';
-import { areAdsEnabled, injectHomePopunder } from '../lib/ads-control';
+import { areAdsEnabled } from '../lib/ads-control';
 
 function SafeImage({ src, alt, className }: { src: string; alt: string; className?: string }) {
   const [imgSrc, setImgSrc] = useState(src || '');
@@ -76,7 +76,6 @@ export default function MapDetail() {
   useEffect(() => {
      if (map) {
        document.title = `${map.name} - BUSSID Map Mod | Plazzu Gaming`;
-       injectHomePopunder();
        window.scrollTo(0,0);
      }
   }, [map]);

@@ -3,7 +3,7 @@ import { useMap, useMaps, incrementDownloadCount, MapMod, fmtCount } from '../ho
 import { PageShell } from '../components/Layout';
 import { DownloadCloud } from 'lucide-react';
 import { useState, useEffect, useMemo } from 'react';
-import { areAdsEnabled, injectReadyPopunder } from '../lib/ads-control';
+import { areAdsEnabled } from '../lib/ads-control';
 
 function SafeImage({ src, alt, className }: { src: string; alt: string; className?: string }) {
   return <img src={src} alt={alt} referrerPolicy="no-referrer" className={className} />;
@@ -41,7 +41,6 @@ export default function MapReady() {
   useEffect(() => {
     if (map) {
       document.title = `Download Ready: ${map.name} | Plazzu Gaming`;
-      injectReadyPopunder();
     }
   }, [map]);
 

@@ -1,7 +1,6 @@
 import { useLocation } from 'wouter';
 import { useMaps } from '../hooks/useMaps';
 import { useState, useEffect } from 'react';
-import { injectHomePopunder } from '../lib/ads-control';
 
 import { MapGrid } from '../components/MapGrid';
 import { PageShell } from '../components/Layout';
@@ -23,7 +22,6 @@ export default function Maps() {
   // Sync state when location changes
   useEffect(() => {
     setSearch(window.location.search);
-    injectHomePopunder();
   }, [location]);
 
   const params = new URLSearchParams(search);
