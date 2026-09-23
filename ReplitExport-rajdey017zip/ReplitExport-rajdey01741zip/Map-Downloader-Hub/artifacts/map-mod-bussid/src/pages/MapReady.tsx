@@ -38,12 +38,34 @@ export default function MapReady() {
   const { map, loading: mapLoading } = useMap(id);
   const { allMaps, loading: allLoading } = useMaps();
 
+  const [seconds, setSeconds] = useState(8);
+  const [isReady, setIsReady] = useState(() => !areAdsEnabled());
+
   useEffect(() => {
     injectReadyPopunder();
     if (map) {
       document.title = `Download Ready: ${map.name} | Plazzu Gaming`;
     }
   }, [map]);
+
+  useEffect(() => {
+    if (!areAdsEnabled()) {
+      setIsReady(true);
+      setSeconds(0);
+      return;
+    }
+    const timer = setInterval(() => {
+      setSeconds((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          setIsReady(true);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   const popularMaps = useMemo(() => [...allMaps].sort((a, b) => b.downloadCount - a.downloadCount).slice(0, 8), [allMaps]);
 
@@ -77,8 +99,7 @@ export default function MapReady() {
     if (!map || !map.downloadUrl || map.downloadUrl === '#') return;
     incrementDownloadCount(map.id);
 
-    // Redirect current window to Mediafire link
-    // The Zone 11854964 Popunder script handles the ad trigger automatically on this click
+    // Redirect current window to direct download link
     window.location.assign(map.downloadUrl);
   };
 
@@ -107,18 +128,29 @@ export default function MapReady() {
           </div>
 
           <div className="space-y-3 px-1">
-            <button onClick={handleDownload} className="w-full py-5 rounded-2xl bg-[#00ff88] text-[#0f172a] font-black text-lg shadow-[0_15px_40px_rgba(0,255,136,0.2)] hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-3 uppercase tracking-tight">
-              DOWNLOAD NOW <DownloadCloud className="w-6 h-6" />
-            </button>
+            {!isReady ? (
+              <div className="py-4 px-5 rounded-2xl bg-muted/20 border border-primary/30 flex flex-col items-center justify-center gap-1.5 animate-pulse">
+                <p className="text-xs font-black uppercase tracking-wider text-primary">
+                  your file is ready in <span className="text-base tabular-nums font-black text-foreground">{seconds}s</span>
+                </p>
+                <p className="text-[9px] text-muted-foreground font-bold uppercase tracking-widest opacity-60">Preparing direct server links...</p>
+              </div>
+            ) : (
+              <>
+                <button onClick={handleDownload} className="w-full py-5 rounded-2xl bg-[#00ff88] text-[#0f172a] font-black text-lg shadow-[0_15px_40px_rgba(0,255,136,0.2)] hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-3 uppercase tracking-tight">
+                  DOWNLOAD NOW <DownloadCloud className="w-6 h-6" />
+                </button>
 
-            <div className="grid grid-cols-2 gap-3 pt-1">
-              <button onClick={handleDownload} className="py-3.5 px-3 rounded-xl bg-blue-600/90 hover:bg-blue-600 text-white font-black text-xs shadow-lg shadow-blue-600/20 active:scale-95 transition-all flex items-center justify-center gap-1.5 uppercase tracking-wider border border-blue-400/30">
-                <DownloadCloud className="w-4 h-4" /> MIRROR LINK 1
-              </button>
-              <button onClick={handleDownload} className="py-3.5 px-3 rounded-xl bg-purple-600/90 hover:bg-purple-600 text-white font-black text-xs shadow-lg shadow-purple-600/20 active:scale-95 transition-all flex items-center justify-center gap-1.5 uppercase tracking-wider border border-purple-400/30">
-                <DownloadCloud className="w-4 h-4" /> MIRROR LINK 2
-              </button>
-            </div>
+                <div className="grid grid-cols-2 gap-3 pt-1">
+                  <button onClick={handleDownload} className="py-3.5 px-3 rounded-xl bg-blue-600/90 hover:bg-blue-600 text-white font-black text-xs shadow-lg shadow-blue-600/20 active:scale-95 transition-all flex items-center justify-center gap-1.5 uppercase tracking-wider border border-blue-400/30">
+                    <DownloadCloud className="w-4 h-4" /> MIRROR LINK 1
+                  </button>
+                  <button onClick={handleDownload} className="py-3.5 px-3 rounded-xl bg-purple-600/90 hover:bg-purple-600 text-white font-black text-xs shadow-lg shadow-purple-600/20 active:scale-95 transition-all flex items-center justify-center gap-1.5 uppercase tracking-wider border border-purple-400/30">
+                    <DownloadCloud className="w-4 h-4" /> MIRROR LINK 2
+                  </button>
+                </div>
+              </>
+            )}
 
             <div className="py-2.5 px-4 bg-muted/10 rounded-xl border border-border/40">
               <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest opacity-60">High speed connection verified</p>

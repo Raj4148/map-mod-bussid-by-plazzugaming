@@ -86,7 +86,7 @@ export default function MapDetail() {
   const trendingMaps = useMemo(() => [...allMaps].sort((a, b) => b.downloadCount - a.downloadCount).slice(8, 16), [allMaps]);
 
   const [gmPhase, setGmPhase] = useState<'idle' | 'counting' | 'revealed'>('idle');
-  const [gmCountdown, setGmCountdown] = useState(15);
+  const [gmCountdown, setGmCountdown] = useState(10);
 
   useEffect(() => {
     if (gmPhase !== 'counting') return;
