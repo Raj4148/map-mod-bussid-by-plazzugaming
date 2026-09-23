@@ -5,6 +5,7 @@ import { MapGrid } from '../components/MapGrid';
 import { PageShell } from '../components/Layout';
 import { ChevronRight, MapPin, Trophy, Search, X } from 'lucide-react';
 import { useState, useEffect, useMemo } from 'react';
+import { injectHomePopunder } from '../lib/ads-control';
 
 /* ─── Category tiles ─── */
 const CATEGORIES = [
@@ -64,6 +65,7 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
+    injectHomePopunder();
     document.title = 'Plazzu Gaming - BUSSID Map Mod Download Hub';
     const metaDesc = document.querySelector('meta[name="description"]');
     if (metaDesc) {
@@ -75,19 +77,34 @@ export default function Home() {
     setLocation(id === 'all' ? '/maps' : `/maps?category=${id}`);
   };
 
-  // Filter maps by name, category, or description keywords
+  // Smart filter maps by name, category, or description keywords
   const filteredMaps = useMemo(() => {
     if (!searchQuery.trim()) return allMaps;
-    const q = searchQuery.toLowerCase().trim();
-    const keywords = q.split(/\s+/);
 
-    return allMaps.filter((map) => {
-      const name = map.name.toLowerCase();
-      const category = map.category.toLowerCase();
-      const description = map.description.toLowerCase();
+    const rawQuery = searchQuery.toLowerCase().trim();
+
+    // 1. Direct substring match on name or category
+    const exactMatches = allMaps.filter((m) =>
+      m.name.toLowerCase().includes(rawQuery) ||
+      m.category.toLowerCase().includes(rawQuery)
+    );
+
+    if (exactMatches.length > 0) return exactMatches;
+
+    // 2. Tokenized search — ignore generic site words like "map", "mod", "bussid" if combined with other words
+    const commonStopWords = new Set(['map', 'mods', 'mod', 'bussid', 'download', 'game', 'bus']);
+    const tokens = rawQuery.split(/\s+/).filter(t => t.length > 0);
+
+    const meaningfulTokens = tokens.filter(t => !commonStopWords.has(t));
+    const searchTokens = meaningfulTokens.length > 0 ? meaningfulTokens : tokens;
+
+    return allMaps.filter((m) => {
+      const name = m.name.toLowerCase();
+      const category = m.category.toLowerCase();
+      const description = m.description.toLowerCase();
       const combined = `${name} ${category} ${description}`;
 
-      return keywords.every((kw) => combined.includes(kw));
+      return searchTokens.some((token) => combined.includes(token));
     });
   }, [allMaps, searchQuery]);
 
