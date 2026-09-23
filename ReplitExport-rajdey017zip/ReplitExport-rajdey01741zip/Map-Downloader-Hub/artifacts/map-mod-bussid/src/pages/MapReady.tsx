@@ -1,7 +1,7 @@
 import { useRoute, Link } from 'wouter';
 import { useMap, useMaps, incrementDownloadCount, MapMod, fmtCount } from '../hooks/useMaps';
 import { PageShell } from '../components/Layout';
-import { DownloadCloud } from 'lucide-react';
+import { DownloadCloud, AlertTriangle } from 'lucide-react';
 import { useState, useEffect, useMemo } from 'react';
 import { areAdsEnabled } from '../lib/ads-control';
 
@@ -47,7 +47,30 @@ export default function MapReady() {
   const popularMaps = useMemo(() => [...allMaps].sort((a, b) => b.downloadCount - a.downloadCount).slice(0, 8), [allMaps]);
 
   if (mapLoading || allLoading) return <PageShell><div className="p-8 text-center uppercase font-black tracking-widest">Verifying Connection...</div></PageShell>;
-  if (!map) return <PageShell><div className="p-8 text-center font-black">Link Expired</div></PageShell>;
+  if (!map) {
+    return (
+      <PageShell>
+        <div className="px-4 py-12 text-center max-w-md mx-auto space-y-6">
+          <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto border border-primary/20">
+            <AlertTriangle className="w-8 h-8 text-primary" />
+          </div>
+          <div className="space-y-2">
+            <h2 className="text-xl font-black uppercase tracking-tight">Download Link Expired or Invalid</h2>
+            <p className="text-xs text-muted-foreground font-semibold leading-relaxed">
+              This download link is no longer active. Please select a map mod to generate a new download link.
+            </p>
+          </div>
+          <a
+            href="/index.html"
+            className="inline-flex items-center justify-center gap-2 w-full py-4 bg-primary text-white font-black text-sm rounded-xl uppercase shadow-lg shadow-primary/20 active:scale-95 transition-transform"
+          >
+            Browse All Maps
+          </a>
+          <PopularFooterGrid maps={popularMaps.slice(0, 3)} onNavigate={(mid) => window.location.href = `/index.html?id=${mid}`} />
+        </div>
+      </PageShell>
+    );
+  }
 
   const handleDownload = () => {
     if (!map || !map.downloadUrl || map.downloadUrl === '#') return;
@@ -94,7 +117,7 @@ export default function MapReady() {
 
           <div className="pt-2 flex flex-col items-center gap-4 opacity-50">
              <div className="w-10 h-1 bg-border rounded-full" />
-             <PopularFooterGrid maps={popularMaps.filter(m => m.id !== id).slice(0, 3)} onNavigate={(mid) => window.location.assign(`/map/${mid}`)} />
+             <PopularFooterGrid maps={popularMaps.filter(m => m.id !== id).slice(0, 3)} onNavigate={(mid) => window.location.href = `/index.html?id=${mid}`} />
           </div>
         </div>
       </div>

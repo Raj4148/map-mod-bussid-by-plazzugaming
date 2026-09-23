@@ -39,10 +39,10 @@ function SuggestionsSection({ popularMaps, trendingMaps }: { popularMaps: MapMod
       </div>
       <div className="grid grid-cols-2 gap-3 px-1">
         {(activeTab === 'popular' ? popularMaps.slice(0, 6) : trendingMaps.slice(0, 6)).map(m => (
-          <Link key={m.id} href={`/map/${m.id}`} className="bg-card border border-border/50 rounded-xl overflow-hidden shadow-sm">
+          <a key={m.id} href={`/index.html?id=${m.id}`} className="bg-card border border-border/50 rounded-xl overflow-hidden shadow-sm">
             <div className="aspect-[16/10] overflow-hidden relative"><SafeImage src={m.thumbnail} alt={m.name} className="w-full h-full object-cover" /></div>
             <div className="p-2"><p className="text-foreground font-bold text-[10px] line-clamp-1">{m.name}</p><span className="text-[8px] text-muted-foreground">📥 {fmtCount(m.downloadCount)}</span></div>
-          </Link>
+          </a>
         ))}
       </div>
     </div>
@@ -95,8 +95,31 @@ export default function MapDetail() {
     return () => clearInterval(timer);
   }, [gmPhase]);
 
-  if (mapLoading || allLoading) return <PageShell><div className="p-8 text-center">Loading...</div></PageShell>;
-  if (!map) return <PageShell><div className="p-8 text-center text-xl font-bold">Map Not Found</div></PageShell>;
+  if (mapLoading || allLoading) return <PageShell><div className="p-8 text-center font-bold">Loading Map Details...</div></PageShell>;
+  if (!map) {
+    return (
+      <PageShell>
+        <div className="px-4 py-12 text-center max-w-md mx-auto space-y-6">
+          <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto border border-primary/20">
+            <AlertTriangle className="w-8 h-8 text-primary" />
+          </div>
+          <div className="space-y-2">
+            <h2 className="text-xl font-black uppercase tracking-tight">Map Mod Not Found</h2>
+            <p className="text-xs text-muted-foreground font-semibold leading-relaxed">
+              The requested map mod could not be located. It may have been renamed or updated.
+            </p>
+          </div>
+          <a
+            href="/index.html"
+            className="inline-flex items-center justify-center gap-2 w-full py-4 bg-primary text-white font-black text-sm rounded-xl uppercase shadow-lg shadow-primary/20 active:scale-95 transition-transform"
+          >
+            Browse All Maps
+          </a>
+          <SuggestionsSection popularMaps={popularMaps} trendingMaps={trendingMaps} />
+        </div>
+      </PageShell>
+    );
+  }
 
   return (
     <PageShell>
@@ -155,7 +178,7 @@ export default function MapDetail() {
                   const cardMap = newestMaps[cardsPlaced];
                   if (cardMap) {
                     cardsPlaced++;
-                    elements.push(<InlineDownloadCard key={`inline-card-${idx}`} map={cardMap} onClick={() => window.location.assign(`/map/${cardMap.id}`)} />);
+                    elements.push(<InlineDownloadCard key={`inline-card-${idx}`} map={cardMap} onClick={() => window.location.href = `/index.html?id=${cardMap.id}`} />);
                   }
                 }
               });
@@ -165,7 +188,7 @@ export default function MapDetail() {
                 const cardMap = newestMaps[cardsPlaced];
                 if (cardMap) {
                   cardsPlaced++;
-                  elements.push(<InlineDownloadCard key={`extra-card-${cardsPlaced}`} map={cardMap} onClick={() => window.location.assign(`/map/${cardMap.id}`)} />);
+                  elements.push(<InlineDownloadCard key={`extra-card-${cardsPlaced}`} map={cardMap} onClick={() => window.location.href = `/index.html?id=${cardMap.id}`} />);
                 } else {
                   break;
                 }
@@ -181,7 +204,7 @@ export default function MapDetail() {
         {/* Phase 2: Next Step (Moved to Bottom) */}
         {gmPhase === 'revealed' && (
            <div className="pt-4 pb-12">
-              <button onClick={() => window.location.href = `download.html?id=${map.id}`} className="w-full py-5 rounded-2xl bg-primary text-white font-black text-xl flex items-center justify-center gap-2 shadow-2xl shadow-primary/30 active:scale-95 transition-all">
+              <button onClick={() => window.location.href = `/download.html?id=${map.id}`} className="w-full py-5 rounded-2xl bg-primary text-white font-black text-xl flex items-center justify-center gap-2 shadow-2xl shadow-primary/30 active:scale-95 transition-all">
                 NEXT STEP <ArrowRight className="w-6 h-6" />
               </button>
               <p className="text-[9px] text-center text-muted-foreground mt-4 uppercase font-black tracking-[0.2em] opacity-40">Final security check ahead</p>

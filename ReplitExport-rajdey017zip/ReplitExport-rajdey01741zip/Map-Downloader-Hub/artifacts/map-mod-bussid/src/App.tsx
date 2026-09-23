@@ -41,13 +41,18 @@ function Router() {
         <Route path="/index.html">
           {queryId ? <MapDetail /> : <Home />}
         </Route>
+        <Route path="/map/index.html">
+          {queryId ? <MapDetail /> : <Home />}
+        </Route>
         <Route path="/maps" component={Maps} />
         <Route path="/community" component={Community} />
         <Route path="/map/:id" component={MapDetail} />
         <Route path="/download/:id" component={MapDownload} />
         <Route path="/download.html" component={MapDownload} />
+        <Route path="/map/download.html" component={MapDownload} />
         <Route path="/ready/:id" component={MapReady} />
         <Route path="/ready.html" component={MapReady} />
+        <Route path="/map/ready.html" component={MapReady} />
         <Route path="/settings" component={Settings} />
         <Route path="/raju" component={SafeMode} />
         <Route path="/sitemap.xml" component={Sitemap} />

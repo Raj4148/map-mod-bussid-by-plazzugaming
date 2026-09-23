@@ -29,7 +29,7 @@ function FeaturedCard({ map }: { map: Parameters<typeof getMapBadge>[0] }) {
 
   return (
     <a
-      href={`index.html?id=${map.id}`}
+      href={`/index.html?id=${map.id}`}
       className="flex-shrink-0 relative rounded-xl overflow-hidden block bg-muted"
       style={{ width: 148, aspectRatio: '4/3' }}
     >

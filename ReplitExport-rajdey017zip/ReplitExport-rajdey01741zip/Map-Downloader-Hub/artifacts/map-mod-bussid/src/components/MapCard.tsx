@@ -61,7 +61,7 @@ export function MapCard({ map, showNew = true }: MapCardProps) {
   return (
     <div className="relative group">
       <a
-        href={`index.html?id=${map.id}`}
+        href={`/index.html?id=${map.id}`}
         className="block relative rounded-2xl overflow-hidden bg-muted border border-border/50 shadow-sm active:scale-95 transition-all"
         style={{ aspectRatio: '1.2' }}
       >

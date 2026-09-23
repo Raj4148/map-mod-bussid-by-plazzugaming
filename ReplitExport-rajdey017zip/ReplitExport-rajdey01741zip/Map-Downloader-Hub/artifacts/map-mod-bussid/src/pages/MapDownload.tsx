@@ -1,7 +1,7 @@
 import { useRoute, Link } from 'wouter';
 import { useMap, useMaps, MapMod, fmtCount } from '../hooks/useMaps';
 import { PageShell } from '../components/Layout';
-import { ChevronLeft, ArrowRight, Flame, X } from 'lucide-react';
+import { ChevronLeft, ArrowRight, Flame, X, AlertTriangle } from 'lucide-react';
 import { useState, useEffect, useMemo } from 'react';
 import { areAdsEnabled } from '../lib/ads-control';
 
@@ -19,10 +19,10 @@ function SuggestionsSection({ popularMaps, trendingMaps }: { popularMaps: MapMod
       </div>
       <div className="grid grid-cols-2 gap-3 px-1">
         {(activeTab === 'popular' ? popularMaps.slice(0, 6) : trendingMaps.slice(0, 6)).map(m => (
-          <Link key={m.id} href={`/map/${m.id}`} className="bg-card border border-border/50 rounded-xl overflow-hidden">
+          <a key={m.id} href={`/index.html?id=${m.id}`} className="bg-card border border-border/50 rounded-xl overflow-hidden">
             <div className="aspect-[16/10] overflow-hidden relative"><SafeImage src={m.thumbnail} alt={m.name} className="w-full h-full object-cover" /></div>
             <div className="p-2"><p className="text-foreground font-bold text-[10px] line-clamp-1">{m.name}</p></div>
-          </Link>
+          </a>
         ))}
       </div>
     </div>
@@ -86,12 +86,35 @@ export default function MapDownload() {
   const popularMaps = useMemo(() => [...allMaps].sort((a, b) => b.downloadCount - a.downloadCount).slice(0, 8), [allMaps]);
   const trendingMaps = useMemo(() => [...allMaps].sort((a, b) => b.downloadCount - a.downloadCount).slice(8, 16), [allMaps]);
 
-  if (mapLoading || allLoading) return <PageShell><div className="p-8 text-center">Loading...</div></PageShell>;
-  if (!map) return <PageShell><div className="p-8 text-center">Map Not Found</div></PageShell>;
+  if (mapLoading || allLoading) return <PageShell><div className="p-8 text-center font-bold">Verifying Download Request...</div></PageShell>;
+  if (!map) {
+    return (
+      <PageShell>
+        <div className="px-4 py-12 text-center max-w-md mx-auto space-y-6">
+          <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto border border-primary/20">
+            <AlertTriangle className="w-8 h-8 text-primary" />
+          </div>
+          <div className="space-y-2">
+            <h2 className="text-xl font-black uppercase tracking-tight">Map Download Link Not Found</h2>
+            <p className="text-xs text-muted-foreground font-semibold leading-relaxed">
+              The requested map download link could not be located. Please select a map mod from the catalog below.
+            </p>
+          </div>
+          <a
+            href="/index.html"
+            className="inline-flex items-center justify-center gap-2 w-full py-4 bg-primary text-white font-black text-sm rounded-xl uppercase shadow-lg shadow-primary/20 active:scale-95 transition-transform"
+          >
+            Browse All Maps
+          </a>
+          <SuggestionsSection popularMaps={popularMaps} trendingMaps={trendingMaps} />
+        </div>
+      </PageShell>
+    );
+  }
 
   return (
     <PageShell>
-      {showAdOverlay && <AdOverlay onComplete={() => window.location.href = `ready.html?id=${map.id}`} />}
+      {showAdOverlay && <AdOverlay onComplete={() => window.location.href = `/ready.html?id=${map.id}`} />}
       <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-md border-b border-border px-4 py-2.5">
         <h1 className="text-foreground font-black text-[12px] uppercase text-center tracking-tighter line-clamp-1">Step 2: {map.name}</h1>
       </div>

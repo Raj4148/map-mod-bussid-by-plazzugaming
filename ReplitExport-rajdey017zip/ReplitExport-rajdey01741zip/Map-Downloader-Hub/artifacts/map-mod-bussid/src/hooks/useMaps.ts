@@ -363,7 +363,49 @@ export function useFeaturedMaps() {
 /* ─── Single map by id ─── */
 export function useMap(id: string) {
   const { allMaps, loading, error } = useMaps();
-  const map = useMemo(() => allMaps.find((m) => m.id === id) ?? null, [allMaps, id]);
+  const map = useMemo(() => {
+    if (!id || typeof id !== 'string') return null;
+
+    let cleanId = '';
+    try {
+      cleanId = decodeURIComponent(id).trim();
+    } catch {
+      cleanId = id.trim();
+    }
+
+    if (!cleanId) return null;
+    const lowerId = cleanId.toLowerCase();
+
+    // 1. Exact match on Firestore doc id
+    let found = allMaps.find((m) => m.id === cleanId);
+    if (found) return found;
+
+    // 2. Case-insensitive match on doc id
+    found = allMaps.find((m) => m.id.toLowerCase() === lowerId);
+    if (found) return found;
+
+    // 3. Match by name-slug or lowercased name
+    found = allMaps.find((m) => {
+      const nameLower = m.name.toLowerCase();
+      const nameSlug = nameLower.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+      const lowerSlug = lowerId.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+      return nameLower === lowerId || (nameSlug !== '' && nameSlug === lowerSlug);
+    });
+    if (found) return found;
+
+    // 4. Fallback to mock maps
+    found = mockMaps.find((m) => {
+      const mockIdLower = m.id.toLowerCase();
+      const mockNameLower = m.name.toLowerCase();
+      const mockSlug = mockNameLower.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+      const lowerSlug = lowerId.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+      return m.id === cleanId || mockIdLower === lowerId || mockNameLower === lowerId || (mockSlug !== '' && mockSlug === lowerSlug);
+    });
+    if (found) return found;
+
+    return null;
+  }, [allMaps, id]);
+
   return { map, loading, error };
 }
 
