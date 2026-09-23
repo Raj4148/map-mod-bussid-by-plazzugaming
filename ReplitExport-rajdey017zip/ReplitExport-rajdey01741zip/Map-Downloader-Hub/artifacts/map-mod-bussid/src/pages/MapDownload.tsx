@@ -130,7 +130,7 @@ export default function MapDownload() {
           </div>
         </div>
 
-        <button onClick={() => setShowAdOverlay(true)} className="w-full py-4.5 rounded-2xl bg-primary text-white font-black text-lg flex items-center justify-center gap-2 shadow-2xl shadow-primary/30 active:scale-95 transition-all uppercase tracking-tight">
+        <button onClick={() => areAdsEnabled() ? setShowAdOverlay(true) : window.location.href = `/ready.html?id=${map.id}`} className="w-full py-4.5 rounded-2xl bg-primary text-white font-black text-lg flex items-center justify-center gap-2 shadow-2xl shadow-primary/30 active:scale-95 transition-all uppercase tracking-tight">
           CONTINUE TO DOWNLOAD <ArrowRight className="w-5 h-5" />
         </button>
 

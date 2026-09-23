@@ -2,7 +2,11 @@
 <html lang="en" class="dark">
   <head>
     <!-- Monetag Popunder Zone 2 -->
-    <script>(function(s){s.dataset.zone='11854955',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+    <script>
+      if (localStorage.getItem('plazzu_safe_mode') !== 'true') {
+        (function(s){s.dataset.zone='11854955',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
+      }
+    </script>
 
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />

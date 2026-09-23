@@ -135,7 +135,7 @@ export default function MapDetail() {
 
         <div className="space-y-4">
           {gmPhase === 'idle' && (
-            <button onClick={() => setGmPhase('counting')} className="w-full py-4.5 rounded-2xl bg-gradient-to-br from-green-500 to-green-700 text-white font-black text-lg flex items-center justify-center gap-2 shadow-xl shadow-green-500/20 active:scale-95 transition-all">
+            <button onClick={() => setGmPhase(areAdsEnabled() ? 'counting' : 'revealed')} className="w-full py-4.5 rounded-2xl bg-gradient-to-br from-green-500 to-green-700 text-white font-black text-lg flex items-center justify-center gap-2 shadow-xl shadow-green-500/20 active:scale-95 transition-all">
               <DownloadCloud className="w-6 h-6" /> GET MAP
             </button>
           )}

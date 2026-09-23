@@ -47,10 +47,22 @@ export function BottomNav() {
   );
 }
 
+import { areAdsEnabled } from '../lib/ads-control';
+
 /* ─── Page wrapper with bottom nav spacing ─── */
 export function PageShell({ children }: { children: React.ReactNode }) {
+  const safeMode = !areAdsEnabled();
+
   return (
     <>
+      {safeMode && (
+        <div className="bg-green-600 text-white text-[11px] font-black text-center py-1.5 px-3 flex items-center justify-center gap-2 shadow-sm sticky top-0 z-[100]">
+          <span>🛡️ SAFE MODE ACTIVE — Ads & Timers Disabled</span>
+          <Link href="/raju" className="underline bg-black/20 px-2 py-0.5 rounded text-[10px] hover:bg-black/30">
+            Manage
+          </Link>
+        </div>
+      )}
       <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-background pb-20 transition-colors">
         {children}
       </div>
