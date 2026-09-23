@@ -1,7 +1,7 @@
 import { useRoute, Link } from 'wouter';
 import { useMap, useMaps, MapMod, fmtCount } from '../hooks/useMaps';
 import { PageShell } from '../components/Layout';
-import { ChevronLeft, ArrowRight, Flame, X, AlertTriangle } from 'lucide-react';
+import { ChevronLeft, ArrowRight, Flame, AlertTriangle } from 'lucide-react';
 import { useState, useEffect, useMemo } from 'react';
 import { areAdsEnabled, injectDownloadPopunder } from '../lib/ads-control';
 
@@ -29,53 +29,15 @@ function SuggestionsSection({ popularMaps, trendingMaps }: { popularMaps: MapMod
   );
 }
 
-function AdOverlay({ onComplete }: { onComplete: () => void }) {
-  const [seconds, setSeconds] = useState(15);
-  const [isReady, setIsReady] = useState(false);
-  useEffect(() => {
-    const timer = setInterval(() => { setSeconds((p) => { if (p <= 1) { clearInterval(timer); setIsReady(true); return 0; } return p - 1; }); }, 1000);
-    return () => clearInterval(timer);
-  }, []);
-
-  return (
-    <div className="fixed inset-0 z-[200] bg-background/95 backdrop-blur-2xl flex flex-col items-center justify-center p-3 animate-in fade-in duration-500">
-      <div className="absolute top-0 left-0 right-0 p-3.5 border-b border-border bg-card/50 backdrop-blur-md flex justify-between items-center">
-        <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Sponsored Ad</span>
-        {!isReady ? (
-          <div className="text-[10px] font-black text-foreground bg-muted/80 px-3 py-1.5 rounded-lg border border-border/50">
-            WAIT <span className="text-primary tabular-nums">{seconds}s</span>
-          </div>
-        ) : (
-          <button onClick={onComplete} className="flex items-center gap-1.5 text-[10px] font-black bg-primary text-white px-4 py-2 rounded-lg animate-pulse shadow-lg shadow-primary/20">
-            SKIP & CONTINUE <X className="w-3.5 h-3.5" />
-          </button>
-        )}
-      </div>
-      <div className="w-full max-w-xs space-y-6 text-center mt-10">
-        <div className="space-y-1">
-          <h2 className="text-xl font-black tracking-tighter uppercase">Link Generating...</h2>
-          <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider opacity-60">Please wait for the check</p>
-        </div>
-        <div className="relative aspect-[4/5] bg-card border border-border rounded-[2rem] overflow-hidden shadow-2xl scale-95">
-          <img src="/cat-other.jpg" alt="Sponsor" className="w-full h-full object-cover opacity-90" />
-          <div className="absolute inset-0 z-20 flex flex-col items-center justify-end p-8 text-white space-y-4 bg-gradient-to-t from-black/80 via-transparent to-transparent">
-             <div className="w-16 h-16 bg-white/10 backdrop-blur-xl rounded-2xl flex items-center justify-center border border-white/20 shadow-xl"><Flame className="w-8 h-8 text-orange-500" /></div>
-             <div className="w-full py-3.5 bg-red-600 font-black text-[11px] rounded-xl uppercase tracking-widest shadow-xl">download premium maps</div>
-          </div>
-        </div>
-        <p className="text-[9px] text-muted-foreground font-black tracking-widest uppercase opacity-40">Tap overlay to unlock speed</p>
-      </div>
-    </div>
-  );
-}
-
 export default function MapDownload() {
   const [, params] = useRoute('/download/:id');
   const queryId = new URLSearchParams(window.location.search).get('id');
   const id = params?.id || queryId || '';
   const { map, loading: mapLoading } = useMap(id);
   const { allMaps, loading: allLoading } = useMaps();
-  const [showAdOverlay, setShowAdOverlay] = useState(false);
+
+  const [seconds, setSeconds] = useState(15);
+  const [isReady, setIsReady] = useState(() => !areAdsEnabled());
 
   useEffect(() => {
     injectDownloadPopunder();
@@ -83,6 +45,25 @@ export default function MapDownload() {
       document.title = `Step 2: Processing ${map.name} | Plazzu Gaming`;
     }
   }, [map]);
+
+  useEffect(() => {
+    if (!areAdsEnabled()) {
+      setIsReady(true);
+      setSeconds(0);
+      return;
+    }
+    const timer = setInterval(() => {
+      setSeconds((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          setIsReady(true);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   const popularMaps = useMemo(() => [...allMaps].sort((a, b) => b.downloadCount - a.downloadCount).slice(0, 8), [allMaps]);
   const trendingMaps = useMemo(() => [...allMaps].sort((a, b) => b.downloadCount - a.downloadCount).slice(8, 16), [allMaps]);
@@ -113,30 +94,62 @@ export default function MapDownload() {
     );
   }
 
+  const handleContinue = () => {
+    window.location.href = `/ready.html?id=${map.id}`;
+  };
+
   return (
     <PageShell>
-      {showAdOverlay && <AdOverlay onComplete={() => window.location.href = `/ready.html?id=${map.id}`} />}
       <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-md border-b border-border px-4 py-2.5">
         <h1 className="text-foreground font-black text-[12px] uppercase text-center tracking-tighter line-clamp-1">Step 2: {map.name}</h1>
       </div>
 
-      <div className="px-3 pt-6 pb-20 flex flex-col items-center text-center space-y-8">
-        <div className="bg-card border border-border/50 rounded-3xl p-7 flex flex-col items-center gap-4 text-center shadow-sm w-full">
-          <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center">
-            <ArrowRight className="w-7 h-7 text-primary animate-pulse" />
+      <div className="px-3 pt-6 pb-20 flex flex-col items-center text-center space-y-6">
+        <div className="bg-card border border-border/50 rounded-3xl p-6 flex flex-col items-center gap-3 text-center shadow-sm w-full">
+          <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center">
+            <ArrowRight className="w-6 h-6 text-primary animate-pulse" />
           </div>
           <div className="space-y-1">
-            <h3 className="text-foreground font-black text-[15px] uppercase tracking-tight">Security Check Required</h3>
-            <p className="text-muted-foreground text-[10px] font-bold leading-relaxed uppercase opacity-60">Generate your high-speed link by tapping the button below.</p>
+            <h3 className="text-foreground font-black text-[14px] uppercase tracking-tight">Security Check Required</h3>
+            <p className="text-muted-foreground text-[10px] font-bold leading-relaxed uppercase opacity-60">Generate your high-speed link below.</p>
           </div>
         </div>
 
-        <button onClick={() => areAdsEnabled() ? setShowAdOverlay(true) : window.location.href = `/ready.html?id=${map.id}`} className="w-full py-4.5 rounded-2xl bg-primary text-white font-black text-lg flex items-center justify-center gap-2 shadow-2xl shadow-primary/30 active:scale-95 transition-all uppercase tracking-tight">
-          CONTINUE TO DOWNLOAD <ArrowRight className="w-5 h-5" />
-        </button>
+        {/* Sponsor Banner Card with text "download premium maps" */}
+        <div className="w-full bg-card border border-border/60 rounded-3xl overflow-hidden shadow-lg relative group">
+          <div className="aspect-[16/9] relative">
+            <img src="/cat-other.jpg" alt="Sponsor" className="w-full h-full object-cover opacity-90" />
+            <div className="absolute inset-0 z-20 flex flex-col items-center justify-end p-4 text-white space-y-2 bg-gradient-to-t from-black/85 via-transparent to-transparent">
+              <div className="w-10 h-10 bg-white/10 backdrop-blur-xl rounded-xl flex items-center justify-center border border-white/20 shadow-xl">
+                <Flame className="w-5 h-5 text-orange-500" />
+              </div>
+              <div className="w-full py-2.5 bg-red-600 font-black text-[10px] rounded-xl uppercase tracking-widest shadow-xl text-center">
+                download premium maps
+              </div>
+            </div>
+          </div>
+        </div>
 
-        <div className="text-left bg-muted/10 rounded-2xl p-5 border border-border/40">
-          <h4 className="text-foreground font-black text-[9px] uppercase tracking-[0.2em] mb-3 opacity-40">Info: Why show ads?</h4>
+        {/* 15-Second Auto Timer / Continue Button */}
+        {!isReady ? (
+          <div className="w-full py-5 px-6 rounded-2xl bg-muted/20 border border-primary/40 flex flex-col items-center justify-center gap-2 animate-pulse shadow-inner">
+            <div className="flex items-center gap-2">
+              <span className="text-3xl font-black text-primary tabular-nums">{seconds}s</span>
+            </div>
+            <p className="text-[11px] font-black text-foreground uppercase tracking-wider">Generating Secure Download Link...</p>
+            <p className="text-[9px] text-muted-foreground font-bold uppercase tracking-widest opacity-60">Please wait for verification</p>
+          </div>
+        ) : (
+          <button
+            onClick={handleContinue}
+            className="w-full py-5 rounded-2xl bg-primary text-white font-black text-lg flex items-center justify-center gap-2 shadow-2xl shadow-primary/30 active:scale-95 transition-all uppercase tracking-tight animate-bounce"
+          >
+            CONTINUE TO DOWNLOAD <ArrowRight className="w-6 h-6" />
+          </button>
+        )}
+
+        <div className="text-left bg-muted/10 rounded-2xl p-5 border border-border/40 w-full">
+          <h4 className="text-foreground font-black text-[9px] uppercase tracking-[0.2em] mb-2 opacity-40">Info: Why show ads?</h4>
           <div className="text-muted-foreground text-[10px] leading-relaxed font-bold uppercase opacity-60">
             <p>Our server costs are covered by sponsors. This allows us to keep map downloads 100% free and fast for everyone. Thank you for your support!</p>
           </div>
