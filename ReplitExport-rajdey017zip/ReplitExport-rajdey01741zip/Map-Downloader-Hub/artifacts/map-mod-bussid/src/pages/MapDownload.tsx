@@ -60,7 +60,7 @@ function AdOverlay({ onComplete }: { onComplete: () => void }) {
           <img src="/cat-other.jpg" alt="Sponsor" className="w-full h-full object-cover opacity-90" />
           <div className="absolute inset-0 z-20 flex flex-col items-center justify-end p-8 text-white space-y-4 bg-gradient-to-t from-black/80 via-transparent to-transparent">
              <div className="w-16 h-16 bg-white/10 backdrop-blur-xl rounded-2xl flex items-center justify-center border border-white/20 shadow-xl"><Flame className="w-8 h-8 text-orange-500" /></div>
-             <div className="w-full py-3.5 bg-red-600 font-black text-[11px] rounded-xl uppercase tracking-widest shadow-xl">Support our work</div>
+             <div className="w-full py-3.5 bg-red-600 font-black text-[11px] rounded-xl uppercase tracking-widest shadow-xl">download premium maps</div>
           </div>
         </div>
         <p className="text-[9px] text-muted-foreground font-black tracking-widest uppercase opacity-40">Tap overlay to unlock speed</p>

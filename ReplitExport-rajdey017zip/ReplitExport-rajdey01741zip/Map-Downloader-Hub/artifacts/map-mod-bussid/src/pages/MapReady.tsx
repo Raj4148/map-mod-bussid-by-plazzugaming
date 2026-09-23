@@ -105,10 +105,19 @@ export default function MapReady() {
             </div>
           </div>
 
-          <div className="space-y-4 px-1">
+          <div className="space-y-3 px-1">
             <button onClick={handleDownload} className="w-full py-5 rounded-2xl bg-[#00ff88] text-[#0f172a] font-black text-lg shadow-[0_15px_40px_rgba(0,255,136,0.2)] hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-3 uppercase tracking-tight">
               DOWNLOAD NOW <DownloadCloud className="w-6 h-6" />
             </button>
+
+            <div className="grid grid-cols-2 gap-3 pt-1">
+              <button onClick={handleDownload} className="py-3.5 px-3 rounded-xl bg-blue-600/90 hover:bg-blue-600 text-white font-black text-xs shadow-lg shadow-blue-600/20 active:scale-95 transition-all flex items-center justify-center gap-1.5 uppercase tracking-wider border border-blue-400/30">
+                <DownloadCloud className="w-4 h-4" /> MIRROR LINK 1
+              </button>
+              <button onClick={handleDownload} className="py-3.5 px-3 rounded-xl bg-purple-600/90 hover:bg-purple-600 text-white font-black text-xs shadow-lg shadow-purple-600/20 active:scale-95 transition-all flex items-center justify-center gap-1.5 uppercase tracking-wider border border-purple-400/30">
+                <DownloadCloud className="w-4 h-4" /> MIRROR LINK 2
+              </button>
+            </div>
 
             <div className="py-2.5 px-4 bg-muted/10 rounded-xl border border-border/40">
               <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest opacity-60">High speed connection verified</p>

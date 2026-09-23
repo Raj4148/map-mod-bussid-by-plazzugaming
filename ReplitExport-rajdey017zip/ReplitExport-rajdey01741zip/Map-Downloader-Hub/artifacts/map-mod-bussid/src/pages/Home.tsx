@@ -3,9 +3,8 @@ import { useMaps, useTopMaps, fmtCount, getMapBadge, isMapNew } from '../hooks/u
 
 import { MapGrid } from '../components/MapGrid';
 import { PageShell } from '../components/Layout';
-import { DownloadCloud, ChevronRight, MapPin, Trophy } from 'lucide-react';
-import { useState, useEffect } from 'react';
-import { areAdsEnabled } from '../lib/ads-control';
+import { ChevronRight, MapPin, Trophy, Search, X } from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react';
 
 /* ─── Category tiles ─── */
 const CATEGORIES = [
@@ -62,6 +61,7 @@ export default function Home() {
   const { maps: allMaps, loading: allLoading } = useMaps(undefined, 'newest');
   const { maps: topMaps, loading: topLoading } = useTopMaps(6);
   const [, setLocation] = useLocation();
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     document.title = 'Plazzu Gaming - BUSSID Map Mod Download Hub';
@@ -75,117 +75,210 @@ export default function Home() {
     setLocation(id === 'all' ? '/maps' : `/maps?category=${id}`);
   };
 
+  // Filter maps by name, category, or description keywords
+  const filteredMaps = useMemo(() => {
+    if (!searchQuery.trim()) return allMaps;
+    const q = searchQuery.toLowerCase().trim();
+    const keywords = q.split(/\s+/);
+
+    return allMaps.filter((map) => {
+      const name = map.name.toLowerCase();
+      const category = map.category.toLowerCase();
+      const description = map.description.toLowerCase();
+      const combined = `${name} ${category} ${description}`;
+
+      return keywords.every((kw) => combined.includes(kw));
+    });
+  }, [allMaps, searchQuery]);
+
   return (
     <PageShell>
+      {/* ── Top Bar Search Header ── */}
+      <div className="bg-background/95 backdrop-blur-md border-b border-border/60 px-4 py-3 sticky top-0 z-40 space-y-2.5 shadow-sm">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-xl bg-primary/20 flex items-center justify-center border border-primary/30">
+              <span className="text-sm font-black text-primary">P</span>
+            </div>
+            <div>
+              <span className="font-black text-xs uppercase tracking-tight text-foreground block leading-tight">Plazzu Gaming</span>
+              <span className="text-[9px] text-muted-foreground font-bold uppercase tracking-widest block opacity-70">BUSSID Map Hub</span>
+            </div>
+          </div>
+          <Link
+            href="/maps"
+            className="text-[10px] font-black uppercase text-primary bg-primary/10 px-3 py-1.5 rounded-lg border border-primary/20 hover:bg-primary/20 transition-colors"
+          >
+            All Catalog
+          </Link>
+        </div>
+
+        {/* ── Search Input (Map name & keywords) ── */}
+        <div className="relative">
+          <Search className="w-4 h-4 text-muted-foreground absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search maps by name or keywords..."
+            className="w-full pl-10 pr-9 py-2 bg-card border border-border/80 rounded-xl text-xs font-semibold text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-primary transition-colors shadow-inner"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery('')}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+      </div>
+
       {/* ── Notice Bar ── */}
-      <div className="bg-yellow-400 text-black px-4 py-2 flex items-center gap-2 sticky top-0 z-40">
+      <div className="bg-yellow-400 text-black px-4 py-2 flex items-center gap-2">
         <span className="text-base">🔔</span>
         <p className="text-xs font-bold truncate">Notice: Daily 8:00 PM new map mod uploaded!</p>
       </div>
 
-      {/* ── Featured Maps (top 6 by download count) ── */}
-      <section className="mt-2">
-        <div className="px-4 flex items-center justify-between mb-3">
-          <h2 className="text-foreground font-bold text-lg flex items-center gap-2">
-            <Trophy className="w-5 h-5 text-yellow-500" />
-            Featured Maps
-          </h2>
-          <Link
-            href="/maps"
-            className="flex items-center gap-1 text-purple-400 text-xs font-semibold"
-          >
-            See all <ChevronRight className="w-3 h-3" />
-          </Link>
-        </div>
-
-        <div className="flex gap-3 overflow-x-auto pb-2 px-4" style={{ scrollbarWidth: 'none' }}>
-          {topLoading
-            ? Array(4).fill(0).map((_, i) => (
-                <div
-                  key={i}
-                  className="flex-shrink-0 rounded-xl bg-muted animate-pulse"
-                  style={{ width: 148, aspectRatio: '4/3' }}
-                />
-              ))
-            : topMaps.map((map) => <FeaturedCard key={map.id} map={map} />)
-          }
-        </div>
-      </section>
-
-      {/* ── Explore Categories ── */}
-      <section className="mt-5 px-4">
-        <h2 className="text-foreground font-bold text-lg mb-3">Explore Categories</h2>
-        <div className="flex gap-3 overflow-x-auto pb-2" style={{ scrollbarWidth: 'none' }}>
-          {CATEGORIES.map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => handleCategoryClick(cat.id)}
-              className="relative flex-shrink-0 rounded-xl overflow-hidden"
-              style={{ width: 130, height: 80 }}
-            >
-              <img src={cat.image} alt={cat.label} className="w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-black/50" />
-              <span className="absolute inset-0 flex items-center justify-center text-white font-bold text-sm text-center px-2 leading-tight">
-                {cat.label}
-              </span>
-            </button>
-          ))}
-        </div>
-      </section>
-
-      <section className="mt-6 px-4">
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-foreground font-bold text-lg">Latest Maps</h2>
-          <Link
-            href="/maps"
-            className="flex items-center gap-1 text-purple-400 text-xs font-semibold"
-          >
-            See all <ChevronRight className="w-3 h-3" />
-          </Link>
-        </div>
-
-        {allMaps.length === 0 && !allLoading ? (
-          <div className="py-16 text-center">
-            <MapPin className="w-12 h-12 text-muted-foreground mx-auto mb-3 opacity-40" />
-            <p className="text-muted-foreground text-sm font-medium">No maps yet</p>
-            <p className="text-muted-foreground/60 text-xs mt-1">
-              Check back at 8:00 PM for the daily drop!
-            </p>
+      {/* If search query is entered, display search results directly */}
+      {searchQuery.trim() ? (
+        <section className="mt-4 px-4 space-y-3">
+          <div className="flex items-center justify-between">
+            <h2 className="text-foreground font-bold text-sm uppercase tracking-tight">
+              Search Results for <span className="text-primary">"{searchQuery}"</span>
+            </h2>
+            <span className="text-[10px] font-bold text-muted-foreground uppercase">
+              {filteredMaps.length} map{filteredMaps.length === 1 ? '' : 's'} found
+            </span>
           </div>
-        ) : (
-          <MapGrid
-            maps={allMaps}
-            loading={allLoading}
-            skeletonCount={6}
-          />
-        )}
-      </section>
 
-      {/* ── SEO Description Section ── */}
-      <section className="mt-12 px-4 pb-8 border-t border-border/30 pt-8">
-        <h3 className="text-foreground/80 font-bold text-sm mb-4 tracking-tight">Welcome to plazzugaming (plazzu gaming)</h3>
-        <div className="text-muted-foreground text-[11px] leading-relaxed space-y-4">
-          <p>
-            Welcome to <strong>plazzugaming (plazzu gaming)</strong>, your ultimate destination for <strong>Bus simulator indonesia</strong>, <strong>bus simulator indonesia map</strong>, and the <strong>best map mod for bus simulator indonesia</strong>. Download the latest <strong>bangladeshi Map Mod For bus simulator indonesia</strong>, <strong>indian map for bus simulator indonesia</strong>, <strong>Nepali Map Mod For bus simulator indonesia</strong>, and authentic <strong>Indonesian map mod for bus simulator indonesia</strong>. We offer full support for <strong>mod map bussid 3.7</strong>, <strong>mod map bussid 3.7.1</strong>, <strong>mod map bussid</strong>, <strong>map mod bussid 3.7.1</strong>, <strong>map mod bussid 4.0</strong>, and <strong>new map mod for bus simulator indonesia</strong>. Upgrade your gameplay with premium <strong>graphics mod bussid</strong>, <strong>obb mod bussid</strong>, <strong>bussid obb</strong>, <strong>bussid bd obb</strong>, and custom <strong>bussid codename</strong>.
-          </p>
-          <p>
-            Get top-quality vehicle mods including <strong>bus mod bussid</strong>, <strong>mod bussid bus</strong>, <strong>bussid bus mod</strong>, <strong>mod bussid</strong>, <strong>bussid mod</strong>, <strong>bussid all bus mod</strong>, <strong>bussid car mod</strong>, <strong>car mod for bus simulator indonesia</strong>, <strong>truck mod for bus simulator indonesia</strong>, <strong>bussid ashok leyland truck mod</strong>, <strong>luxury bus mod for bus simulator indonesia</strong>, <strong>volvo bus mod for bus simulator indonesia</strong>, and <strong>b11r volvo bus mod bussid</strong>. We also provide <strong>bussid bike mod</strong>, <strong>bussid ambulance mod</strong>, <strong>ambulance mod bussid</strong>, <strong>apsrtc bus mod bussid</strong>, <strong>auto mod bussid</strong>, <strong>bussid ac bus mod</strong>, <strong>bussid bd bus mod</strong>, and <strong>basuri v3 bussid</strong>. Explore exciting locations with <strong>bussid bd map</strong>, <strong>bussid airport</strong>, <strong>bussid car</strong>, and features like <strong>bussid all bus unlock</strong>.
-          </p>
-          <p>
-            Whether you are looking for <strong>bus simulator indonesia mod apk</strong>, <strong>bus simulator indonesia skin</strong>, <strong>bus simulator indonesia download</strong>, <strong>bus simulator indonesia apk</strong>, <strong>bus simulator indonesia apk unlimited money</strong>, <strong>bus simulator indonesia apk download 2023</strong>, <strong>bus simulator indonesia apk + obb download</strong>, <strong>bussid apk 3.7.1</strong>, <strong>bussid apk 4.1.2</strong>, or <strong>bus simulator indonesia ambulance livery</strong>, we have it all covered! Stay updated with <strong>bussid</strong>, <strong>bussid new update</strong>, and top content on our <strong>bussid channel</strong>. Explore every <strong>map mod</strong> and <strong>bussid map mod</strong> seamlessly right here on <strong>plazzugaming</strong>.
-          </p>
-          <div className="pt-2 flex flex-wrap gap-2 text-[10px] font-bold text-primary/60">
-            <span>#mod_map_bussid</span>
-            <span>#bussimulatorindonesia</span>
-            <span>#bussid</span>
-            <span>#bussimulator</span>
-            <span>#modbussid</span>
-            <span>#modbussidterbaru</span>
-            <span>#map_mod_bussid</span>
-            <span>#plazzugaming</span>
-          </div>
-        </div>
-      </section>
+          {filteredMaps.length === 0 ? (
+            <div className="py-16 text-center bg-card rounded-2xl border border-border/50">
+              <MapPin className="w-12 h-12 text-muted-foreground mx-auto mb-3 opacity-40" />
+              <p className="text-foreground font-bold text-sm">No maps found matching "{searchQuery}"</p>
+              <p className="text-muted-foreground text-xs mt-1">Try searching with a different map name or keyword.</p>
+              <button
+                onClick={() => setSearchQuery('')}
+                className="mt-4 px-4 py-2 bg-primary text-white font-bold text-xs rounded-xl uppercase"
+              >
+                Clear Search
+              </button>
+            </div>
+          ) : (
+            <MapGrid
+              maps={filteredMaps}
+              loading={allLoading}
+              skeletonCount={6}
+            />
+          )}
+        </section>
+      ) : (
+        <>
+          {/* ── Featured Maps (top 6 by download count) ── */}
+          <section className="mt-2">
+            <div className="px-4 flex items-center justify-between mb-3">
+              <h2 className="text-foreground font-bold text-lg flex items-center gap-2">
+                <Trophy className="w-5 h-5 text-yellow-500" />
+                Featured Maps
+              </h2>
+              <Link
+                href="/maps"
+                className="flex items-center gap-1 text-purple-400 text-xs font-semibold"
+              >
+                See all <ChevronRight className="w-3 h-3" />
+              </Link>
+            </div>
+
+            <div className="flex gap-3 overflow-x-auto pb-2 px-4" style={{ scrollbarWidth: 'none' }}>
+              {topLoading
+                ? Array(4).fill(0).map((_, i) => (
+                    <div
+                      key={i}
+                      className="flex-shrink-0 rounded-xl bg-muted animate-pulse"
+                      style={{ width: 148, aspectRatio: '4/3' }}
+                    />
+                  ))
+                : topMaps.map((map) => <FeaturedCard key={map.id} map={map} />)
+              }
+            </div>
+          </section>
+
+          {/* ── Explore Categories ── */}
+          <section className="mt-5 px-4">
+            <h2 className="text-foreground font-bold text-lg mb-3">Explore Categories</h2>
+            <div className="flex gap-3 overflow-x-auto pb-2" style={{ scrollbarWidth: 'none' }}>
+              {CATEGORIES.map((cat) => (
+                <button
+                  key={cat.id}
+                  onClick={() => handleCategoryClick(cat.id)}
+                  className="relative flex-shrink-0 rounded-xl overflow-hidden"
+                  style={{ width: 130, height: 80 }}
+                >
+                  <img src={cat.image} alt={cat.label} className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-black/50" />
+                  <span className="absolute inset-0 flex items-center justify-center text-white font-bold text-sm text-center px-2 leading-tight">
+                    {cat.label}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </section>
+
+          <section className="mt-6 px-4">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-foreground font-bold text-lg">Latest Maps</h2>
+              <Link
+                href="/maps"
+                className="flex items-center gap-1 text-purple-400 text-xs font-semibold"
+              >
+                See all <ChevronRight className="w-3 h-3" />
+              </Link>
+            </div>
+
+            {allMaps.length === 0 && !allLoading ? (
+              <div className="py-16 text-center">
+                <MapPin className="w-12 h-12 text-muted-foreground mx-auto mb-3 opacity-40" />
+                <p className="text-muted-foreground text-sm font-medium">No maps yet</p>
+                <p className="text-muted-foreground/60 text-xs mt-1">
+                  Check back at 8:00 PM for the daily drop!
+                </p>
+              </div>
+            ) : (
+              <MapGrid
+                maps={allMaps}
+                loading={allLoading}
+                skeletonCount={6}
+              />
+            )}
+          </section>
+
+          {/* ── SEO Description Section ── */}
+          <section className="mt-12 px-4 pb-8 border-t border-border/30 pt-8">
+            <h3 className="text-foreground/80 font-bold text-sm mb-4 tracking-tight">Welcome to plazzugaming (plazzu gaming)</h3>
+            <div className="text-muted-foreground text-[11px] leading-relaxed space-y-4">
+              <p>
+                Welcome to <strong>plazzugaming (plazzu gaming)</strong>, your ultimate destination for <strong>Bus simulator indonesia</strong>, <strong>bus simulator indonesia map</strong>, and the <strong>best map mod for bus simulator indonesia</strong>. Download the latest <strong>bangladeshi Map Mod For bus simulator indonesia</strong>, <strong>indian map for bus simulator indonesia</strong>, <strong>Nepali Map Mod For bus simulator indonesia</strong>, and authentic <strong>Indonesian map mod for bus simulator indonesia</strong>. We offer full support for <strong>mod map bussid 3.7</strong>, <strong>mod map bussid 3.7.1</strong>, <strong>mod map bussid</strong>, <strong>map mod bussid 3.7.1</strong>, <strong>map mod bussid 4.0</strong>, and <strong>new map mod for bus simulator indonesia</strong>. Upgrade your gameplay with premium <strong>graphics mod bussid</strong>, <strong>obb mod bussid</strong>, <strong>bussid obb</strong>, <strong>bussid bd obb</strong>, and custom <strong>bussid codename</strong>.
+              </p>
+              <p>
+                Get top-quality vehicle mods including <strong>bus mod bussid</strong>, <strong>mod bussid bus</strong>, <strong>bussid bus mod</strong>, <strong>mod bussid</strong>, <strong>bussid mod</strong>, <strong>bussid all bus mod</strong>, <strong>bussid car mod</strong>, <strong>car mod for bus simulator indonesia</strong>, <strong>truck mod for bus simulator indonesia</strong>, <strong>bussid ashok leyland truck mod</strong>, <strong>luxury bus mod for bus simulator indonesia</strong>, <strong>volvo bus mod for bus simulator indonesia</strong>, and <strong>b11r volvo bus mod bussid</strong>. We also provide <strong>bussid bike mod</strong>, <strong>bussid ambulance mod</strong>, <strong>ambulance mod bussid</strong>, <strong>apsrtc bus mod bussid</strong>, <strong>auto mod bussid</strong>, <strong>bussid ac bus mod</strong>, <strong>bussid bd bus mod</strong>, and <strong>basuri v3 bussid</strong>. Explore exciting locations with <strong>bussid bd map</strong>, <strong>bussid airport</strong>, <strong>bussid car</strong>, and features like <strong>bussid all bus unlock</strong>.
+              </p>
+              <p>
+                Whether you are looking for <strong>bus simulator indonesia mod apk</strong>, <strong>bus simulator indonesia skin</strong>, <strong>bus simulator indonesia download</strong>, <strong>bus simulator indonesia apk</strong>, <strong>bus simulator indonesia apk unlimited money</strong>, <strong>bus simulator indonesia apk download 2023</strong>, <strong>bus simulator indonesia apk + obb download</strong>, <strong>bussid apk 3.7.1</strong>, <strong>bussid apk 4.1.2</strong>, or <strong>bus simulator indonesia ambulance livery</strong>, we have it all covered! Stay updated with <strong>bussid</strong>, <strong>bussid new update</strong>, and top content on our <strong>bussid channel</strong>. Explore every <strong>map mod</strong> and <strong>bussid map mod</strong> seamlessly right here on <strong>plazzugaming</strong>.
+              </p>
+              <div className="pt-2 flex flex-wrap gap-2 text-[10px] font-bold text-primary/60">
+                <span>#mod_map_bussid</span>
+                <span>#bussimulatorindonesia</span>
+                <span>#bussid</span>
+                <span>#bussimulator</span>
+                <span>#modbussid</span>
+                <span>#modbussidterbaru</span>
+                <span>#map_mod_bussid</span>
+                <span>#plazzugaming</span>
+              </div>
+            </div>
+          </section>
+        </>
+      )}
 
       {/* bottom padding so last card isn't hidden behind social bar */}
       <div className="h-16" />
