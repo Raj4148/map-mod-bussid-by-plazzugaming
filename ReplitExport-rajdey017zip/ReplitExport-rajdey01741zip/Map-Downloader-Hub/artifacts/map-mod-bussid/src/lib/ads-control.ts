@@ -29,7 +29,8 @@ export function refreshAdsForZone(zoneId: string): void {
   try {
     const existing = document.querySelector(`script[data-zone="${zoneId}"]`);
     if (existing) {
-      existing.remove();
+      // Script is already loaded and active for this zone
+      return;
     }
 
     const s = document.createElement('script');

@@ -88,21 +88,28 @@ export default function MapDetail() {
   const [gmPhase, setGmPhase] = useState<'idle' | 'counting' | 'revealed'>('idle');
   const [gmCountdown, setGmCountdown] = useState(10);
 
-  // Restore timer state if in-app browser reloaded page on ad trigger
+  // Auto-start or restore 10s timer when landing on Map Details page
   useEffect(() => {
     if (!map) return;
-    const storageKey = `map_time_${map.id}`;
-    const savedTime = sessionStorage.getItem(storageKey);
+    if (!areAdsEnabled()) {
+      setGmPhase('revealed');
+      return;
+    }
 
-    if (savedTime) {
-      const elapsed = Math.floor((Date.now() - Number(savedTime)) / 1000);
-      if (elapsed >= 10) {
-        setGmPhase('revealed');
-        setGmCountdown(0);
-      } else if (elapsed > 0) {
-        setGmPhase('counting');
-        setGmCountdown(10 - elapsed);
-      }
+    const storageKey = `map_time_${map.id}`;
+    let savedTime = sessionStorage.getItem(storageKey);
+    if (!savedTime) {
+      savedTime = String(Date.now());
+      sessionStorage.setItem(storageKey, savedTime);
+    }
+
+    const elapsed = Math.floor((Date.now() - Number(savedTime)) / 1000);
+    if (elapsed >= 10) {
+      setGmPhase('revealed');
+      setGmCountdown(0);
+    } else {
+      setGmPhase('counting');
+      setGmCountdown(10 - elapsed);
     }
   }, [map]);
 
@@ -113,18 +120,6 @@ export default function MapDetail() {
     }, 1000);
     return () => clearInterval(timer);
   }, [gmPhase]);
-
-  const handleStartGetMap = () => {
-    if (!areAdsEnabled()) {
-      setGmPhase('revealed');
-      return;
-    }
-    if (map) {
-      sessionStorage.setItem(`map_time_${map.id}`, String(Date.now()));
-    }
-    setGmPhase('counting');
-    setGmCountdown(10);
-  };
 
   if (mapLoading || allLoading) return <PageShell><div className="p-8 text-center font-bold">Loading Map Details...</div></PageShell>;
   if (!map) {
@@ -165,13 +160,7 @@ export default function MapDetail() {
         </div>
 
         <div className="space-y-4">
-          {gmPhase === 'idle' && (
-            <button onClick={handleStartGetMap} className="w-full py-4.5 rounded-2xl bg-gradient-to-br from-green-500 to-green-700 text-white font-black text-lg flex items-center justify-center gap-2 shadow-xl shadow-green-500/20 active:scale-95 transition-all">
-              <DownloadCloud className="w-6 h-6" /> GET MAP
-            </button>
-          )}
-
-          {gmPhase === 'counting' && (
+          {(gmPhase === 'idle' || gmPhase === 'counting') && (
             <div className="flex flex-col items-center gap-2 py-5 bg-muted/10 rounded-2xl border border-dashed border-border/60">
               <span className="text-4xl font-black text-primary tabular-nums">{gmCountdown}s</span>
               <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Preparing Secure Data...</p>
