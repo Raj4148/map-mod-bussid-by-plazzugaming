@@ -49,11 +49,30 @@ export default function MapReady() {
   }, [map]);
 
   useEffect(() => {
+    if (!map) return;
     if (!areAdsEnabled()) {
       setIsReady(true);
       setSeconds(0);
       return;
     }
+
+    const storageKey = `step3_time_${map.id}`;
+    let savedTime = sessionStorage.getItem(storageKey);
+    if (!savedTime) {
+      savedTime = String(Date.now());
+      sessionStorage.setItem(storageKey, savedTime);
+    }
+
+    const elapsed = Math.floor((Date.now() - Number(savedTime)) / 1000);
+    if (elapsed >= 8) {
+      setIsReady(true);
+      setSeconds(0);
+      return;
+    }
+
+    const initialRemaining = 8 - elapsed;
+    setSeconds(initialRemaining);
+
     const timer = setInterval(() => {
       setSeconds((prev) => {
         if (prev <= 1) {
@@ -64,8 +83,9 @@ export default function MapReady() {
         return prev - 1;
       });
     }, 1000);
+
     return () => clearInterval(timer);
-  }, []);
+  }, [map]);
 
   const popularMaps = useMemo(() => [...allMaps].sort((a, b) => b.downloadCount - a.downloadCount).slice(0, 8), [allMaps]);
 

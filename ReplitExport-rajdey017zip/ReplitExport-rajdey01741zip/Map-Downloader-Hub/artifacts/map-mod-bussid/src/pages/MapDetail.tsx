@@ -88,6 +88,24 @@ export default function MapDetail() {
   const [gmPhase, setGmPhase] = useState<'idle' | 'counting' | 'revealed'>('idle');
   const [gmCountdown, setGmCountdown] = useState(10);
 
+  // Restore timer state if in-app browser reloaded page on ad trigger
+  useEffect(() => {
+    if (!map) return;
+    const storageKey = `map_time_${map.id}`;
+    const savedTime = sessionStorage.getItem(storageKey);
+
+    if (savedTime) {
+      const elapsed = Math.floor((Date.now() - Number(savedTime)) / 1000);
+      if (elapsed >= 10) {
+        setGmPhase('revealed');
+        setGmCountdown(0);
+      } else if (elapsed > 0) {
+        setGmPhase('counting');
+        setGmCountdown(10 - elapsed);
+      }
+    }
+  }, [map]);
+
   useEffect(() => {
     if (gmPhase !== 'counting') return;
     const timer = setInterval(() => {
@@ -95,6 +113,18 @@ export default function MapDetail() {
     }, 1000);
     return () => clearInterval(timer);
   }, [gmPhase]);
+
+  const handleStartGetMap = () => {
+    if (!areAdsEnabled()) {
+      setGmPhase('revealed');
+      return;
+    }
+    if (map) {
+      sessionStorage.setItem(`map_time_${map.id}`, String(Date.now()));
+    }
+    setGmPhase('counting');
+    setGmCountdown(10);
+  };
 
   if (mapLoading || allLoading) return <PageShell><div className="p-8 text-center font-bold">Loading Map Details...</div></PageShell>;
   if (!map) {
@@ -136,7 +166,7 @@ export default function MapDetail() {
 
         <div className="space-y-4">
           {gmPhase === 'idle' && (
-            <button onClick={() => setGmPhase(areAdsEnabled() ? 'counting' : 'revealed')} className="w-full py-4.5 rounded-2xl bg-gradient-to-br from-green-500 to-green-700 text-white font-black text-lg flex items-center justify-center gap-2 shadow-xl shadow-green-500/20 active:scale-95 transition-all">
+            <button onClick={handleStartGetMap} className="w-full py-4.5 rounded-2xl bg-gradient-to-br from-green-500 to-green-700 text-white font-black text-lg flex items-center justify-center gap-2 shadow-xl shadow-green-500/20 active:scale-95 transition-all">
               <DownloadCloud className="w-6 h-6" /> GET MAP
             </button>
           )}
