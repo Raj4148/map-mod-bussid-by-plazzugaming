@@ -172,7 +172,16 @@ export default function MapDetail() {
         </div>
 
         <div className="space-y-4">
-          {(gmPhase === 'idle' || gmPhase === 'counting') && (
+          {gmPhase === 'idle' && (
+            <button
+              onClick={handleStartGetMap}
+              className="w-full py-4.5 rounded-2xl bg-gradient-to-br from-green-500 to-green-700 text-white font-black text-lg flex items-center justify-center gap-2 shadow-xl shadow-green-500/20 active:scale-95 transition-all uppercase tracking-tight"
+            >
+              <DownloadCloud className="w-6 h-6" /> GET MAP
+            </button>
+          )}
+
+          {gmPhase === 'counting' && (
             <div className="flex flex-col items-center gap-2 py-5 bg-muted/10 rounded-2xl border border-dashed border-border/60">
               <span className="text-4xl font-black text-primary tabular-nums">{gmCountdown}s</span>
               <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Preparing Secure Data...</p>
