@@ -6,7 +6,7 @@ import {
   AlertTriangle, Share2, ArrowRight
 } from 'lucide-react';
 import { useState, useEffect, useMemo } from 'react';
-import { areAdsEnabled, injectHomePopunder } from '../lib/ads-control';
+import { areAdsEnabled } from '../lib/ads-control';
 
 function SafeImage({ src, alt, className }: { src: string; alt: string; className?: string }) {
   const [imgSrc, setImgSrc] = useState(src || '');
@@ -74,7 +74,6 @@ export default function MapDetail() {
   const { allMaps, loading: allLoading } = useMaps();
 
   useEffect(() => {
-     injectHomePopunder();
      if (map) {
        document.title = `${map.name} - BUSSID Map Mod | Plazzu Gaming`;
        window.scrollTo(0,0);
@@ -88,7 +87,7 @@ export default function MapDetail() {
   const [gmPhase, setGmPhase] = useState<'idle' | 'counting' | 'revealed'>('idle');
   const [gmCountdown, setGmCountdown] = useState(10);
 
-  // Auto-start or restore 10s timer when landing on Map Details page
+  // Restore timer state if user clicked GET MAP and page reloaded
   useEffect(() => {
     if (!map) return;
     if (!areAdsEnabled()) {
@@ -97,19 +96,16 @@ export default function MapDetail() {
     }
 
     const storageKey = `map_time_${map.id}`;
-    let savedTime = sessionStorage.getItem(storageKey);
-    if (!savedTime) {
-      savedTime = String(Date.now());
-      sessionStorage.setItem(storageKey, savedTime);
-    }
-
-    const elapsed = Math.floor((Date.now() - Number(savedTime)) / 1000);
-    if (elapsed >= 10) {
-      setGmPhase('revealed');
-      setGmCountdown(0);
-    } else {
-      setGmPhase('counting');
-      setGmCountdown(10 - elapsed);
+    const savedTime = sessionStorage.getItem(storageKey);
+    if (savedTime) {
+      const elapsed = Math.floor((Date.now() - Number(savedTime)) / 1000);
+      if (elapsed >= 10) {
+        setGmPhase('revealed');
+        setGmCountdown(0);
+      } else if (elapsed >= 0) {
+        setGmPhase('counting');
+        setGmCountdown(10 - elapsed);
+      }
     }
   }, [map]);
 
@@ -120,6 +116,21 @@ export default function MapDetail() {
     }, 1000);
     return () => clearInterval(timer);
   }, [gmPhase]);
+
+  const handleStartGetMap = (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+    }
+    if (!areAdsEnabled()) {
+      setGmPhase('revealed');
+      return;
+    }
+    if (map) {
+      sessionStorage.setItem(`map_time_${map.id}`, String(Date.now()));
+    }
+    setGmPhase('counting');
+    setGmCountdown(10);
+  };
 
   if (mapLoading || allLoading) return <PageShell><div className="p-8 text-center font-bold">Loading Map Details...</div></PageShell>;
   if (!map) {
