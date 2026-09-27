@@ -1,4 +1,4 @@
-import { useRoute, Link } from 'wouter';
+import { useRoute, Link, useLocation } from 'wouter';
 import { useMap, useMaps, MapMod, fmtCount } from '../hooks/useMaps';
 import { PageShell } from '../components/Layout';
 import {
@@ -6,7 +6,7 @@ import {
   AlertTriangle, Share2, ArrowRight
 } from 'lucide-react';
 import { useState, useEffect, useMemo } from 'react';
-import { areAdsEnabled, injectHomePopunder } from '../lib/ads-control';
+import { areAdsEnabled, triggerMonetagZone } from '../lib/ads-control';
 
 function SafeImage({ src, alt, className }: { src: string; alt: string; className?: string }) {
   const [imgSrc, setImgSrc] = useState(src || '');
@@ -39,10 +39,10 @@ function SuggestionsSection({ popularMaps, trendingMaps }: { popularMaps: MapMod
       </div>
       <div className="grid grid-cols-2 gap-3 px-1">
         {(activeTab === 'popular' ? popularMaps.slice(0, 6) : trendingMaps.slice(0, 6)).map(m => (
-          <a key={m.id} href={`/index.html?id=${m.id}`} className="bg-card border border-border/50 rounded-xl overflow-hidden shadow-sm">
+          <Link key={m.id} href={`/map/${m.id}`} className="bg-card border border-border/50 rounded-xl overflow-hidden shadow-sm">
             <div className="aspect-[16/10] overflow-hidden relative"><SafeImage src={m.thumbnail} alt={m.name} className="w-full h-full object-cover" /></div>
             <div className="p-2"><p className="text-foreground font-bold text-[10px] line-clamp-1">{m.name}</p><span className="text-[8px] text-muted-foreground">📥 {fmtCount(m.downloadCount)}</span></div>
-          </a>
+          </Link>
         ))}
       </div>
     </div>
@@ -67,6 +67,7 @@ function InlineDownloadCard({ map, onClick }: { map: MapMod; onClick: () => void
 }
 
 export default function MapDetail() {
+  const [, setLocation] = useLocation();
   const [, params] = useRoute('/map/:id');
   const queryId = new URLSearchParams(window.location.search).get('id');
   const id = params?.id || queryId || '';
@@ -86,9 +87,9 @@ export default function MapDetail() {
   const trendingMaps = useMemo(() => [...allMaps].sort((a, b) => b.downloadCount - a.downloadCount).slice(8, 16), [allMaps]);
 
   const [gmPhase, setGmPhase] = useState<'idle' | 'counting' | 'revealed'>('idle');
-  const [gmCountdown, setGmCountdown] = useState(10);
+  const [gmCountdown, setGmCountdown] = useState(5);
 
-  // Restore timer state if user clicked GET MAP and page reloaded
+  // Restore 5s timer state if user clicked GET MAP and page reloaded
   useEffect(() => {
     if (!map) return;
     if (!areAdsEnabled()) {
@@ -100,12 +101,12 @@ export default function MapDetail() {
     const savedTime = sessionStorage.getItem(storageKey);
     if (savedTime) {
       const elapsed = Math.floor((Date.now() - Number(savedTime)) / 1000);
-      if (elapsed >= 10) {
+      if (elapsed >= 5) {
         setGmPhase('revealed');
         setGmCountdown(0);
       } else if (elapsed >= 0) {
         setGmPhase('counting');
-        setGmCountdown(10 - elapsed);
+        setGmCountdown(5 - elapsed);
       }
     }
   }, [map]);
@@ -122,6 +123,7 @@ export default function MapDetail() {
     if (e) {
       e.preventDefault();
     }
+    triggerMonetagZone('11401834');
     if (!areAdsEnabled()) {
       setGmPhase('revealed');
       return;
@@ -130,7 +132,14 @@ export default function MapDetail() {
       sessionStorage.setItem(`map_time_${map.id}`, String(Date.now()));
     }
     setGmPhase('counting');
-    setGmCountdown(10);
+    setGmCountdown(5);
+  };
+
+  const handleNextClick = () => {
+    triggerMonetagZone('11696301');
+    if (map) {
+      setLocation(`/download/${map.id}`);
+    }
   };
 
   if (mapLoading || allLoading) return <PageShell><div className="p-8 text-center font-bold">Loading Map Details...</div></PageShell>;
@@ -219,7 +228,7 @@ export default function MapDetail() {
                   const cardMap = newestMaps[cardsPlaced];
                   if (cardMap) {
                     cardsPlaced++;
-                    elements.push(<InlineDownloadCard key={`inline-card-${idx}`} map={cardMap} onClick={() => window.location.href = `/index.html?id=${cardMap.id}`} />);
+                    elements.push(<InlineDownloadCard key={`inline-card-${idx}`} map={cardMap} onClick={() => setLocation(`/map/${cardMap.id}`)} />);
                   }
                 }
               });
@@ -229,7 +238,7 @@ export default function MapDetail() {
                 const cardMap = newestMaps[cardsPlaced];
                 if (cardMap) {
                   cardsPlaced++;
-                  elements.push(<InlineDownloadCard key={`extra-card-${cardsPlaced}`} map={cardMap} onClick={() => window.location.href = `/index.html?id=${cardMap.id}`} />);
+                  elements.push(<InlineDownloadCard key={`extra-card-${cardsPlaced}`} map={cardMap} onClick={() => setLocation(`/map/${cardMap.id}`)} />);
                 } else {
                   break;
                 }
@@ -245,8 +254,8 @@ export default function MapDetail() {
         {/* Phase 2: Next Step (Moved to Bottom) */}
         {gmPhase === 'revealed' && (
            <div className="pt-4 pb-12">
-              <button onClick={() => window.location.href = `/download.html?id=${map.id}`} className="w-full py-5 rounded-2xl bg-primary text-white font-black text-xl flex items-center justify-center gap-2 shadow-2xl shadow-primary/30 active:scale-95 transition-all">
-                NEXT STEP <ArrowRight className="w-6 h-6" />
+              <button onClick={handleNextClick} className="w-full py-5 rounded-2xl bg-primary text-white font-black text-xl flex items-center justify-center gap-2 shadow-2xl shadow-primary/30 active:scale-95 transition-all">
+                NEXT <ArrowRight className="w-6 h-6" />
               </button>
               <p className="text-[9px] text-center text-muted-foreground mt-4 uppercase font-black tracking-[0.2em] opacity-40">Final security check ahead</p>
            </div>

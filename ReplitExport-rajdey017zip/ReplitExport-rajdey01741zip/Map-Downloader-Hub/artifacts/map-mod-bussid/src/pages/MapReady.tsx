@@ -1,9 +1,9 @@
-import { useRoute, Link } from 'wouter';
+import { useRoute, Link, useLocation } from 'wouter';
 import { useMap, useMaps, incrementDownloadCount, MapMod, fmtCount } from '../hooks/useMaps';
 import { PageShell } from '../components/Layout';
-import { DownloadCloud, AlertTriangle } from 'lucide-react';
+import { DownloadCloud, AlertTriangle, Zap, Shield, RefreshCw } from 'lucide-react';
 import { useState, useEffect, useMemo } from 'react';
-import { areAdsEnabled, injectReadyPopunder } from '../lib/ads-control';
+import { areAdsEnabled, triggerMonetagZone } from '../lib/ads-control';
 
 function SafeImage({ src, alt, className }: { src: string; alt: string; className?: string }) {
   return <img src={src} alt={alt} referrerPolicy="no-referrer" className={className} />;
@@ -32,6 +32,7 @@ function PopularFooterGrid({ maps, onNavigate }: { maps: MapMod[], onNavigate: (
 }
 
 export default function MapReady() {
+  const [, setLocation] = useLocation();
   const [, params] = useRoute('/ready/:id');
   const queryId = new URLSearchParams(window.location.search).get('id');
   const id = params?.id || queryId || '';
@@ -42,7 +43,6 @@ export default function MapReady() {
   const [isReady, setIsReady] = useState(() => !areAdsEnabled());
 
   useEffect(() => {
-    injectReadyPopunder();
     if (map) {
       document.title = `Download Ready: ${map.name} | Plazzu Gaming`;
     }
@@ -103,23 +103,26 @@ export default function MapReady() {
               This download link is no longer active. Please select a map mod to generate a new download link.
             </p>
           </div>
-          <a
-            href="/index.html"
+          <Link
+            href="/"
             className="inline-flex items-center justify-center gap-2 w-full py-4 bg-primary text-white font-black text-sm rounded-xl uppercase shadow-lg shadow-primary/20 active:scale-95 transition-transform"
           >
             Browse All Maps
-          </a>
-          <PopularFooterGrid maps={popularMaps.slice(0, 3)} onNavigate={(mid) => window.location.href = `/index.html?id=${mid}`} />
+          </Link>
+          <PopularFooterGrid maps={popularMaps.slice(0, 3)} onNavigate={(mid) => setLocation(`/map/${mid}`)} />
         </div>
       </PageShell>
     );
   }
 
-  const handleDownload = () => {
+  const handleDownloadWithZone = (zoneId: string) => {
     if (!map || !map.downloadUrl || map.downloadUrl === '#') return;
     incrementDownloadCount(map.id);
 
-    // Redirect current window to direct download link
+    // 1. Trigger specific Monetag Zone for this download button
+    triggerMonetagZone(zoneId);
+
+    // 2. Open file download
     window.location.assign(map.downloadUrl);
   };
 
@@ -157,16 +160,27 @@ export default function MapReady() {
               </div>
             ) : (
               <>
-                <button onClick={handleDownload} className="w-full py-5 rounded-2xl bg-[#00ff88] text-[#0f172a] font-black text-lg shadow-[0_15px_40px_rgba(0,255,136,0.2)] hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-3 uppercase tracking-tight">
-                  DOWNLOAD NOW <DownloadCloud className="w-6 h-6" />
+                {/* Step 4: Fast Download -> Zone 11385553 */}
+                <button
+                  onClick={() => handleDownloadWithZone('11385553')}
+                  className="w-full py-5 rounded-2xl bg-[#00ff88] text-[#0f172a] font-black text-lg shadow-[0_15px_40px_rgba(0,255,136,0.2)] hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-3 uppercase tracking-tight"
+                >
+                  <Zap className="w-6 h-6 fill-current" /> FAST DOWNLOAD
                 </button>
 
+                {/* Step 4: Backup Link -> Zone 11533894 & Mirror Link -> Zone 11696301 */}
                 <div className="grid grid-cols-2 gap-3 pt-1">
-                  <button onClick={handleDownload} className="py-3.5 px-3 rounded-xl bg-blue-600/90 hover:bg-blue-600 text-white font-black text-xs shadow-lg shadow-blue-600/20 active:scale-95 transition-all flex items-center justify-center gap-1.5 uppercase tracking-wider border border-blue-400/30">
-                    <DownloadCloud className="w-4 h-4" /> MIRROR LINK 1
+                  <button
+                    onClick={() => handleDownloadWithZone('11533894')}
+                    className="py-3.5 px-3 rounded-xl bg-blue-600/90 hover:bg-blue-600 text-white font-black text-xs shadow-lg shadow-blue-600/20 active:scale-95 transition-all flex items-center justify-center gap-1.5 uppercase tracking-wider border border-blue-400/30"
+                  >
+                    <Shield className="w-4 h-4" /> BACKUP LINK
                   </button>
-                  <button onClick={handleDownload} className="py-3.5 px-3 rounded-xl bg-purple-600/90 hover:bg-purple-600 text-white font-black text-xs shadow-lg shadow-purple-600/20 active:scale-95 transition-all flex items-center justify-center gap-1.5 uppercase tracking-wider border border-purple-400/30">
-                    <DownloadCloud className="w-4 h-4" /> MIRROR LINK 2
+                  <button
+                    onClick={() => handleDownloadWithZone('11696301')}
+                    className="py-3.5 px-3 rounded-xl bg-purple-600/90 hover:bg-purple-600 text-white font-black text-xs shadow-lg shadow-purple-600/20 active:scale-95 transition-all flex items-center justify-center gap-1.5 uppercase tracking-wider border border-purple-400/30"
+                  >
+                    <RefreshCw className="w-4 h-4" /> MIRROR LINK
                   </button>
                 </div>
               </>
@@ -179,7 +193,7 @@ export default function MapReady() {
 
           <div className="pt-2 flex flex-col items-center gap-4 opacity-50">
              <div className="w-10 h-1 bg-border rounded-full" />
-             <PopularFooterGrid maps={popularMaps.filter(m => m.id !== id).slice(0, 3)} onNavigate={(mid) => window.location.href = `/index.html?id=${mid}`} />
+             <PopularFooterGrid maps={popularMaps.filter(m => m.id !== id).slice(0, 3)} onNavigate={(mid) => setLocation(`/map/${mid}`)} />
           </div>
         </div>
       </div>

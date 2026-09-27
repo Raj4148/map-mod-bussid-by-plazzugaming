@@ -48,8 +48,6 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: path.resolve(import.meta.dirname, 'index.html'),
-        download: path.resolve(import.meta.dirname, 'download.html'),
-        ready: path.resolve(import.meta.dirname, 'ready.html'),
       },
     },
   },
