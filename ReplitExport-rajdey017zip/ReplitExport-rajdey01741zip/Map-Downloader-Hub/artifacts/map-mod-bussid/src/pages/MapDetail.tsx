@@ -39,10 +39,10 @@ function SuggestionsSection({ popularMaps, trendingMaps }: { popularMaps: MapMod
       </div>
       <div className="grid grid-cols-2 gap-3 px-1">
         {(activeTab === 'popular' ? popularMaps.slice(0, 6) : trendingMaps.slice(0, 6)).map(m => (
-          <Link key={m.id} href={`/map/${m.id}`} className="bg-card border border-border/50 rounded-xl overflow-hidden shadow-sm">
+          <a key={m.id} href={`/index.html?id=${m.id}`} className="bg-card border border-border/50 rounded-xl overflow-hidden shadow-sm">
             <div className="aspect-[16/10] overflow-hidden relative"><SafeImage src={m.thumbnail} alt={m.name} className="w-full h-full object-cover" /></div>
             <div className="p-2"><p className="text-foreground font-bold text-[10px] line-clamp-1">{m.name}</p><span className="text-[8px] text-muted-foreground">📥 {fmtCount(m.downloadCount)}</span></div>
-          </Link>
+          </a>
         ))}
       </div>
     </div>
@@ -227,7 +227,7 @@ export default function MapDetail() {
                   const cardMap = newestMaps[cardsPlaced];
                   if (cardMap) {
                     cardsPlaced++;
-                    elements.push(<InlineDownloadCard key={`inline-card-${idx}`} map={cardMap} onClick={() => setLocation(`/map/${cardMap.id}`)} />);
+                    elements.push(<InlineDownloadCard key={`inline-card-${idx}`} map={cardMap} onClick={() => window.location.href = `/index.html?id=${cardMap.id}`} />);
                   }
                 }
               });
@@ -237,7 +237,7 @@ export default function MapDetail() {
                 const cardMap = newestMaps[cardsPlaced];
                 if (cardMap) {
                   cardsPlaced++;
-                  elements.push(<InlineDownloadCard key={`extra-card-${cardsPlaced}`} map={cardMap} onClick={() => setLocation(`/map/${cardMap.id}`)} />);
+                  elements.push(<InlineDownloadCard key={`extra-card-${cardsPlaced}`} map={cardMap} onClick={() => window.location.href = `/index.html?id=${cardMap.id}`} />);
                 } else {
                   break;
                 }
