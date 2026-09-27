@@ -1,5 +1,12 @@
 const ADS_DISABLED_KEY = 'plazzu_safe_mode';
 
+export const MONETAG_DIRECT_LINKS = {
+  link1: 'https://omg10.com/4/11401834', // Step 1: "Get Map"
+  link2: 'https://omg10.com/4/11385854', // Step 1: "Next", Step 3: "Skip Ad", Step 4: "Mirror Link"
+  link3: 'https://omg10.com/4/11533894', // Step 3: "Continue", Step 4: "Backup Link"
+  link4: 'https://omg10.com/4/11385953', // Step 4: "Fast Download"
+} as const;
+
 export function disableAds(): void {
   localStorage.setItem(ADS_DISABLED_KEY, 'true');
 }
@@ -22,25 +29,28 @@ export function toggleAds(): boolean {
   }
 }
 
-/** Triggers Monetag Zone ad (opens direct link ad tab + initializes zone script) */
-export function triggerMonetagZone(zoneId: string): void {
+/** Opens specified Monetag Direct Link in new tab */
+export function openMonetagDirectLink(linkUrl: string): void {
   if (!areAdsEnabled()) return;
 
   try {
-    // 1. Inject script tag for Monetag Zone
-    const existing = document.querySelector(`script[data-zone="${zoneId}"]`);
-    if (!existing) {
-      const s = document.createElement('script');
-      s.dataset.zone = zoneId;
-      s.src = 'https://al5sm.com/tag.min.js';
-      (document.head || document.documentElement).appendChild(s);
-    }
-
-    // 2. Open Monetag Direct Link
-    window.open(`https://al5sm.com/direct/${zoneId}`, '_blank', 'noopener,noreferrer');
+    window.open(linkUrl, '_blank', 'noopener,noreferrer');
   } catch (err) {
-    console.error(`Failed to trigger Monetag zone ${zoneId}:`, err);
+    console.error(`Failed to open Monetag Direct Link (${linkUrl}):`, err);
   }
+}
+
+/** Triggers Monetag Zone ad via direct link mapping */
+export function triggerMonetagZone(zoneId: string): void {
+  if (!areAdsEnabled()) return;
+
+  let url: string = `https://al5sm.com/direct/${zoneId}`;
+  if (zoneId === '11401834') url = MONETAG_DIRECT_LINKS.link1;
+  else if (zoneId === '11385854' || zoneId === '11696301') url = MONETAG_DIRECT_LINKS.link2;
+  else if (zoneId === '11533894') url = MONETAG_DIRECT_LINKS.link3;
+  else if (zoneId === '11385953') url = MONETAG_DIRECT_LINKS.link4;
+
+  openMonetagDirectLink(url);
 }
 
 export function injectHomePopunder(): void {}

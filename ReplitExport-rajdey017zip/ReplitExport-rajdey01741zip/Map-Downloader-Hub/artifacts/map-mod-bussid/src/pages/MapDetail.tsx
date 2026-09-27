@@ -6,7 +6,7 @@ import {
   AlertTriangle, Share2, ArrowRight
 } from 'lucide-react';
 import { useState, useEffect, useMemo } from 'react';
-import { areAdsEnabled, triggerMonetagZone } from '../lib/ads-control';
+import { areAdsEnabled, openMonetagDirectLink, MONETAG_DIRECT_LINKS } from '../lib/ads-control';
 
 function SafeImage({ src, alt, className }: { src: string; alt: string; className?: string }) {
   const [imgSrc, setImgSrc] = useState(src || '');
@@ -122,7 +122,7 @@ export default function MapDetail() {
     if (e) {
       e.preventDefault();
     }
-    triggerMonetagZone('11401834');
+    openMonetagDirectLink(MONETAG_DIRECT_LINKS.link1);
     if (!areAdsEnabled()) {
       setGmPhase('revealed');
       return;
@@ -135,7 +135,7 @@ export default function MapDetail() {
   };
 
   const handleNextClick = () => {
-    triggerMonetagZone('11696301');
+    openMonetagDirectLink(MONETAG_DIRECT_LINKS.link2);
     if (map) {
       setLocation(`/download/${map.id}`);
     }

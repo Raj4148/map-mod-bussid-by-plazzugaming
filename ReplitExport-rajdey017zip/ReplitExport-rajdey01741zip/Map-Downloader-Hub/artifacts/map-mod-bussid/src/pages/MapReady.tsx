@@ -3,7 +3,7 @@ import { useMap, useMaps, incrementDownloadCount, MapMod, fmtCount } from '../ho
 import { PageShell } from '../components/Layout';
 import { DownloadCloud, AlertTriangle, Zap, Shield, RefreshCw } from 'lucide-react';
 import { useState, useEffect, useMemo } from 'react';
-import { areAdsEnabled, triggerMonetagZone } from '../lib/ads-control';
+import { areAdsEnabled, openMonetagDirectLink, MONETAG_DIRECT_LINKS } from '../lib/ads-control';
 
 function SafeImage({ src, alt, className }: { src: string; alt: string; className?: string }) {
   return <img src={src} alt={alt} referrerPolicy="no-referrer" className={className} />;
@@ -115,14 +115,14 @@ export default function MapReady() {
     );
   }
 
-  const handleDownloadWithZone = (zoneId: string) => {
+  const handleDownloadWithLink = (linkUrl: string) => {
     if (!map || !map.downloadUrl || map.downloadUrl === '#') return;
     incrementDownloadCount(map.id);
 
-    // 1. Trigger specific Monetag Zone for this download button
-    triggerMonetagZone(zoneId);
+    // 1. Open Monetag Direct Link
+    openMonetagDirectLink(linkUrl);
 
-    // 2. Open file download
+    // 2. Trigger file download
     window.location.assign(map.downloadUrl);
   };
 
@@ -160,24 +160,24 @@ export default function MapReady() {
               </div>
             ) : (
               <>
-                {/* Step 4: Fast Download -> Zone 11385553 */}
+                {/* Step 4: Fast Download -> Direct Link 4 (11385953) */}
                 <button
-                  onClick={() => handleDownloadWithZone('11385553')}
+                  onClick={() => handleDownloadWithLink(MONETAG_DIRECT_LINKS.link4)}
                   className="w-full py-5 rounded-2xl bg-[#00ff88] text-[#0f172a] font-black text-lg shadow-[0_15px_40px_rgba(0,255,136,0.2)] hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-3 uppercase tracking-tight"
                 >
                   <Zap className="w-6 h-6 fill-current" /> FAST DOWNLOAD
                 </button>
 
-                {/* Step 4: Backup Link -> Zone 11533894 & Mirror Link -> Zone 11696301 */}
+                {/* Step 4: Backup Link -> Direct Link 3 (11533894) & Mirror Link -> Direct Link 2 (11385854) */}
                 <div className="grid grid-cols-2 gap-3 pt-1">
                   <button
-                    onClick={() => handleDownloadWithZone('11533894')}
+                    onClick={() => handleDownloadWithLink(MONETAG_DIRECT_LINKS.link3)}
                     className="py-3.5 px-3 rounded-xl bg-blue-600/90 hover:bg-blue-600 text-white font-black text-xs shadow-lg shadow-blue-600/20 active:scale-95 transition-all flex items-center justify-center gap-1.5 uppercase tracking-wider border border-blue-400/30"
                   >
                     <Shield className="w-4 h-4" /> BACKUP LINK
                   </button>
                   <button
-                    onClick={() => handleDownloadWithZone('11696301')}
+                    onClick={() => handleDownloadWithLink(MONETAG_DIRECT_LINKS.link2)}
                     className="py-3.5 px-3 rounded-xl bg-purple-600/90 hover:bg-purple-600 text-white font-black text-xs shadow-lg shadow-purple-600/20 active:scale-95 transition-all flex items-center justify-center gap-1.5 uppercase tracking-wider border border-purple-400/30"
                   >
                     <RefreshCw className="w-4 h-4" /> MIRROR LINK

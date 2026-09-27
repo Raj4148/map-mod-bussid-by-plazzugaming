@@ -3,7 +3,7 @@ import { useMap, useMaps, MapMod, fmtCount } from '../hooks/useMaps';
 import { PageShell } from '../components/Layout';
 import { ArrowRight, Flame, AlertTriangle, ShieldCheck, ExternalLink } from 'lucide-react';
 import { useState, useEffect, useMemo } from 'react';
-import { areAdsEnabled, triggerMonetagZone } from '../lib/ads-control';
+import { areAdsEnabled, openMonetagDirectLink, MONETAG_DIRECT_LINKS } from '../lib/ads-control';
 
 function SafeImage({ src, alt, className }: { src: string; alt: string; className?: string }) {
   return <img src={src} alt={alt} referrerPolicy="no-referrer" className={className} />;
@@ -67,8 +67,8 @@ export default function MapDownload() {
   }, [showAdOverlay, overlaySeconds]);
 
   const handleStartContinueFlow = () => {
-    // Step 3 Action: Click "Continue" -> Trigger Zone 11533894 -> Opens 7s Ad Overlay
-    triggerMonetagZone('11533894');
+    // Step 3 Action: Click "Continue" -> Opens Direct Link 3 (11533894) -> Opens 7s Ad Overlay
+    openMonetagDirectLink(MONETAG_DIRECT_LINKS.link3);
     setShowAdOverlay(true);
     setOverlaySeconds(7);
     setSkipClickCount(0);
@@ -76,8 +76,8 @@ export default function MapDownload() {
 
   const handleSkipAdClick = () => {
     if (skipClickCount === 0) {
-      // 1st Click on Skip Ad: Trigger Zone 11696301
-      triggerMonetagZone('11696301');
+      // 1st Click on Skip Ad: Opens Direct Link 2 (11385854)
+      openMonetagDirectLink(MONETAG_DIRECT_LINKS.link2);
       setSkipClickCount(1);
     } else {
       // 2nd Click on Skip Ad: Skips to Step 4 Ready Page
