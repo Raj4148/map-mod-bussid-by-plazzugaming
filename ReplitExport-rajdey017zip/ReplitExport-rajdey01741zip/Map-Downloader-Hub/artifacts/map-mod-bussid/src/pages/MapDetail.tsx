@@ -75,7 +75,6 @@ export default function MapDetail() {
   const { allMaps, loading: allLoading } = useMaps();
 
   useEffect(() => {
-     injectHomePopunder();
      if (map) {
        document.title = `${map.name} - BUSSID Map Mod | Plazzu Gaming`;
        window.scrollTo(0,0);

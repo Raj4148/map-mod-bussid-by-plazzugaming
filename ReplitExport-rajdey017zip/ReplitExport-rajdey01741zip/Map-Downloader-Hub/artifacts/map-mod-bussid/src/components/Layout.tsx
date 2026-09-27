@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'wouter';
 import { Home, Users, Settings } from 'lucide-react';
-
 import { useTheme } from '../lib/theme-context';
+import { areAdsEnabled } from '../lib/ads-control';
 
 /* ─── Bottom Navigation Bar ─── */
 export function BottomNav() {
@@ -46,8 +46,6 @@ export function BottomNav() {
     </nav>
   );
 }
-
-import { areAdsEnabled } from '../lib/ads-control';
 
 /* ─── Page wrapper with bottom nav spacing ─── */
 export function PageShell({ children }: { children: React.ReactNode }) {
