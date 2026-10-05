@@ -88,13 +88,9 @@ export default function MapDetail() {
   const [gmPhase, setGmPhase] = useState<'idle' | 'counting' | 'revealed'>('idle');
   const [gmCountdown, setGmCountdown] = useState(10);
 
-  // Restore 10s timer state if user clicked GET MAP and page reloaded
+  // Restore 10s timer state ONLY if user previously clicked GET MAP
   useEffect(() => {
     if (!map) return;
-    if (!areAdsEnabled()) {
-      setGmPhase('revealed');
-      return;
-    }
 
     const storageKey = `map_time_${map.id}`;
     const savedTime = sessionStorage.getItem(storageKey);
@@ -107,6 +103,9 @@ export default function MapDetail() {
         setGmPhase('counting');
         setGmCountdown(10 - elapsed);
       }
+    } else {
+      setGmPhase('idle');
+      setGmCountdown(10);
     }
   }, [map]);
 
@@ -123,10 +122,6 @@ export default function MapDetail() {
       e.preventDefault();
     }
     openMonetagDirectLink(MONETAG_DIRECT_LINKS.link1);
-    if (!areAdsEnabled()) {
-      setGmPhase('revealed');
-      return;
-    }
     if (map) {
       sessionStorage.setItem(`map_time_${map.id}`, String(Date.now()));
     }
