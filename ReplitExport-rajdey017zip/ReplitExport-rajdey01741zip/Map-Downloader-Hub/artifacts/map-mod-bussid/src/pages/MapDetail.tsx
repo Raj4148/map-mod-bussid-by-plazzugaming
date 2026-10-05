@@ -137,7 +137,7 @@ export default function MapDetail() {
   const handleNextClick = () => {
     openMonetagDirectLink(MONETAG_DIRECT_LINKS.link2);
     if (map) {
-      setLocation(`/download/${map.id}`);
+      setLocation(`/ready/${map.id}`);
     }
   };
 

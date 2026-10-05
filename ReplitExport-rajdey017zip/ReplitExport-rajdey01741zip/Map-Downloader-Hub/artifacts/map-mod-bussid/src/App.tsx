@@ -44,7 +44,7 @@ function Router() {
         <Route path="/maps" component={Maps} />
         <Route path="/community" component={Community} />
         <Route path="/map/:id" component={MapDetail} />
-        <Route path="/download/:id" component={MapDownload} />
+        <Route path="/download/:id" component={MapReady} />
         <Route path="/ready/:id" component={MapReady} />
         <Route path="/settings" component={Settings} />
         <Route path="/raju" component={SafeMode} />
