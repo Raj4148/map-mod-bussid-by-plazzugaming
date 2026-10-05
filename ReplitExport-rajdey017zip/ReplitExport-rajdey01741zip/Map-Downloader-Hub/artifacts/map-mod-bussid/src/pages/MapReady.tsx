@@ -39,7 +39,7 @@ export default function MapReady() {
   const { map, loading: mapLoading } = useMap(id);
   const { allMaps, loading: allLoading } = useMaps();
 
-  const [seconds, setSeconds] = useState(8);
+  const [seconds, setSeconds] = useState(10);
   const [isReady, setIsReady] = useState(() => !areAdsEnabled());
 
   useEffect(() => {
@@ -64,13 +64,13 @@ export default function MapReady() {
     }
 
     const elapsed = Math.floor((Date.now() - Number(savedTime)) / 1000);
-    if (elapsed >= 8) {
+    if (elapsed >= 10) {
       setIsReady(true);
       setSeconds(0);
       return;
     }
 
-    const initialRemaining = 8 - elapsed;
+    const initialRemaining = 10 - elapsed;
     setSeconds(initialRemaining);
 
     const timer = setInterval(() => {

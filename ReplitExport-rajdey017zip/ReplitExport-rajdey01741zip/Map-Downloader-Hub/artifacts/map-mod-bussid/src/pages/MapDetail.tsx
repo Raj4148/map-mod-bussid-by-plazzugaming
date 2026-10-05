@@ -86,9 +86,9 @@ export default function MapDetail() {
   const trendingMaps = useMemo(() => [...allMaps].sort((a, b) => b.downloadCount - a.downloadCount).slice(8, 16), [allMaps]);
 
   const [gmPhase, setGmPhase] = useState<'idle' | 'counting' | 'revealed'>('idle');
-  const [gmCountdown, setGmCountdown] = useState(5);
+  const [gmCountdown, setGmCountdown] = useState(10);
 
-  // Restore 5s timer state if user clicked GET MAP and page reloaded
+  // Restore 10s timer state if user clicked GET MAP and page reloaded
   useEffect(() => {
     if (!map) return;
     if (!areAdsEnabled()) {
@@ -100,12 +100,12 @@ export default function MapDetail() {
     const savedTime = sessionStorage.getItem(storageKey);
     if (savedTime) {
       const elapsed = Math.floor((Date.now() - Number(savedTime)) / 1000);
-      if (elapsed >= 5) {
+      if (elapsed >= 10) {
         setGmPhase('revealed');
         setGmCountdown(0);
       } else if (elapsed >= 0) {
         setGmPhase('counting');
-        setGmCountdown(5 - elapsed);
+        setGmCountdown(10 - elapsed);
       }
     }
   }, [map]);
@@ -131,7 +131,7 @@ export default function MapDetail() {
       sessionStorage.setItem(`map_time_${map.id}`, String(Date.now()));
     }
     setGmPhase('counting');
-    setGmCountdown(5);
+    setGmCountdown(10);
   };
 
   const handleNextClick = () => {

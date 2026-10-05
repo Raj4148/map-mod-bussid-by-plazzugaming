@@ -129,12 +129,22 @@ function toMapMod(id: string, data: any): MapMod {
     console.warn(`[Map Hub] Detected ImgBB viewer link for "${data.Name}". Images will NOT show. Please use the "Direct Link" from ImgBB (starts with i.ibb.co). URL: ${thumbnail}`);
   }
 
-  // Normalize Category
-  let catRaw = (data.Category || 'other').toLowerCase();
+  // Normalize Category - check all casing, field names & map name keywords
+  let catRaw = (
+    data.Category || data.category || data.Cat || data.cat ||
+    data.Type || data.type || ''
+  ).toString().toLowerCase();
+
+  let nameRaw = (data.Name || data.name || '').toString().toLowerCase();
+
   let category: MapCategory = 'other';
-  if (catRaw.includes('indian'))      category = 'indian';
-  else if (catRaw.includes('nepali')) category = 'nepali';
-  else if (catRaw.includes('indones')) category = 'indonesian';
+  if (catRaw.includes('indian') || catRaw.includes('india') || nameRaw.includes('indian') || nameRaw.includes('india')) {
+    category = 'indian';
+  } else if (catRaw.includes('nepali') || catRaw.includes('nepal') || nameRaw.includes('nepali') || nameRaw.includes('nepal')) {
+    category = 'nepali';
+  } else if (catRaw.includes('indones') || catRaw.includes('indo') || nameRaw.includes('indones') || nameRaw.includes('indo')) {
+    category = 'indonesian';
+  }
 
   return {
     id,

@@ -39,7 +39,7 @@ export default function MapDownload() {
 
   // Overlay state for Step 3
   const [showAdOverlay, setShowAdOverlay] = useState(false);
-  const [overlaySeconds, setOverlaySeconds] = useState(7);
+  const [overlaySeconds, setOverlaySeconds] = useState(10);
   const [skipClickCount, setSkipClickCount] = useState(0);
 
   useEffect(() => {
@@ -48,7 +48,7 @@ export default function MapDownload() {
     }
   }, [map]);
 
-  // 7s Overlay Countdown Timer
+  // 10s Overlay Countdown Timer
   useEffect(() => {
     if (!showAdOverlay) return;
     if (overlaySeconds <= 0) return;
@@ -67,10 +67,10 @@ export default function MapDownload() {
   }, [showAdOverlay, overlaySeconds]);
 
   const handleStartContinueFlow = () => {
-    // Step 3 Action: Click "Continue" -> Opens Direct Link 3 (11533894) -> Opens 7s Ad Overlay
+    // Step 3 Action: Click "Continue" -> Opens Direct Link 3 (11533894) -> Opens 10s Ad Overlay
     openMonetagDirectLink(MONETAG_DIRECT_LINKS.link3);
     setShowAdOverlay(true);
-    setOverlaySeconds(7);
+    setOverlaySeconds(10);
     setSkipClickCount(0);
   };
 
