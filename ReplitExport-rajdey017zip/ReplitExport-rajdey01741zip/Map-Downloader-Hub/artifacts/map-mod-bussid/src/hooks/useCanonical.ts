@@ -10,6 +10,16 @@ export function useCanonical(path: string): void {
       cleanPath = `/${cleanPath}`;
     }
 
+    // Normalize trailing slash (e.g. /maps/ -> /maps) to prevent duplicate canonical errors in GSC
+    if (cleanPath.length > 1 && cleanPath.endsWith('/')) {
+      cleanPath = cleanPath.slice(0, -1);
+    }
+
+    // Normalize index.html references
+    if (cleanPath.endsWith('/index.html') || cleanPath === '/index.html') {
+      cleanPath = cleanPath.replace('/index.html', '') || '/';
+    }
+
     const fullUrl = `${DOMAIN}${cleanPath}`;
 
     let link: HTMLLinkElement | null = document.querySelector('link[rel="canonical"]');

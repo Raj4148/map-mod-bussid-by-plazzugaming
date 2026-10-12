@@ -42,6 +42,7 @@ function Router() {
           {queryId ? <MapDetail /> : <Home />}
         </Route>
         <Route path="/maps" component={Maps} />
+        <Route path="/maps/" component={Maps} />
         <Route path="/community" component={Community} />
         <Route path="/map/:id" component={MapDetail} />
         <Route path="/download/:id" component={MapReady} />
