@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { useState, useEffect, useMemo } from 'react';
 import { areAdsEnabled, openMonetagDirectLink, MONETAG_DIRECT_LINKS } from '../lib/ads-control';
+import { useCanonical } from '../hooks/useCanonical';
 
 function SafeImage({ src, alt, className }: { src: string; alt: string; className?: string }) {
   const [imgSrc, setImgSrc] = useState(src || '');
@@ -73,6 +74,8 @@ export default function MapDetail() {
   const id = params?.id || queryId || '';
   const { map, loading: mapLoading } = useMap(id);
   const { allMaps, loading: allLoading } = useMaps();
+
+  useCanonical(id ? `/map/${id}` : '/');
 
   useEffect(() => {
      if (map) {

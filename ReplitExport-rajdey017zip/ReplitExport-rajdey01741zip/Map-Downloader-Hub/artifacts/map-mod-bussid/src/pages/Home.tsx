@@ -6,6 +6,7 @@ import { PageShell } from '../components/Layout';
 import { ChevronRight, MapPin, Trophy, Search, X } from 'lucide-react';
 import { useState, useEffect, useMemo } from 'react';
 import { injectHomePopunder } from '../lib/ads-control';
+import { useCanonical } from '../hooks/useCanonical';
 
 /* ─── Category tiles ─── */
 const CATEGORIES = [
@@ -59,6 +60,7 @@ function FeaturedCard({ map }: { map: Parameters<typeof getMapBadge>[0] }) {
 
 /* ─── Home Page ─── */
 export default function Home() {
+  useCanonical('/');
   const { maps: allMaps, loading: allLoading } = useMaps(undefined, 'newest');
   const { maps: topMaps, loading: topLoading } = useTopMaps(6);
   const [, setLocation] = useLocation();

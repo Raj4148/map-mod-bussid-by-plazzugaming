@@ -4,6 +4,7 @@ import { useMaps } from '../hooks/useMaps';
 import { MapGrid } from '../components/MapGrid';
 import { PageShell } from '../components/Layout';
 import { ChevronLeft, MapPin } from 'lucide-react';
+import { useCanonical } from '../hooks/useCanonical';
 
 const TABS = [
   { id: 'all',        label: 'All' },
@@ -22,6 +23,8 @@ export default function Maps() {
 
   const params = new URLSearchParams(searchStr);
   const categoryFilter = params.get('category') || 'all';
+
+  useCanonical(categoryFilter === 'all' ? '/maps' : `/maps?category=${categoryFilter}`);
 
   const { maps, loading } = useMaps(categoryFilter === 'all' ? undefined : categoryFilter);
 
