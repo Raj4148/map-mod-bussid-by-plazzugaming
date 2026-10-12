@@ -1,43 +1,55 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useMaps } from '../hooks/useMaps';
 
 const BASE_URL = 'https://plazzugamingmaps.xyz';
 
 export default function Sitemap() {
   const { allMaps, loading } = useMaps();
-  const [xml, setXml] = useState('');
 
   useEffect(() => {
-    if (!loading && allMaps.length > 0) {
-      const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>${BASE_URL}/</loc>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>${BASE_URL}/maps</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  ${allMaps.map(map => `
-  <url>
-    <loc>${BASE_URL}/map/${map.id}</loc>
-    <lastmod>${new Date(map.createdAt).toISOString().split('T')[0]}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>`).join('')}
-</urlset>`;
-      setXml(sitemap);
-    }
-  }, [allMaps, loading]);
+    document.title = 'sitemap.xml';
+  }, []);
 
-  if (loading) return <div className="p-8 text-muted-foreground font-mono">Generating sitemap...</div>;
+  const staticUrls = [
+    { loc: `${BASE_URL}/`, priority: '1.0', changefreq: 'daily' },
+    { loc: `${BASE_URL}/maps`, priority: '0.9', changefreq: 'daily' },
+    { loc: `${BASE_URL}/community`, priority: '0.7', changefreq: 'weekly' },
+    { loc: `${BASE_URL}/maps?category=indian`, priority: '0.8', changefreq: 'daily' },
+    { loc: `${BASE_URL}/maps?category=nepali`, priority: '0.8', changefreq: 'daily' },
+    { loc: `${BASE_URL}/maps?category=indonesian`, priority: '0.8', changefreq: 'daily' },
+  ];
+
+  if (loading) {
+    return (
+      <pre style={{ margin: 0, padding: '1rem', whiteSpace: 'pre-wrap', fontFamily: 'monospace', fontSize: '12px' }}>
+        {`<?xml version="1.0" encoding="UTF-8"?>\n<!-- Generating dynamic sitemap from Firestore... -->`}
+      </pre>
+    );
+  }
+
+  const mapUrls = allMaps.map((map) => {
+    const dateStr = new Date(map.createdAt || Date.now()).toISOString().split('T')[0];
+    return `  <url>
+    <loc>${BASE_URL}/map/${map.id}</loc>
+    <lastmod>${dateStr}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>`;
+  });
+
+  const xmlContent = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${staticUrls.map(u => `  <url>
+    <loc>${u.loc}</loc>
+    <changefreq>${u.changefreq}</changefreq>
+    <priority>${u.priority}</priority>
+  </url>`).join('\n')}
+${mapUrls.join('\n')}
+</urlset>`;
 
   return (
-    <pre className="p-4 bg-background text-foreground font-mono text-xs whitespace-pre-wrap break-all select-all">
-      {xml}
+    <pre style={{ margin: 0, padding: '1rem', whiteSpace: 'pre-wrap', wordBreak: 'break-all', fontFamily: 'monospace', fontSize: '12px' }}>
+      {xmlContent}
     </pre>
   );
 }
