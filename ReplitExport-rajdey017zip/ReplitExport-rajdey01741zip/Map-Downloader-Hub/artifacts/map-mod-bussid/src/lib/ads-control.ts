@@ -4,7 +4,7 @@ export const MONETAG_DIRECT_LINKS = {
   link1: 'https://omg10.com/4/11401834', // Step 1: "Get Map"
   link2: 'https://omg10.com/4/11385854', // Step 1: "Next", Step 2: "Mirror Link"
   link3: 'https://omg10.com/4/11533894', // Step 2: "Backup Link"
-  link4: 'https://mausoleumpoetrywrench.com/p9fs2r3pt?key=724fc0735b995f73810263ea4b3890a2', // Step 2: "Fast Download"
+  link4: 'https://omg10.com/4/11385953', // Step 2: "Fast Download"
 } as const;
 
 export function disableAds(): void {
